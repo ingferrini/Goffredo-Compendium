@@ -326,6 +326,7 @@ export async function checkEchoRange({document: effect, token}, deps = defaultDe
   if (!shouldDismissEcho(deps.tokenUtils.getDistance(token, echoToken))) return false;
   await deps.documentUtils.deleteDocument(effect);
   await clearEchoState(actor);
+  deps.notify('GAC.Echo.TooFar');
   return true;
 }
 
@@ -348,8 +349,8 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.1',
+  version: '0.1.2',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
-  combat: [{pass: 'actorTurnEnd', macro: checkEchoRange, priority: 50}]
+  combat: [{pass: 'turnEnd', macro: checkEchoRange, priority: 50}]
 };

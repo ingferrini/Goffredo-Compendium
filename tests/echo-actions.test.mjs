@@ -235,6 +235,7 @@ test('owner turn end dismisses an echo beyond 30 feet', async () => {
 
   assert.equal(result, true);
   assert.ok(calls.some(([type, document]) => type === 'delete' && document === effect));
+  assert.ok(calls.some(([type, key]) => type === 'notify' && key === 'GAC.Echo.TooFar'));
   assert.equal(context.actor.getFlag('goffredo-compendium', 'echo'), undefined);
 });
 
@@ -263,4 +264,8 @@ test('action prompts and warnings are localized in both supported languages', as
       assert.ok(language.GAC.Echo[key].length > 0);
     }
   }
+});
+
+test('range cleanup runs on the CAT turnEnd combat pass', () => {
+  assert.deepEqual(actions.manifestEcho.combat.map(({pass}) => pass), ['turnEnd']);
 });

@@ -231,7 +231,7 @@ Expected: FAIL for unimplemented callbacks.
 
 - [ ] **Step 3: Implement actions**
 
-Use `workflowUtils.syntheticItemRoll` for the selected attack. Apply temporary, dependent range-override effects to owner and echo and remove them in `finally`. Use `tokenUtils.moveToken` for both halves of the swap only after both destinations and movement budget validate. Register CAT roll passes for the four activity identifiers and a combat `actorTurnEnd` pass for the active marker.
+Use `workflowUtils.syntheticItemRoll` for the selected attack. Apply temporary, dependent range-override effects to owner and echo and remove them in `finally`. Use `tokenUtils.moveToken` for both halves of the swap only after both destinations and movement budget validate. Register CAT roll passes for the four activity identifiers and a combat `turnEnd` pass for the active marker.
 
 - [ ] **Step 4: Verify action tests pass**
 

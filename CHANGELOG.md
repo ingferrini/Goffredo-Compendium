@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.1.2 - 2026-09-24
+
+- The echo is now dismissed at the end of its owner's turn when it is more than 30 feet away; the check was hooked to a combat pass CAT never fires. A notification explains the dismissal.
+
 ## 0.1.1 - 2026-09-24
 
 - Swap Positions no longer blocks on the owner's recorded movement; it always exchanges places.
