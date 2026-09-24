@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.3.3 - 2026-09-24
+
+- Manifest Mind activities (spell-slot manifest, cast, move, dismiss) have their own painterly icons.
+
 ## 0.3.2 - 2026-09-24
 
 - Manifest Echo activities (attack, swap, elevation, dismiss) have their own painterly icons.

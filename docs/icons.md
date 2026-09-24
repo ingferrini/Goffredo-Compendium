@@ -27,6 +27,10 @@ Per i token: `Square 1:1 top-down token image, simple bold shape readable at 64 
 | `manifest-echo-dismiss.webp` | Manifest Echo: Congeda | Echo dissolving into ash and motes |
 | `unleash-incarnation.webp` | Unleash Incarnation | Warrior and ghostly echo swinging the same warhammer |
 | `manifest-mind.webp` | Manifest Mind, attore GAC - Spectral Mind | Ghostly spellbook dissolving into teal script |
+| `manifest-mind-slot.webp` | Manifest Mind: Evoca con uno slot | Spellbook rising from a burning arcane sigil |
+| `manifest-mind-cast.webp` | Manifest Mind: Lancia dalla mente | Spellbook releasing a teal arcane bolt |
+| `manifest-mind-move.webp` | Manifest Mind: Sposta la mente | Spellbook gliding with a curved teal trail |
+| `manifest-mind-dismiss.webp` | Manifest Mind: Congeda | Closed spellbook fading into motes |
 | `manifest-mind-token.webp` | Token della mente spettrale | Hovering spellbook in a teal halo, transparent |
 | `vengeful-assault.webp` | Vengeful Assault | Black-scaled dragonborn gauntlet counter-striking |
 | `pack-tactics-companion.webp` | Pack Tactics (Companion) | Red-eyed grey wolf beside an armoured dwarf cleric |

@@ -109,7 +109,7 @@
         "_id": "GACMindSlot00001",
         "type": "utility",
         "name": "Manifest with a spell slot / Evoca con uno slot",
-        "img": "modules/goffredo-compendium/assets/icons/manifest-mind.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind-slot.webp",
         "activation": {
           "type": "bonus",
           "value": 1,
@@ -180,7 +180,7 @@
         "_id": "GACMindCast00001",
         "type": "utility",
         "name": "Cast from Mind / Lancia dalla mente",
-        "img": "icons/magic/symbols/runes-star-pentagon-blue.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind-cast.webp",
         "activation": {
           "type": "special",
           "value": null,
@@ -260,7 +260,7 @@
         "_id": "GACMindMove00001",
         "type": "utility",
         "name": "Move Mind / Sposta la mente",
-        "img": "icons/magic/movement/trail-streak-zigzag-blue.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind-move.webp",
         "activation": {
           "type": "bonus",
           "value": 1,
@@ -328,7 +328,7 @@
         "_id": "GACMindDismiss01",
         "type": "utility",
         "name": "Dismiss / Congeda",
-        "img": "icons/magic/control/debuff-energy-hold-levitate-blue-yellow.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind-dismiss.webp",
         "activation": {
           "type": "bonus",
           "value": 1,
