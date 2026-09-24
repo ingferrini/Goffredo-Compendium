@@ -13,6 +13,7 @@ import {registerReactionSettings} from './reactions/config.mjs';
 import {createReactionsMenuClass} from './reactions/menu.mjs';
 import {registerMovementReactions} from './reactions/movement-engine.mjs';
 import {registerReactionQueries} from './reactions/prompt.mjs';
+import {registerReactionUsage} from './reactions/usage.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
 
 const automations = [
@@ -49,6 +50,7 @@ Hooks.once('catReady', () => {
 Hooks.once('ready', () => {
   registerMovementHooks();
   registerMovementReactions();
+  registerReactionUsage();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

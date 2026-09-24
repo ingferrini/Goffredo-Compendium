@@ -169,6 +169,8 @@ function scenario({features = [], disengaged = false, answer = 'first', hit = fa
     },
     rollItem: async (item, targets) => { calls.push(['roll', item, targets]); return {hitTargets: new Set(hit ? [mover] : [])}; },
     setReactionUsed: async actor => calls.push(['reaction', actor]),
+    withReactionReach: async (actor, roll) => { calls.push(['grace', actor]); return roll(); },
+    publicName: token => token.name,
     applySentinel: async (target, stopAt) => calls.push(['sentinel', target, stopAt])
   };
   return {ash, ashActor, calls, deps, mover, movement};
@@ -268,4 +270,26 @@ test('NPC natural attacks count even unequipped or as features, with their reach
 
   const hero = {type: 'character', items: [claw, bite]};
   assert.deepEqual(engine.meleeWeapons(hero), []);
+});
+
+test('the reaction roll gets a temporary reach grace on the reacting actor', async () => {
+  const {ashActor, calls, deps, mover, movement} = scenario();
+  await engine.resolveMovementReactions({mover, movement}, deps);
+  const grace = calls.findIndex(([type]) => type === 'grace');
+  const roll = calls.findIndex(([type]) => type === 'roll');
+  assert.equal(calls[grace][1], ashActor);
+  assert.ok(grace < roll);
+});
+
+test('a failing reaction roll is logged and spends no reaction', async () => {
+  const {calls, deps, mover, movement} = scenario();
+  deps.rollItem = async () => { throw new Error('boom'); };
+  const original = console.error;
+  console.error = () => {};
+  try {
+    assert.deepEqual(await engine.resolveMovementReactions({mover, movement}, deps), []);
+  } finally {
+    console.error = original;
+  }
+  assert.equal(calls.some(([type]) => type === 'reaction'), false);
 });

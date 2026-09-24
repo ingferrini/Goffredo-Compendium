@@ -1,9 +1,10 @@
 import {FLAGS} from '../constants.mjs';
 import {attackFromEcho} from '../echo-knight/manifest-echo.mjs';
-import {canSee, hasUsedReaction, rollItem, setReactionUsed} from '../platform/midi.mjs';
+import {canSee, rollItem} from '../platform/midi.mjs';
 import {collectionValues, isIncapacitated, localize} from '../shared/foundry.mjs';
 import {getGeneralConfig, getReactionConfig} from './config.mjs';
 import {requestReaction} from './prompt.mjs';
+import {hasUsedReaction, markReactionUsed, publicName, withReactionReach} from './usage.mjs';
 
 const POLEARMS = new Set(['glaive', 'halberd', 'pike', 'quarterstaff', 'spear']);
 const TELEPORT_ACTIONS = new Set(['displace', 'blink', 'catForce']);
@@ -167,7 +168,9 @@ const defaultDeps = {
   reactionConfig: id => getReactionConfig(id),
   requestReaction,
   rollItem,
-  setReactionUsed,
+  setReactionUsed: markReactionUsed,
+  withReactionReach,
+  publicName,
   applySentinel: async (mover, stopAt) => {
     const effect = {
       name: localize('GAC.Reactions.Sentinel.Stopped'),
@@ -268,20 +271,27 @@ export async function resolveMovementReactions({mover, movement, operation}, dep
       reactionId,
       actor: reactor.actor,
       title: `${reactor.actor.name}: ${localize(`GAC.Reactions.Types.${reactionId}`)}`,
-      content: `${mover.name}: ${localize(reactor.isEcho ? 'GAC.Reactions.Prompt.FromEcho' : `GAC.Reactions.Prompt.${reactionId}`)}`,
+      content: `${deps.publicName(mover)}: ${localize(reactor.isEcho ? 'GAC.Reactions.Prompt.FromEcho' : `GAC.Reactions.Prompt.${reactionId}`)}`,
       choices: choices.map(({value, label}) => ({value, label}))
     });
     if (!choice) continue;
 
     reacted.add(reactor.actor.uuid);
-    const workflow = await performReaction({reactor, mover, choice, choices, deps});
+    // The mover has already left reach when the reaction resolves.
+    let workflow;
+    try {
+      workflow = await deps.withReactionReach(reactor.actor, () => performReaction({reactor, mover, choice, choices, deps}));
+    } catch (error) {
+      console.error('goffredo-compendium | reaction roll failed', error);
+    }
     if (!workflow) continue;
     await deps.setReactionUsed(reactor.actor);
     if (sentinel && event.type === 'leave' && hitMover(workflow, mover)) {
       await deps.applySentinel(mover, lastInsidePoint(points, distances, reach));
     }
     if (deps.general().chatSummary) {
-      await deps.chat(`<p><strong>${reactor.actor.name}</strong>: ${localize(`GAC.Reactions.Types.${reactionId}`)} → ${mover.name}</p>`);
+      const reactorToken = reactor.sightToken ?? reactor.token;
+      await deps.chat(`<p><strong>${deps.publicName(reactorToken)}</strong>: ${localize(`GAC.Reactions.Types.${reactionId}`)} → ${deps.publicName(mover)}</p>`);
     }
     results.push({reactor: reactor.actor.uuid, reactionId, choice});
   }

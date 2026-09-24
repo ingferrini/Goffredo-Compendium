@@ -1,13 +1,14 @@
 import {RULESET} from '../constants.mjs';
-import {distance, hasUsedReaction, rollItem, setReactionUsed} from '../platform/midi.mjs';
+import {distance, rollItem} from '../platform/midi.mjs';
 import {requestReaction} from '../reactions/prompt.mjs';
+import {hasUsedReaction, markReactionUsed} from '../reactions/usage.mjs';
 import {collectionValues, isIncapacitated, localize} from '../shared/foundry.mjs';
 
 const defaultDeps = {
   hasUsedReaction,
   requestReaction,
   rollItem,
-  setReactionUsed,
+  setReactionUsed: markReactionUsed,
   tokenDistance: distance
 };
 

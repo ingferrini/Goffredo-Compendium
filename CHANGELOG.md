@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.1 - 2026-09-24
+
+- Opportunity attacks (also from the echo) no longer fail Midi's range check: the attack resolves after the mover has left reach, so the reacting actor gets a temporary range grace for that single roll.
+- Reactions are tracked by the module and come back at the start of the actor's own turn, independently of Midi's "enforce reactions" setting.
+- Prompts and chat lines name only player characters and tokens whose name is shown to everyone; other creatures appear as "a creature".
+- The echo attack no longer deletes its temporary effect twice.
+- A failing reaction roll is logged and no longer stops other creatures from reacting.
+
 ## 0.4.0 - 2026-09-24
 
 - Added the Reactions panel: per-reaction enable, timeout, fallback when time runs out, NPC handling and prompt recipients.

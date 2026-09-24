@@ -288,7 +288,11 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
     return await deps.workflowUtils.syntheticItemRoll(selected, Array.from(workflow.targets ?? []));
   } finally {
     if (!hookRan) deps.hooks.off(hookName, hookId);
-    await Promise.allSettled(effects.map(effect => deps.documentUtils.deleteDocument(effect)));
+    // The echo effect depends on the owner's: deleting the first removes both.
+    for (const effect of effects) {
+      const stillThere = effect.parent?.effects?.get ? effect.parent.effects.get(effect.id) : true;
+      if (stillThere) await Promise.resolve(deps.documentUtils.deleteDocument(effect)).catch(() => undefined);
+    }
   }
 }
 
