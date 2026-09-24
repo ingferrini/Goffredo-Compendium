@@ -43,9 +43,12 @@ export function reactionMarkerData() {
   };
 }
 
-// Midi places its own marker when its reaction enforcement is on; otherwise the
-// module places one with the same icon.
+// Midi places its own marker when its reaction enforcement is on (using the
+// Convenient Effects "Reaction" status when that module defines it); otherwise
+// the module places one with Midi's icon.
 export async function markReactionUsed(actor, {midi = midiSetReactionUsed} = {}) {
+  // Midi already marks a reaction attack it recognises; don't count it twice.
+  if (hasReactionMarker(actor)) return;
   await midi(actor);
   if (hasReactionMarker(actor)) return;
   await actor.createEmbeddedDocuments('ActiveEffect', [reactionMarkerData()]);

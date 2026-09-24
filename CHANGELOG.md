@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.4 - 2026-09-24
+
+- A reaction already marked (Midi recognises out-of-turn attacks on its own) is not marked a second time, so Midi's reaction counter no longer reaches 2.
+
 ## 0.4.3 - 2026-09-24
 
 - The visible marker is now the reaction state. Using a reaction asks Midi to place its "Reaction used" effect; when Midi does not (reaction enforcement off), the module places its own marker with Midi's reaction icon. Deleting any marker gives the reaction back; the module's marker is removed at the start of the actor's turn.

@@ -85,3 +85,12 @@ test('the reach grace effect wraps the roll and is removed afterwards, even on f
   assert.deepEqual(deleted, ['e1', 'e1']);
 });
 
+
+test('an existing marker is not marked again', async () => {
+  const ash = actor();
+  ash.effects.set('dfreds', {id: 'dfreds', name: 'Reaction', disabled: false});
+  let midiCalls = 0;
+  await usage.markReactionUsed(ash, {midi: async () => { midiCalls += 1; }});
+  assert.equal(midiCalls, 0);
+  assert.deepEqual(Array.from(ash.effects.keys()), ['dfreds']);
+});
