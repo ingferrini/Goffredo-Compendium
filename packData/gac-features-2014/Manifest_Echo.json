@@ -79,6 +79,23 @@
         "midiProperties": {"identifier": "manifestEchoSwap", "displayActivityName": true, "confirmTargets": "never"},
         "flags": {"cat": {"hidden": true}}
       },
+      "GACEchoElev00001": {
+        "_id": "GACEchoElev00001",
+        "type": "utility",
+        "name": "Change Elevation / Cambia quota",
+        "img": "icons/magic/movement/trail-streak-zigzag-blue.webp",
+        "activation": {"type": "special", "value": null, "condition": "", "override": false},
+        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
+        "description": {"chatFlavor": "Change Echo Elevation / Cambia quota dell'eco"},
+        "duration": {"concentration": false, "units": "inst", "override": false},
+        "effects": [],
+        "range": {"units": "self", "special": "", "override": false},
+        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"choice": false, "type": ""}, "prompt": true, "override": false},
+        "uses": {"spent": 0, "max": "", "recovery": []},
+        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
+        "midiProperties": {"identifier": "manifestEchoElevation", "displayActivityName": true, "confirmTargets": "never"},
+        "flags": {"cat": {"hidden": true}}
+      },
       "GACEchoDismiss01": {
         "_id": "GACEchoDismiss01",
         "type": "utility",

@@ -8,6 +8,9 @@
       "ChooseAttack": "Scegli l'attacco da far partire dall'eco.",
       "ChooseTarget": "Seleziona una creatura prima di usare questa azione.",
       "MovementExceeded": "L'eco non può muoversi per più di 30 piedi durante il tuo turno.",
+      "OwnerTurnOnly": "Puoi muovere l'eco soltanto durante il turno del suo evocatore.",
+      "ElevationPrompt": "Scegli la quota dell'eco entro il movimento residuo.",
+      "ElevationLabel": "Quota",
       "NotEnoughMovement": "Ti servono almeno 15 piedi di movimento residuo per scambiare le posizioni.",
       "SwapInvalid": "Le posizioni non possono essere scambiate.",
       "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?"

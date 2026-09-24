@@ -1,4 +1,4 @@
-import {MODULE_ID, PACKS, RULESET} from '../constants.mjs';
+import {FLAGS, MODULE_ID, PACKS, RULESET} from '../constants.mjs';
 import {
   actorUtils,
   compendiumUtils,
@@ -10,6 +10,7 @@ import {
   workflowUtils
 } from '../proxy.mjs';
 import {echoArmorClass, shouldDismissEcho} from './rules.mjs';
+import {moveEchoVertically} from './movement.mjs';
 import {clearEchoState, createEchoState, getEchoState, setEchoState} from './state.mjs';
 
 const defaultDeps = {
@@ -29,7 +30,12 @@ const defaultDeps = {
   workflowUtils
 };
 
-const controlActivities = ['manifestEchoAttack', 'manifestEchoSwap', 'manifestEchoDismiss'];
+const controlActivities = [
+  'manifestEchoAttack',
+  'manifestEchoSwap',
+  'manifestEchoElevation',
+  'manifestEchoDismiss'
+];
 const ATTACK_ORIGIN_FLAG = 'flags.midi-qol.rangeOverride.attack.all';
 const SWAP_COST = 15;
 
@@ -193,6 +199,7 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
     return undefined;
   }
 
+  await summon.token.setFlag(FLAGS.scope, FLAGS.echo, {ownerActorUuid: workflow.actor.uuid});
   await setEchoState(workflow.actor, createEchoState({
     ownerActorUuid: workflow.actor.uuid,
     itemUuid: item.uuid,
@@ -304,6 +311,8 @@ async function onRollFinished({document: item, workflow}) {
       return attackFromEcho({item, workflow});
     case 'manifestEchoSwap':
       return swapWithEcho({item, workflow});
+    case 'manifestEchoElevation':
+      return moveEchoVertically({item, workflow});
     case 'manifestEchoDismiss':
       return dismissEcho({item, workflow});
     default:

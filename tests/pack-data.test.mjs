@@ -8,7 +8,7 @@ async function json(relativePath) {
   return JSON.parse(await readFile(new URL(relativePath, root), 'utf8'));
 }
 
-test('Manifest Echo exposes four stable CAT activities without licensed rules text', async () => {
+test('Manifest Echo exposes stable CAT controls without licensed rules text', async () => {
   const item = await json('packData/gac-features-2014/Manifest_Echo.json');
   assert.equal(item._id, 'GACManifestEcho1');
   assert.equal(item.system.identifier, 'manifest-echo');
@@ -19,9 +19,9 @@ test('Manifest Echo exposes four stable CAT activities without licensed rules te
   const activities = Object.values(item.system.activities);
   assert.deepEqual(
     activities.map(activity => activity.midiProperties.identifier),
-    ['manifestEcho', 'manifestEchoAttack', 'manifestEchoSwap', 'manifestEchoDismiss']
+    ['manifestEcho', 'manifestEchoAttack', 'manifestEchoSwap', 'manifestEchoElevation', 'manifestEchoDismiss']
   );
-  assert.equal(new Set(activities.map(activity => activity._id)).size, 4);
+  assert.equal(new Set(activities.map(activity => activity._id)).size, 5);
   assert.deepEqual(item.flags.cat.macros.roll, [{
     source: 'goffredo-compendium',
     rules: '2014',

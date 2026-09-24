@@ -78,9 +78,12 @@ function dependencies({cancelPlacement = false, existingEffect} = {}) {
         async placeSummons(_summons, range, options) {
           calls.push(['place', range, options]);
           if (!cancelPlacement) {
+            const tokenFlags = new Map();
             summon.token = {
               uuid: 'Scene.scene.Token.echo',
-              parent: {id: 'scene'}
+              parent: {id: 'scene'},
+              getFlag(_scope, key) { return tokenFlags.get(key); },
+              async setFlag(_scope, key, value) { tokenFlags.set(key, value); }
             };
           }
         }
@@ -104,6 +107,7 @@ test('summon builds a one-hp echo from the current owner and places it within 15
   assert.equal(create.updates.token.texture.src, 'ash.webp');
   assert.deepEqual(calls.find(([type]) => type === 'place').slice(1), [15, {token: workflow.token.document}]);
   assert.equal(actor.getFlag('goffredo-compendium', 'echo').tokenUuid, 'Scene.scene.Token.echo');
+  assert.equal(result.token.getFlag('goffredo-compendium', 'echo').ownerActorUuid, actor.uuid);
 });
 
 test('summoning removes an existing marker before creating the replacement', async () => {

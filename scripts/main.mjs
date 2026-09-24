@@ -1,8 +1,10 @@
 import {MODULE_ID} from './constants.mjs';
+import {manifestEcho} from './echo-knight/manifest-echo.mjs';
+import {registerMovementHooks} from './echo-knight/movement.mjs';
 import {api} from './proxy.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
 
-const automations = [];
+const automations = [['manifest-echo', manifestEcho]];
 
 Hooks.once('init', () => {
   console.info(`${MODULE_ID} | Initializing`);
@@ -20,4 +22,8 @@ Hooks.once('catReady', () => {
   }
   registerAll(api, automations);
   console.info(`${MODULE_ID} | CAT automations registered`);
+});
+
+Hooks.once('ready', () => {
+  registerMovementHooks();
 });
