@@ -23,6 +23,7 @@
     "@foundryvtt/foundryvtt-cli": "^1.0.2"
   },
   "devDependencies": {
-    "eslint": "^10.11.0"
+    "eslint": "^10.11.0",
+    "fflate": "^0.8.3"
   }
 }
