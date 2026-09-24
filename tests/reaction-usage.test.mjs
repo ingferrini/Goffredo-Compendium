@@ -51,3 +51,14 @@ test('the reach grace effect wraps the roll and is removed afterwards, even on f
   await assert.rejects(usage.withReactionReach(reactor, async () => { throw new Error('boom'); }));
   assert.deepEqual(deleted, ['e1', 'e1']);
 });
+
+test('a visible reaction effect or status counts as used', () => {
+  const midi = () => false;
+  const withEffect = name => ({...actor(), effects: [{id: 'x', name, disabled: false}]});
+  assert.equal(usage.hasUsedReaction(withEffect('Reaction'), {combat: {id: 'c1'}, midi}), true);
+  assert.equal(usage.hasUsedReaction(withEffect('Reaction used'), {combat: {id: 'c1'}, midi}), true);
+  assert.equal(usage.hasUsedReaction(withEffect('Reactive Strike'), {combat: {id: 'c1'}, midi}), false);
+  assert.equal(usage.hasUsedReaction({...actor(), effects: [{id: 'dnd5ereaction000', name: 'x'}]}, {combat: {id: 'c1'}, midi}), true);
+  assert.equal(usage.hasUsedReaction({...actor(), statuses: new Set(['reaction'])}, {combat: {id: 'c1'}, midi}), true);
+  assert.equal(usage.hasUsedReaction({...actor(), effects: [{id: 'x', name: 'Reaction', disabled: true}]}, {combat: {id: 'c1'}, midi}), false);
+});

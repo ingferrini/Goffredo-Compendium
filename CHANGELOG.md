@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.2 - 2026-09-24
+
+- A reaction also counts as used when the actor shows a reaction marker: Midi's "Reaction used" effect, a `reaction` status, or an enabled effect named "Reaction".
+
 ## 0.4.1 - 2026-09-24
 
 - Opportunity attacks (also from the echo) no longer fail Midi's range check: the attack resolves after the mover has left reach, so the reacting actor gets a temporary range grace for that single roll.
