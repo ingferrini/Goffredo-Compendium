@@ -1,0 +1,19 @@
+{
+  "GAC": {
+    "Echo": {
+      "Name": "Eco di {name}",
+      "NoActive": "Non è stato trovato alcun eco attivo.",
+      "TooFar": "L'eco è stato congedato perché ha terminato il turno a più di 30 piedi.",
+      "NoAttack": "Non è disponibile alcun attacco valido.",
+      "ChooseAttack": "Scegli l'attacco da far partire dall'eco.",
+      "ChooseTarget": "Seleziona una creatura prima di usare questa azione.",
+      "MovementExceeded": "L'eco non può muoversi per più di 30 piedi durante il tuo turno.",
+      "SwapInvalid": "Le posizioni non possono essere scambiate.",
+      "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?"
+    },
+    "Compatibility": {
+      "Title": "Compendio di Automazioni di Goffredo",
+      "Missing": "Mancano moduli di automazione richiesti o compatibili: {modules}."
+    }
+  }
+}

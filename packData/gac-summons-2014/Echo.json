@@ -1,0 +1,70 @@
+{
+  "name": "GAC - Echo",
+  "type": "npc",
+  "img": "icons/magic/control/silhouette-hold-beam-blue.webp",
+  "system": {
+    "abilities": {
+      "str": {"value": 10, "proficient": 0},
+      "dex": {"value": 10, "proficient": 0},
+      "con": {"value": 10, "proficient": 0},
+      "int": {"value": 10, "proficient": 0},
+      "wis": {"value": 10, "proficient": 0},
+      "cha": {"value": 10, "proficient": 0}
+    },
+    "attributes": {
+      "ac": {"flat": 16, "calc": "flat", "formula": ""},
+      "hp": {"value": 1, "max": 1, "temp": null, "tempmax": null, "formula": ""},
+      "movement": {"burrow": 0, "climb": 0, "fly": 30, "swim": 0, "walk": 30, "units": "ft", "hover": true},
+      "senses": {"darkvision": 0, "blindsight": 0, "tremorsense": 0, "truesight": 0, "units": "ft", "special": ""}
+    },
+    "details": {
+      "biography": {"value": "", "public": ""},
+      "type": {"value": "custom", "subtype": "", "swarm": "", "custom": "Echo"},
+      "cr": 0
+    },
+    "traits": {
+      "size": "med",
+      "di": {"value": [], "bypasses": [], "custom": ""},
+      "dr": {"value": [], "bypasses": [], "custom": ""},
+      "dv": {"value": [], "bypasses": [], "custom": ""},
+      "ci": {
+        "value": ["blinded", "charmed", "deafened", "exhaustion", "frightened", "grappled", "incapacitated", "invisible", "paralyzed", "petrified", "poisoned", "prone", "restrained", "stunned", "unconscious"],
+        "custom": ""
+      },
+      "languages": {"value": [], "custom": ""}
+    },
+    "source": {"revision": 1, "rules": "2014"}
+  },
+  "prototypeToken": {
+    "name": "GAC - Echo",
+    "displayName": 30,
+    "actorLink": false,
+    "texture": {"src": "icons/magic/control/silhouette-hold-beam-blue.webp", "scaleX": 1, "scaleY": 1, "tint": "#91c9ff", "anchorX": 0.5, "anchorY": 0.5, "fit": "contain", "alphaThreshold": 0.75},
+    "width": 1,
+    "height": 1,
+    "lockRotation": false,
+    "rotation": 0,
+    "alpha": 0.65,
+    "disposition": 1,
+    "displayBars": 20,
+    "bar1": {"attribute": "attributes.hp"},
+    "bar2": {"attribute": null},
+    "sight": {"enabled": true, "range": 0, "angle": 360, "visionMode": "basic"},
+    "detectionModes": {},
+    "flags": {},
+    "randomImg": false,
+    "appendNumber": false,
+    "prependAdjective": false,
+    "movementAction": null
+  },
+  "items": [],
+  "effects": [],
+  "flags": {
+    "midi-qol": {"neverTarget": false},
+    "cat": {"identifier": "manifestEcho"}
+  },
+  "folder": null,
+  "_id": "GACEchoSummon001",
+  "_stats": {"coreVersion": "14.367", "systemId": "dnd5e", "systemVersion": "5.3.3"},
+  "_key": "!actors!GACEchoSummon001"
+}

@@ -1,0 +1,19 @@
+{
+  "GAC": {
+    "Echo": {
+      "Name": "Echo of {name}",
+      "NoActive": "No active echo was found.",
+      "TooFar": "The echo was dismissed because it ended the turn more than 30 feet away.",
+      "NoAttack": "No valid attack is available.",
+      "ChooseAttack": "Choose the attack to originate from the echo.",
+      "ChooseTarget": "Target one creature before using this action.",
+      "MovementExceeded": "The echo cannot move more than 30 feet during your turn.",
+      "SwapInvalid": "The positions cannot be exchanged.",
+      "ReactionPrompt": "Use your reaction to make an opportunity attack from the echo?"
+    },
+    "Compatibility": {
+      "Title": "Goffredo's Automation Compendium",
+      "Missing": "Required automation modules are missing or incompatible: {modules}."
+    }
+  }
+}

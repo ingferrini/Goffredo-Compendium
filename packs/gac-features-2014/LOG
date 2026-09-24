@@ -1,0 +1,5 @@
+2026/09/24-14:09:19.297 60f4 Delete type=3 #1
+2026/09/24-14:09:19.304 38e00 Level-0 table #5: started
+2026/09/24-14:09:19.308 38e00 Level-0 table #5: 3439 bytes OK
+2026/09/24-14:09:19.314 38e00 Delete type=0 #3
+2026/09/24-14:09:19.314 38e00 Manual compaction at level-0 from '!items!GACManifestEcho1' @ 72057594037927935 : 1 .. '!items!GACUnleashInc001' @ 0 : 0; will stop at (end)
