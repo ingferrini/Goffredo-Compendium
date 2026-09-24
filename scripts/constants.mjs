@@ -17,6 +17,7 @@ export const REQUIRED_MODULES = Object.freeze([
 export const FLAGS = Object.freeze({
   scope: MODULE_ID,
   echo: 'echo',
-  movement: 'echoMovement'
+  movement: 'echoMovement',
+  mind: 'mind'
 });
 

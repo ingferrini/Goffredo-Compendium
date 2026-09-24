@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.2.2 - 2026-09-24
+
+- Manifest Mind: the mind token is recorded on the owner at summon time, so Move and Cast from Mind find it even when CAT's summon registry returns a stale entry without a token. Move uses CAT's exported `displaceToken` with a 30-foot crosshair.
+
 ## 0.2.1 - 2026-09-24
 
 - Frammento Runico Instabile: the item awakens on its first attunement; the attunement-loss backlash can only happen after that.

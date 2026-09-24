@@ -1,12 +1,13 @@
-import {MODULE_ID, PACKS, RULESET} from '../constants.mjs';
+import {FLAGS, MODULE_ID, PACKS, RULESET} from '../constants.mjs';
 import {
   actorUtils,
   compendiumUtils,
   documentUtils,
   effectUtils,
-  summonUtils
+  summonUtils,
+  tokenUtils
 } from '../proxy.mjs';
-import {collectionValues, forceTokenOrigin, notify, tokenDistance} from '../shared/foundry.mjs';
+import {forceTokenOrigin, notify, tokenDistance} from '../shared/foundry.mjs';
 
 const MIND_RANGE = 60;
 const MIND_LEASH = 300;
@@ -20,9 +21,11 @@ const defaultDeps = {
   compendiumUtils,
   documentUtils,
   effectUtils,
+  fromUuid: (...args) => globalThis.fromUuid(...args),
   notify,
   summonUtils,
   tokenDistance,
+  tokenUtils,
   userTargets: () => Array.from(globalThis.game?.user?.targets ?? [])
 };
 
@@ -31,13 +34,11 @@ function mindName(actor) {
   return `Spectral Mind of ${actor.name}`;
 }
 
-export function mindTokenFor(item, deps = defaultDeps) {
-  const [summon] = item ? deps.summonUtils.getSummonsBySource(item) : [];
-  return summon?.token;
-}
-
-function mindSummonFor(item, deps) {
-  return item ? deps.summonUtils.getSummonsBySource(item)[0] : undefined;
+// The mind token is recorded on the owner at summon time; CAT's summon lookup
+// can return a stale summon without a token.
+export async function mindTokenFor(actor, deps = defaultDeps) {
+  const tokenUuid = actor?.getFlag?.(FLAGS.scope, FLAGS.mind)?.tokenUuid;
+  return tokenUuid ? deps.fromUuid(tokenUuid) : undefined;
 }
 
 export function isWizardSpell(item) {
@@ -58,6 +59,7 @@ export function spellRange(activity) {
 export async function dismissMind({workflow}, deps = defaultDeps) {
   const marker = deps.actorUtils.getEffectByIdentifier(workflow.actor, MARKER);
   if (marker) await deps.documentUtils.deleteDocument(marker);
+  await workflow.actor?.unsetFlag?.(FLAGS.scope, FLAGS.mind);
   return Boolean(marker);
 }
 
@@ -96,27 +98,30 @@ export async function summonMind({item, workflow}, deps = defaultDeps) {
   }
 
   const [placed] = await deps.summonUtils.placeSummons([summon], MIND_RANGE, {token: workflow.token.document}) ?? [];
-  if (!placed && !summon.token) {
+  const mindToken = placed ?? summon.token;
+  if (!mindToken) {
     await deps.documentUtils.deleteDocument(marker);
     return undefined;
   }
+  await workflow.actor.setFlag(FLAGS.scope, FLAGS.mind, {schema: 1, tokenUuid: mindToken.uuid});
   return summon;
 }
 
-export async function moveMind({item}, deps = defaultDeps) {
-  const summon = mindSummonFor(item, deps);
-  if (!summon) {
+export async function moveMind({workflow}, deps = defaultDeps) {
+  const mindToken = await mindTokenFor(workflow.actor, deps);
+  if (!mindToken) {
     deps.notify('GAC.Mind.NoActive');
     return false;
   }
-  await summon.move(30);
+  // Crosshair within 30 feet of the mind; walls block it, creatures do not.
+  await deps.tokenUtils.displaceToken(mindToken, {sourceToken: mindToken, range: 30});
   return true;
 }
 
 // Arms the next wizard spell: both the caster and the mind carry Midi's range
 // override, so Midi measures range from whichever of them reaches the target.
 export async function armCastFromMind({item, workflow}, deps = defaultDeps) {
-  const mindToken = mindTokenFor(item, deps);
+  const mindToken = await mindTokenFor(workflow.actor, deps);
   if (!mindToken) {
     deps.notify('GAC.Mind.NoActive');
     return false;
@@ -150,9 +155,9 @@ function castsFromMind(activity, actor, deps) {
 }
 
 // Before any slot is spent: every current target must be in range of the mind.
-export async function checkMindRange({document: feature, activity, actor}, deps = defaultDeps) {
+export async function checkMindRange({activity, actor}, deps = defaultDeps) {
   if (!castsFromMind(activity, actor, deps)) return undefined;
-  const mindToken = mindTokenFor(feature, deps);
+  const mindToken = await mindTokenFor(actor, deps);
   if (!mindToken) {
     deps.notify('GAC.Mind.NoActive');
     return true;
@@ -168,9 +173,9 @@ export async function checkMindRange({document: feature, activity, actor}, deps 
   return true;
 }
 
-export async function castFromMind({document: feature, workflow}, deps = defaultDeps) {
+export async function castFromMind({workflow}, deps = defaultDeps) {
   if (!castsFromMind(workflow.activity, workflow.actor, deps)) return undefined;
-  const mindToken = mindTokenFor(feature, deps);
+  const mindToken = await mindTokenFor(workflow.actor, deps);
   const marker = armedFor(workflow.actor, deps);
   if (mindToken) forceTokenOrigin(workflow, mindToken);
   // One armed use covers exactly one spell.
@@ -180,14 +185,15 @@ export async function castFromMind({document: feature, workflow}, deps = default
 
 export async function checkMindLeash({document: effect, token}, deps = defaultDeps) {
   const actor = effect?.parent;
-  const item = collectionValues(actor?.items).find(entry => entry.system?.identifier === 'manifest-mind');
-  const mindToken = mindTokenFor(item, deps);
+  const mindToken = await mindTokenFor(actor, deps);
   if (!mindToken) {
     await deps.documentUtils.deleteDocument(effect);
+    await actor?.unsetFlag?.(FLAGS.scope, FLAGS.mind);
     return true;
   }
   if (deps.tokenDistance(token, mindToken) <= MIND_LEASH) return false;
   await deps.documentUtils.deleteDocument(effect);
+  await actor?.unsetFlag?.(FLAGS.scope, FLAGS.mind);
   deps.notify('GAC.Mind.TooFar');
   return true;
 }
@@ -210,7 +216,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestMind = {
   name: 'Manifest Mind',
-  version: '0.2.0',
+  version: '0.2.2',
   rules: RULESET,
   roll: [
     {pass: 'itemRollFinished', macro: onRollFinished, priority: 50},

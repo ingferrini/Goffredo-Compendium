@@ -1,6 +1,6 @@
 {
   "name": "goffredo-compendium",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Bilingual D&D5e automation compendia for Foundry VTT.",
   "type": "module",
   "private": true,
