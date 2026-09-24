@@ -8,6 +8,7 @@
       "ChooseAttack": "Scegli l'attacco da far partire dall'eco.",
       "ChooseTarget": "Seleziona una creatura prima di usare questa azione.",
       "MovementExceeded": "L'eco non può muoversi per più di 30 piedi durante il tuo turno.",
+      "NotEnoughMovement": "Ti servono almeno 15 piedi di movimento residuo per scambiare le posizioni.",
       "SwapInvalid": "Le posizioni non possono essere scambiate.",
       "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?"
     },

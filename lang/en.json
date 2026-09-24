@@ -8,6 +8,7 @@
       "ChooseAttack": "Choose the attack to originate from the echo.",
       "ChooseTarget": "Target one creature before using this action.",
       "MovementExceeded": "The echo cannot move more than 30 feet during your turn.",
+      "NotEnoughMovement": "You need at least 15 feet of movement remaining to exchange positions.",
       "SwapInvalid": "The positions cannot be exchanged.",
       "ReactionPrompt": "Use your reaction to make an opportunity attack from the echo?"
     },
