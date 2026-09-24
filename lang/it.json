@@ -13,7 +13,8 @@
       "ElevationLabel": "Quota",
       "SwapInvalid": "Le posizioni non possono essere scambiate.",
       "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?",
-      "NoUnleashUses": "Non hai più utilizzi di Unleash Incarnation."
+      "NoUnleashUses": "Non hai più utilizzi di Unleash Incarnation.",
+      "OutOfRange": "Il bersaglio è fuori portata dalla posizione dell'eco."
     },
     "Compatibility": {
       "Title": "Compendio di Automazioni di Goffredo",

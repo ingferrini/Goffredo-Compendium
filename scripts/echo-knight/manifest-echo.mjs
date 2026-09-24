@@ -22,6 +22,7 @@ const defaultDeps = {
   compendiumUtils,
   dialogUtils,
   documentUtils,
+  echoDistance,
   effectUtils,
   fromUuid: (...args) => globalThis.fromUuid(...args),
   hooks: {
@@ -93,6 +94,27 @@ function forceEchoOrigin(midiWorkflow, echoToken) {
     scene: echoToken.parent?.id,
     token: echoToken.id
   };
+}
+
+// The attack-origin effect switches off Midi's own range check, so reach is
+// enforced here from the echo's space, always counting height difference.
+function echoDistance(echoToken, target) {
+  const from = echoToken.object ?? echoToken;
+  const to = target.object ?? target;
+  return globalThis.MidiQOL.computeDistance(from, to, {wallsBlock: false, includeCover: false, includeElevation: true});
+}
+
+export function attackRange(item) {
+  const activity = collectionValues(item.system?.activities).find(entry => entry.type === 'attack');
+  const range = activity?.range ?? item.system?.range ?? {};
+  if (hasMeleeAttack(item)) {
+    const reach = Number(range.reach ?? item.system?.range?.reach);
+    return Number.isFinite(reach) && reach > 0 ? reach : 5;
+  }
+  const long = Number(range.long);
+  const normal = Number(range.value);
+  if (Number.isFinite(long) && long > 0) return long;
+  return Number.isFinite(normal) && normal > 0 ? normal : Infinity;
 }
 
 export function eligibleEchoAttacks(actor, {meleeOnly = false} = {}) {
@@ -218,7 +240,7 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
   return summon;
 }
 
-export async function attackFromEcho({item, workflow, meleeOnly = false}, deps = defaultDeps) {
+export async function attackFromEcho({item, workflow, meleeOnly = false, checkRange = true}, deps = defaultDeps) {
   const echoToken = await echoTokenFor(workflow.actor, deps);
   if (!echoToken) {
     deps.notify('GAC.Echo.NoActive');
@@ -242,6 +264,18 @@ export async function attackFromEcho({item, workflow, meleeOnly = false}, deps =
     {sort: 'alphabetical'}
   );
   if (!selected) return undefined;
+
+  if (checkRange) {
+    const range = attackRange(selected);
+    const outOfRange = Array.from(workflow.targets).some(target => {
+      const distance = deps.echoDistance(echoToken, target);
+      return distance < 0 || distance > range;
+    });
+    if (outOfRange) {
+      deps.notify('GAC.Echo.OutOfRange');
+      return undefined;
+    }
+  }
 
   const effects = [];
   const hookName = `midi-qol.preambleComplete.${selected.uuid}`;
@@ -351,7 +385,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.4',
+  version: '0.1.5',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
   combat: [{pass: 'turnEnd', macro: checkEchoRange, priority: 50}]

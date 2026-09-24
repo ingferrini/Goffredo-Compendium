@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.1.5 - 2026-09-24
+
+- Attack from Echo and Unleash Incarnation now enforce weapon reach (melee) or long range (ranged) from the echo's space, always including height difference. The attack-origin override disables Midi-QOL's own range check, so nothing was checked before. Opportunity attacks from the echo skip the check, since the mover has already left reach.
+
 ## 0.1.4 - 2026-09-24
 
 - Swap Positions, Change Elevation and echo movement rollback now move tokens through Foundry's `TokenDocument#move`; CAT 0.0.8 does not expose `tokenUtils.moveToken`, which made these actions fail.

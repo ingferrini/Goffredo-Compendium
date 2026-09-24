@@ -108,7 +108,9 @@ export function createOpportunityController(deps = defaultDeps) {
       const result = await deps.attackFromEcho({
         item: feature,
         workflow: reactionWorkflow(owner, ownerToken, token),
-        meleeOnly: true
+        meleeOnly: true,
+        // The mover has already left reach when the reaction resolves.
+        checkRange: false
       });
       if (!result) continue;
       await deps.actorUtils.setReactionUsed(owner);

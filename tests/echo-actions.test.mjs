@@ -77,7 +77,7 @@ function actorContext() {
   return {actor, echoActor, echoToken, feature, ownerToken, workflow};
 }
 
-function actionDependencies(context, {selection, distance = 30} = {}) {
+function actionDependencies(context, {selection, distance = 30, echoDistance = 5} = {}) {
   const calls = [];
   const hooks = new Map();
   const effects = [
@@ -108,6 +108,7 @@ function actionDependencies(context, {selection, distance = 30} = {}) {
           calls.push(['dependent', parent, children]);
         }
       },
+      echoDistance: () => echoDistance,
       effectUtils: {
         async createEffects(document, data) {
           const effect = effects[effectIndex++];
@@ -267,4 +268,29 @@ test('action prompts and warnings are localized in both supported languages', as
 
 test('range cleanup runs on the CAT turnEnd combat pass', () => {
   assert.deepEqual(actions.manifestEcho.combat.map(({pass}) => pass), ['turnEnd']);
+});
+
+test('attack from echo stops when the target is beyond reach from the echo, height included', async () => {
+  const context = actorContext();
+  await context.actor.setFlag('goffredo-compendium', 'echo', {tokenUuid: context.echoToken.uuid});
+  const sword = context.actor.items[0];
+  const {calls, deps} = actionDependencies(context, {selection: sword, echoDistance: 10});
+
+  const result = await actions.attackFromEcho({item: context.feature, workflow: context.workflow}, deps);
+
+  assert.equal(result, undefined);
+  assert.ok(calls.some(([type, key]) => type === 'notify' && key === 'GAC.Echo.OutOfRange'));
+  assert.equal(calls.some(([type]) => type === 'effects'), false);
+});
+
+test('attack range uses melee reach or ranged long range', () => {
+  const context = actorContext();
+  const [sword, bow] = context.actor.items;
+  bow.system.activities.get('attack').range = {value: 150, long: 600};
+  sword.system.activities.get('attack').range = {reach: 10};
+
+  assert.equal(actions.attackRange(bow), 600);
+  assert.equal(actions.attackRange(sword), 10);
+  sword.system.activities.get('attack').range = {};
+  assert.equal(actions.attackRange(sword), 5);
 });
