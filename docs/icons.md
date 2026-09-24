@@ -5,9 +5,10 @@ Le icone sono artwork originali generati con l'AI per questo progetto e distribu
 ## Come si aggiunge un'icona
 
 1. Il prompt si scrive con il modello qui sotto e l'immagine si genera (1024x1024 va bene).
-2. Il file va nella cartella `imgs/` del worktree o in quella indicata; il nome non conta.
-3. Viene convertita in WebP 256x256 (circa 5 KB) in `assets/icons/<identifier>.webp` e il documento del pack la richiama con `modules/goffredo-compendium/assets/icons/<identifier>.webp`. I token delle evocazioni perdono lo sfondo nero e diventano trasparenti.
-4. `tests/release.test.mjs` controlla che ogni icona richiamata sia nel pacchetto e che non ci siano immagini inutilizzate.
+2. L'originale va in `art/source/` con il nome `<identifier>.jpg` (per i token `<identifier>-token.jpg`). Gli originali restano nel repo ma non entrano nello zip del modulo.
+3. `python tools/build_icons.py` rigenera `assets/icons/<identifier>.webp` a 256x256 (circa 5 KB); i file `-token` perdono lo sfondo nero e diventano trasparenti.
+4. Il documento del pack richiama `modules/goffredo-compendium/assets/icons/<identifier>.webp`.
+5. `tests/release.test.mjs` controlla che ogni icona richiamata sia nel pacchetto e che non ci siano immagini inutilizzate.
 
 ## Modello di prompt
 
