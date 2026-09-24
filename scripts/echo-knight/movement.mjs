@@ -1,5 +1,6 @@
 import {FLAGS, MODULE_ID} from '../constants.mjs';
 import {dialogUtils, tokenUtils} from '../proxy.mjs';
+import {withMoveToken} from '../token-move.mjs';
 import {movementCost3d} from './rules.mjs';
 import {getEchoState} from './state.mjs';
 
@@ -14,7 +15,7 @@ const defaultDeps = {
   fromUuid: (...args) => globalThis.fromUuid(...args),
   getCombat: token => token.combatant?.combat ?? globalThis.game?.combat,
   notify: key => globalThis.ui?.notifications?.warn(globalThis.game?.i18n?.localize?.(key) ?? key),
-  tokenUtils
+  tokenUtils: withMoveToken(tokenUtils),
 };
 
 function currentUserId(deps) {

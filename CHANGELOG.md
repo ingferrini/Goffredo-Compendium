@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.1.4 - 2026-09-24
+
+- Swap Positions, Change Elevation and echo movement rollback now move tokens through Foundry's `TokenDocument#move`; CAT 0.0.8 does not expose `tokenUtils.moveToken`, which made these actions fail.
+
 ## 0.1.3 - 2026-09-24
 
 - The echo now actually receives its owner's stats (AC 14 + proficiency, 1 HP, size, senses, save bonuses, token art); CAT merges summon updates directly into the actor data and the previous nested shape was ignored.

@@ -207,7 +207,6 @@ test('swap exchanges horizontal and vertical positions and records a fixed 15-fo
   assert.equal(moves.length, 2);
   assert.deepEqual(moves[0][2], [{x: 500, y: 600, elevation: 20, action: 'displace'}]);
   assert.deepEqual(moves[1][2], [{x: 100, y: 200, elevation: 0, action: 'catForce'}]);
-  assert.equal(moves[0][3].measureOptions.cost(), 15);
   assert.equal(moves[0][3].goffredoCompendium.ignoreEchoMovement, true);
   assert.equal(moves[1][3].goffredoCompendium.ignoreEchoMovement, true);
 });

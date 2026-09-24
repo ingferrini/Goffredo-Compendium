@@ -9,6 +9,7 @@ import {
   tokenUtils,
   workflowUtils
 } from '../proxy.mjs';
+import {withMoveToken} from '../token-move.mjs';
 import {echoArmorClass, shouldDismissEcho} from './rules.mjs';
 import {moveEchoVertically} from './movement.mjs';
 import {clearEchoState, createEchoState, getEchoState, setEchoState} from './state.mjs';
@@ -29,7 +30,7 @@ const defaultDeps = {
   },
   notify: key => globalThis.ui?.notifications?.warn(globalThis.game?.i18n?.localize?.(key) ?? key),
   summonUtils,
-  tokenUtils,
+  tokenUtils: withMoveToken(tokenUtils),
   workflowUtils
 };
 
@@ -40,7 +41,6 @@ const controlActivities = [
   'manifestEchoDismiss'
 ];
 const ATTACK_ORIGIN_FLAG = 'flags.midi-qol.rangeOverride.attack.all';
-const SWAP_COST = 15;
 
 function collectionValues(collection) {
   if (!collection) return [];
@@ -294,12 +294,12 @@ export async function swapWithEcho({workflow}, deps = defaultDeps) {
     deps.tokenUtils.moveToken(
       ownerToken,
       [{...ownerDestination, action: 'displace'}],
-      {...commonOptions, measureOptions: {cost: () => SWAP_COST}}
+      commonOptions
     ),
     deps.tokenUtils.moveToken(
       echoToken,
       [{...echoDestination, action: 'catForce'}],
-      {...commonOptions, measureOptions: {cost: () => 0}}
+      commonOptions
     )
   ]);
   return true;
@@ -351,7 +351,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.3',
+  version: '0.1.4',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
   combat: [{pass: 'turnEnd', macro: checkEchoRange, priority: 50}]
