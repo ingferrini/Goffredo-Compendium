@@ -61,7 +61,7 @@ export async function buildRelease({root = new URL('../', import.meta.url), vers
 
   const sourceManifest = JSON.parse(await readFile(path.join(rootPath, 'module.json'), 'utf8'));
   const selectedVersion = normalizedVersion(
-    version ?? process.env.RELEASE_VERSION ?? process.env.GITHUB_REF_NAME,
+    version ?? process.env.RELEASE_VERSION ?? (process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined),
     sourceManifest.version
   );
   const manifest = releaseManifest(sourceManifest, selectedVersion);
