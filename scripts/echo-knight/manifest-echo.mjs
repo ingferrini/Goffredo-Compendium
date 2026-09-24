@@ -10,6 +10,7 @@ import {
   workflowUtils
 } from '../proxy.mjs';
 import {withMoveToken} from '../token-move.mjs';
+import {forceTokenOrigin} from '../shared/foundry.mjs';
 import {echoArmorClass, shouldDismissEcho} from './rules.mjs';
 import {moveEchoVertically} from './movement.mjs';
 import {clearEchoState, createEchoState, getEchoState, setEchoState} from './state.mjs';
@@ -82,17 +83,6 @@ function attackOriginEffect(item) {
     origin: item.uuid,
     duration: {seconds: 1},
     changes: [{key: ATTACK_ORIGIN_FLAG, type: 'custom', value: 1, priority: 20}]
-  };
-}
-
-function forceEchoOrigin(midiWorkflow, echoToken) {
-  midiWorkflow.attackingToken = echoToken.object ?? echoToken;
-  midiWorkflow.tokenId = echoToken.id;
-  midiWorkflow.tokenUuid = echoToken.uuid;
-  midiWorkflow.speaker = {
-    ...midiWorkflow.speaker,
-    scene: echoToken.parent?.id,
-    token: echoToken.id
   };
 }
 
@@ -282,7 +272,7 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
   let hookRan = false;
   const hookId = deps.hooks.once(hookName, midiWorkflow => {
     hookRan = true;
-    forceEchoOrigin(midiWorkflow, echoToken);
+    return forceTokenOrigin(midiWorkflow, echoToken);
   });
 
   try {

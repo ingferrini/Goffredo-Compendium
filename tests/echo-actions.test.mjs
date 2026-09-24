@@ -27,6 +27,21 @@ function item({
   };
 }
 
+// Mirrors Midi 14: attackingToken/tokenUuid are getters, token has a setter.
+function midiWorkflow(initialToken, extra = {}) {
+  const state = {token: initialToken, sightChecks: 0};
+  const workflow = {
+    ...extra,
+    activity: {async setupCanSeeSense({workflow: target}) { if (target === workflow) state.sightChecks += 1; }},
+    get token() { return state.token; },
+    set token(token) { state.token = token; },
+    get attackingToken() { return state.token; },
+    get tokenUuid() { return state.token?.document?.uuid ?? state.token?.uuid; },
+    get sightChecks() { return state.sightChecks; }
+  };
+  return workflow;
+}
+
 function actorContext() {
   const flags = new Map();
   const actor = {
@@ -139,16 +154,10 @@ function actionDependencies(context, {selection, distance = 30, echoDistance = 5
         async syntheticItemRoll(selected, targets) {
           calls.push(['roll', selected, targets]);
           const hookName = `midi-qol.preambleComplete.${selected.uuid}`;
-          const midiWorkflow = {
-            item: selected,
-            tokenId: context.ownerToken.id,
-            tokenUuid: context.ownerToken.uuid,
-            attackingToken: context.ownerToken.object,
-            speaker: {actor: context.actor.id, scene: 'scene', token: context.ownerToken.id}
-          };
-          await hooks.get(hookName)?.(midiWorkflow);
-          calls.push(['origin', midiWorkflow]);
-          return midiWorkflow;
+          const workflow = midiWorkflow(context.ownerToken.object, {item: selected});
+          await hooks.get(hookName)?.(workflow);
+          calls.push(['origin', workflow]);
+          return workflow;
         }
       }
     }
@@ -174,9 +183,7 @@ test('attack selection rolls the original weapon from the echo and always cleans
   const result = await actions.attackFromEcho({item: context.feature, workflow: context.workflow}, deps);
 
   assert.equal(result.attackingToken, context.echoToken.object);
-  assert.equal(result.tokenId, context.echoToken.id);
-  assert.equal(result.tokenUuid, context.echoToken.uuid);
-  assert.equal(result.speaker.token, context.echoToken.id);
+  assert.equal(result.sightChecks, 1);
   assert.deepEqual(calls.find(([type]) => type === 'roll').slice(1), [sword, [...context.workflow.targets]]);
   const createdEffects = calls.filter(([type]) => type === 'effects');
   assert.deepEqual(createdEffects.map(([, document]) => document), [context.actor, context.echoActor]);

@@ -3,6 +3,21 @@ import test from 'node:test';
 
 import * as mind from '../scripts/wizard/manifest-mind.mjs';
 
+// Mirrors Midi 14: attackingToken/tokenUuid are getters, token has a setter.
+function midiWorkflow(initialToken, extra = {}) {
+  const state = {token: initialToken, sightChecks: 0};
+  const workflow = {
+    ...extra,
+    activity: {async setupCanSeeSense({workflow: target}) { if (target === workflow) state.sightChecks += 1; }},
+    get token() { return state.token; },
+    set token(token) { state.token = token; },
+    get attackingToken() { return state.token; },
+    get tokenUuid() { return state.token?.document?.uuid ?? state.token?.uuid; },
+    get sightChecks() { return state.sightChecks; }
+  };
+  return workflow;
+}
+
 function context({armed = false, mindToken = {id: 'mind', uuid: 'Scene.s.Token.mind', parent: {id: 's'}, actor: {uuid: 'Actor.mind'}}} = {}) {
   const calls = [];
   const effects = new Map();
@@ -95,12 +110,16 @@ test('range checks from the mind ignore unarmed casts, reactions and non-wizard 
 
 test('the armed spell originates from the mind and consumes the armed use', async () => {
   const {actor, calls, deps, effects} = context({armed: true});
-  const workflow = {actor, activity: spell(), speaker: {alias: 'Woland'}};
+  const workflow = midiWorkflow({uuid: 'Scene.s.Token.woland'}, {actor});
+  const cast = spell();
+  workflow.activity.item = cast.item;
+  workflow.activity.range = cast.range;
+  workflow.activity.activation = cast.activation;
 
   await mind.castFromMind({workflow}, deps);
 
   assert.equal(workflow.tokenUuid, 'Scene.s.Token.mind');
-  assert.equal(workflow.speaker.token, 'mind');
+  assert.equal(workflow.sightChecks, 1);
   assert.ok(calls.some(([type, document]) => type === 'delete' && document === effects.get('manifestMindCast')));
 });
 

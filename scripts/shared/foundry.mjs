@@ -30,14 +30,12 @@ export function tokenDistance(from, to) {
   });
 }
 
-// Midi reads the attack origin from these workflow fields after the preamble.
-export function forceTokenOrigin(midiWorkflow, originToken) {
-  midiWorkflow.attackingToken = originToken.object ?? originToken;
-  midiWorkflow.tokenId = originToken.id;
-  midiWorkflow.tokenUuid = originToken.uuid;
-  midiWorkflow.speaker = {
-    ...midiWorkflow.speaker,
-    scene: originToken.parent?.id,
-    token: originToken.id
-  };
+// Midi 14 exposes the origin only through the `token` setter (attackingToken and
+// tokenUuid are getters). Re-running setupCanSeeSense recomputes line of sight
+// and cover from the new origin, as Midi does after its own range check.
+export async function forceTokenOrigin(midiWorkflow, originToken) {
+  const token = originToken.object ?? originToken;
+  if (midiWorkflow.token === token) return;
+  midiWorkflow.token = token;
+  await midiWorkflow.activity?.setupCanSeeSense?.({workflow: midiWorkflow});
 }

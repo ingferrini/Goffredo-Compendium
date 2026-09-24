@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.2.3 - 2026-09-24
+
+- Midi-QOL 14 exposes the attack origin only through `workflow.token`; assigning `attackingToken` threw. Spells cast from the spectral mind and attacks from the echo now set the origin through the setter and recompute line of sight and cover from it.
+
 ## 0.2.2 - 2026-09-24
 
 - Manifest Mind: the mind token is recorded on the owner at summon time, so Move and Cast from Mind find it even when CAT's summon registry returns a stale entry without a token. Move uses CAT's exported `displaceToken` with a 30-foot crosshair.

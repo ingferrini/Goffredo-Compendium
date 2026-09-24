@@ -177,7 +177,7 @@ export async function castFromMind({workflow}, deps = defaultDeps) {
   if (!castsFromMind(workflow.activity, workflow.actor, deps)) return undefined;
   const mindToken = await mindTokenFor(workflow.actor, deps);
   const marker = armedFor(workflow.actor, deps);
-  if (mindToken) forceTokenOrigin(workflow, mindToken);
+  if (mindToken) await forceTokenOrigin(workflow, mindToken);
   // One armed use covers exactly one spell.
   await deps.documentUtils.deleteDocument(marker);
   return undefined;
@@ -216,7 +216,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestMind = {
   name: 'Manifest Mind',
-  version: '0.2.2',
+  version: '0.2.3',
   rules: RULESET,
   roll: [
     {pass: 'itemRollFinished', macro: onRollFinished, priority: 50},
