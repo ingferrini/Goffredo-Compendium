@@ -55,6 +55,18 @@ One feature on the actor covers every weapon: melee attacks with a two-handed we
 
 Advantage on attack rolls when the companion named in the feature's **Requirements** field (for example `Jira`) is within 5 feet of every target and isn't incapacitated. Edit the field to bind another companion.
 
+## Reactions
+
+**Game Settings > Goffredo's Automation Compendium > Reactions** lists every reaction with: enabled, prompt timeout in seconds, what happens when time runs out (decline, use automatically, ask the GM), NPC handling (ask the GM, automatic, off) and who receives PC prompts. Prompts use Foundry's own user queries with a visible countdown; the active GM detects the triggers.
+
+- **Opportunity attack** for every combatant when a hostile creature it can see leaves its melee reach (3D, height included); forced movement, teleports and Disengage are excluded. An Echo Knight's echo reacts for its owner with the same single reaction.
+- **Sentinel**: Disengage doesn't protect from the reactor, and a hit stops the mover at the last point inside reach with speed 0 until the end of its turn.
+- **War Caster**: the prompt also offers single-target action spells.
+- **Polearm Master**: a creature entering the reach of a glaive, halberd, pike, quarterstaff or spear.
+- **Vengeful Assault** uses the same timed prompt.
+
+This system depends only on Foundry and Midi-QOL, not on CAT.
+
 ## Campaign items
 
 - **Frammento Runico Instabile**: while equipped and attuned, spells dealing radiant damage deal an extra 1d6 radiant; every third owner turn in combat, and when attunement ends, the owner takes 2d6 psychic damage.

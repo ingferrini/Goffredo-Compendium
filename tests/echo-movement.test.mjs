@@ -228,7 +228,7 @@ test('module lifecycle registers Manifest Echo with CAT and installs movement on
 
     assert.ok(catCalls.some(([type, data]) => type === 'macro' && data.identifier === 'manifest-echo'));
     assert.ok(catCalls.some(([type, data]) => type === 'macro' && data.identifier === 'unleash-incarnation'));
-    assert.equal(movementHooks.filter(([name]) => name === 'preMoveToken').length, 1);
+    // Echo movement budget + the shared reaction engine.
     assert.equal(movementHooks.filter(([name]) => name === 'moveToken').length, 2);
   } finally {
     delete globalThis.Hooks;

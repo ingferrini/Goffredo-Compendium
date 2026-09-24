@@ -1,13 +1,14 @@
 import {RULESET} from '../constants.mjs';
-import {actorUtils, dialogUtils, queryUtils, workflowUtils} from '../proxy.mjs';
-import {collectionValues, isIncapacitated, localize, tokenDistance} from '../shared/foundry.mjs';
+import {distance, hasUsedReaction, rollItem, setReactionUsed} from '../platform/midi.mjs';
+import {requestReaction} from '../reactions/prompt.mjs';
+import {collectionValues, isIncapacitated, localize} from '../shared/foundry.mjs';
 
 const defaultDeps = {
-  actorUtils,
-  dialogUtils,
-  queryUtils,
-  tokenDistance,
-  workflowUtils
+  hasUsedReaction,
+  requestReaction,
+  rollItem,
+  setReactionUsed,
+  tokenDistance: distance
 };
 
 function attackActivity(item) {
@@ -57,7 +58,7 @@ export async function vengefulAssault({document: item, workflow, sourceToken}, d
     .map(token => token.document ?? token)
     .find(token => token.actor?.uuid === actor?.uuid);
   if (!actor || !attacker || !defender || attacker.actor?.uuid === actor.uuid) return undefined;
-  if (usesLeft(item) <= 0 || deps.actorUtils.hasUsedReaction(actor) || isIncapacitated(actor)) return undefined;
+  if (usesLeft(item) <= 0 || deps.hasUsedReaction(actor) || isIncapacitated(actor)) return undefined;
   if (damageTaken(workflow, actor) <= 0) return undefined;
   if ((Number(actor.system?.attributes?.hp?.value) || 0) <= 0) return undefined;
 
@@ -65,23 +66,26 @@ export async function vengefulAssault({document: item, workflow, sourceToken}, d
   const weapons = wieldedWeapons(actor).filter(weapon => distance >= 0 && distance <= weaponReach(weapon));
   if (!weapons.length) return undefined;
 
-  const userId = deps.queryUtils.firstOwner(actor, true);
-  const confirmed = await deps.dialogUtils.confirm(item.name, localize('GAC.VengefulAssault.Prompt'), {userId});
-  if (!confirmed) return undefined;
-  const weapon = weapons.length === 1
-    ? weapons[0]
-    : await deps.dialogUtils.selectDocumentDialog(item.name, localize('GAC.VengefulAssault.ChooseWeapon'), weapons, {userId});
+  // Timeout and fallback come from the Vengeful Assault row of the Reactions panel.
+  const choice = await deps.requestReaction({
+    reactionId: 'vengefulAssault',
+    actor,
+    title: `${actor.name}: ${item.name}`,
+    content: localize('GAC.VengefulAssault.Prompt'),
+    choices: weapons.map(weapon => ({value: weapon.uuid, label: weapon.name}))
+  });
+  const weapon = weapons.find(entry => entry.uuid === choice);
   if (!weapon) return undefined;
 
-  await deps.actorUtils.setReactionUsed(actor);
+  await deps.setReactionUsed(actor);
   await item.update({'system.uses.spent': (Number(item.system?.uses?.spent) || 0) + 1});
-  await deps.workflowUtils.syntheticItemRoll(weapon, [attacker]);
+  await deps.rollItem(weapon, [attacker]);
   return undefined;
 }
 
 export const vengefulAssaultAutomation = {
   name: 'Vengeful Assault',
-  version: '0.2.0',
+  version: '0.4.0',
   rules: RULESET,
   roll: [{pass: 'targetRollFinished', macro: vengefulAssault, priority: 50}]
 };

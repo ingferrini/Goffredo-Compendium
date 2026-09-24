@@ -39,6 +39,60 @@
     },
     "Piuma": {
       "Reason": "Bersaglio malvagio"
+    },
+    "Reactions": {
+      "Menu": {
+        "Name": "Reazioni",
+        "Label": "Configura le reazioni",
+        "Hint": "Attiva ogni reazione, il tempo per rispondere e cosa succede se nessuno risponde.",
+        "Intro": "Ogni reazione viene chiesta al proprietario con un tempo limite. Allo scadere si applica la scelta impostata.",
+        "Save": "Salva"
+      },
+      "Columns": {
+        "Reaction": "Reazione",
+        "Timeout": "Tempo (s)",
+        "OnTimeout": "Allo scadere",
+        "Npc": "PNG",
+        "Audience": "Richiesta PG a"
+      },
+      "OnTimeout": {
+        "decline": "Rinuncia",
+        "accept": "Usa automaticamente",
+        "gm": "Chiedi al GM"
+      },
+      "NpcMode": {
+        "ask": "Chiedi al GM",
+        "auto": "Automatico",
+        "off": "Spento"
+      },
+      "Audience": {
+        "owner": "Giocatore",
+        "ownerAndGm": "Giocatore e GM",
+        "gm": "Solo GM"
+      },
+      "General": {
+        "CombatOnly": "Solo durante un combattimento attivo",
+        "ChatSummary": "Scrivi in chat ogni reazione usata"
+      },
+      "Types": {
+        "opportunityAttack": "Attacco di opportunità",
+        "sentinel": "Sentinel",
+        "warCaster": "War Caster",
+        "polearmMaster": "Polearm Master",
+        "vengefulAssault": "Vengeful Assault"
+      },
+      "Prompt": {
+        "Countdown": "Tempo rimasto:",
+        "Use": "Usa la reazione",
+        "Decline": "Rinuncia",
+        "Spell": "Incantesimo",
+        "FromEcho": "esce dalla portata del tuo eco. Attacchi dall'eco?",
+        "opportunityAttack": "esce dalla tua portata. Attacco di opportunità?",
+        "polearmMaster": "entra nella tua portata. Attacchi con l'arma ad asta?"
+      },
+      "Sentinel": {
+        "Stopped": "Sentinel: velocità 0"
+      }
     }
   }
 }

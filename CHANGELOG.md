@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.0 - 2026-09-24
+
+- Added the Reactions panel: per-reaction enable, timeout, fallback when time runs out, NPC handling and prompt recipients.
+- Added a timed reaction prompt built on Foundry user queries, with a countdown and first-answer-wins across player and GM.
+- Added a CAT-independent movement reaction engine run by the active GM: opportunity attacks for every combatant (echo included, sharing its owner's reaction), Sentinel, War Caster and Polearm Master.
+- NPC reach comes from every melee attack they have, including unequipped natural weapons and attack features; PCs use equipped melee weapons.
+- A prompt that times out (with the Decline fallback) is as if the reaction was never taken: nothing is rolled and the reaction stays available.
+- Vengeful Assault now uses the timed prompt and Midi-QOL directly.
+- Removed the echo-only opportunity attack hooks, replaced by the shared engine.
+
 ## 0.3.3 - 2026-09-24
 
 - Manifest Mind activities (spell-slot manifest, cast, move, dismiss) have their own painterly icons.

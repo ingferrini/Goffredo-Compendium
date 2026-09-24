@@ -1,7 +1,6 @@
 import {MODULE_ID} from './constants.mjs';
 import {destroyEchoAtZeroHp, manifestEcho} from './echo-knight/manifest-echo.mjs';
 import {registerMovementHooks} from './echo-knight/movement.mjs';
-import {registerOpportunityHooks} from './echo-knight/opportunity-attack.mjs';
 import {unleashIncarnation} from './echo-knight/unleash-incarnation.mjs';
 import {greatWeaponFightingAutomation} from './features/great-weapon-fighting.mjs';
 import {packTacticsAutomation} from './features/pack-tactics.mjs';
@@ -10,6 +9,10 @@ import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
 import {api} from './proxy.mjs';
+import {registerReactionSettings} from './reactions/config.mjs';
+import {createReactionsMenuClass} from './reactions/menu.mjs';
+import {registerMovementReactions} from './reactions/movement-engine.mjs';
+import {registerReactionQueries} from './reactions/prompt.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
 
 const automations = [
@@ -25,6 +28,8 @@ const automations = [
 
 Hooks.once('init', () => {
   console.info(`${MODULE_ID} | Initializing`);
+  registerReactionSettings(game.settings, createReactionsMenuClass());
+  registerReactionQueries(globalThis.CONFIG.queries);
 });
 
 Hooks.once('catReady', () => {
@@ -43,7 +48,7 @@ Hooks.once('catReady', () => {
 
 Hooks.once('ready', () => {
   registerMovementHooks();
-  registerOpportunityHooks();
+  registerMovementReactions();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

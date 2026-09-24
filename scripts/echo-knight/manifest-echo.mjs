@@ -230,7 +230,7 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
   return summon;
 }
 
-export async function attackFromEcho({item, workflow, meleeOnly = false, checkRange = true}, deps = defaultDeps) {
+export async function attackFromEcho({item, workflow, meleeOnly = false, checkRange = true, weapon}, deps = defaultDeps) {
   const echoToken = await echoTokenFor(workflow.actor, deps);
   if (!echoToken) {
     deps.notify('GAC.Echo.NoActive');
@@ -247,7 +247,9 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
     deps.notify('GAC.Echo.NoAttack');
     return undefined;
   }
-  const selected = await deps.dialogUtils.selectDocumentDialog(
+  // A reaction prompt may already have chosen the weapon.
+  const chosen = weapon && attacks.find(attack => attack.uuid === weapon.uuid);
+  const selected = chosen ?? await deps.dialogUtils.selectDocumentDialog(
     item.name,
     localize('GAC.Echo.ChooseAttack'),
     attacks,

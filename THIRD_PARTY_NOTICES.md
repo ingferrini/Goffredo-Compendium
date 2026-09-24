@@ -35,7 +35,13 @@ The MIT permission notice and warranty disclaimer are reproduced below as requir
 - Project: https://github.com/chrisk123999/covens-automation-toolkit
 - Package metadata declares the ISC license.
 
-CAT is a required external dependency. No CAT source files are distributed in this module.
+CAT is a required external dependency. No CAT source files are distributed in this module. `rollItem` in `scripts/platform/midi.mjs` adapts the option handling of CAT's `workflowUtils.completeItemUse` (ISC).
+
+## Gambit's Premades
+
+- Project: https://github.com/gambit07/gambits-premades
+
+The Reactions panel (one row per reaction with enable toggle and prompt timeout) follows the settings layout of Gambit's Premades. No Gambit's Premades code is included.
 
 ## Game terminology
 

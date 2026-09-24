@@ -5,14 +5,14 @@ import * as va from '../scripts/species/vengeful-assault.mjs';
 
 function weapon(id, {equipped = true, attackType = 'melee', range = {reach: 5}} = {}) {
   return {
-    id, name: id, type: 'weapon',
+    id, uuid: `Item.${id}`, name: id, type: 'weapon',
     system: {equipped, activities: new Map([['attack', {type: 'attack', attack: {type: {value: attackType}}, range}]])}
   };
 }
 
-function context({spent = 0, reactionUsed = false, hp = 50, damage = 8, distance = 5, weapons, confirm = true} = {}) {
+function context({spent = 0, reactionUsed = false, hp = 50, damage = 8, distance = 5, weapons, answer = 'first'} = {}) {
   const calls = [];
-  const actor = {uuid: 'Actor.korax', system: {attributes: {hp: {value: hp}}}, statuses: new Set(), items: weapons ?? [weapon('greatsword')]};
+  const actor = {uuid: 'Actor.korax', name: 'Korax', system: {attributes: {hp: {value: hp}}}, statuses: new Set(), items: weapons ?? [weapon('greatsword')]};
   const item = {
     name: 'Vengeful Assault', actor,
     system: {uses: {max: 1, spent}},
@@ -22,27 +22,26 @@ function context({spent = 0, reactionUsed = false, hp = 50, damage = 8, distance
   const defender = {uuid: 'Token.korax', actor};
   const workflow = {token: {document: attacker}, damageList: [{actorUuid: actor.uuid, hpDamage: damage, tempDamage: 0}]};
   const deps = {
-    actorUtils: {
-      hasUsedReaction: () => reactionUsed,
-      async setReactionUsed(target) { calls.push(['reaction', target]); }
+    hasUsedReaction: () => reactionUsed,
+    async setReactionUsed(target) { calls.push(['reaction', target]); },
+    async requestReaction(request) {
+      calls.push(['request', request]);
+      return answer === 'first' ? request.choices[0].value : answer;
     },
-    dialogUtils: {
-      async confirm(...args) { calls.push(['confirm', ...args]); return confirm; },
-      async selectDocumentDialog(_title, _content, documents) { calls.push(['select', documents]); return documents[0]; }
-    },
-    queryUtils: {firstOwner: () => 'player'},
-    tokenDistance: () => distance,
-    workflowUtils: {async syntheticItemRoll(item_, targets) { calls.push(['attack', item_, targets]); }}
+    async rollItem(rolled, targets) { calls.push(['attack', rolled, targets]); },
+    tokenDistance: () => distance
   };
   return {actor, attacker, calls, defender, deps, item, workflow};
 }
 
-test('taking damage from a creature in weapon reach offers the reaction and attacks back', async () => {
+test('taking damage from a creature in weapon reach requests the reaction and attacks back', async () => {
   const {actor, attacker, calls, defender, deps, item, workflow} = context();
 
   await va.vengefulAssault({document: item, workflow, sourceToken: defender}, deps);
 
-  assert.equal(calls.find(([type]) => type === 'confirm')[3].userId, 'player');
+  const request = calls.find(([type]) => type === 'request')[1];
+  assert.equal(request.reactionId, 'vengefulAssault');
+  assert.equal(request.actor, actor);
   const attack = calls.find(([type]) => type === 'attack');
   assert.equal(attack[1].id, 'greatsword');
   assert.deepEqual(attack[2], [attacker]);
@@ -50,7 +49,7 @@ test('taking damage from a creature in weapon reach offers the reaction and atta
   assert.deepEqual(calls.find(([type]) => type === 'update')[1], {'system.uses.spent': 1});
 });
 
-test('no prompt without damage, uses, reaction, consciousness, or a weapon in reach', async () => {
+test('no request without damage, uses, reaction, consciousness, or a weapon in reach', async () => {
   for (const options of [{damage: 0}, {spent: 1}, {reactionUsed: true}, {hp: 0}, {distance: 10}]) {
     const {calls, defender, deps, item, workflow} = context(options);
     await va.vengefulAssault({document: item, workflow, sourceToken: defender}, deps);
@@ -58,10 +57,10 @@ test('no prompt without damage, uses, reaction, consciousness, or a weapon in re
   }
 });
 
-test('a declined prompt spends nothing', async () => {
-  const {calls, defender, deps, item, workflow} = context({confirm: false});
+test('a declined or timed out request spends nothing', async () => {
+  const {calls, defender, deps, item, workflow} = context({answer: null});
   await va.vengefulAssault({document: item, workflow, sourceToken: defender}, deps);
-  assert.deepEqual(calls.map(([type]) => type), ['confirm']);
+  assert.deepEqual(calls.map(([type]) => type), ['request']);
 });
 
 test('ranged and reach weapons extend the reaction distance', () => {
@@ -70,10 +69,10 @@ test('ranged and reach weapons extend the reaction distance', () => {
   assert.equal(va.weaponReach(weapon('sword', {range: {}})), 5);
 });
 
-test('with several weapons in reach the owner chooses one', async () => {
+test('every weapon in reach is offered as a choice', async () => {
   const {calls, defender, deps, item, workflow} = context({weapons: [weapon('greatsword'), weapon('dagger')]});
   await va.vengefulAssault({document: item, workflow, sourceToken: defender}, deps);
-  assert.equal(calls.find(([type]) => type === 'select')[1].length, 2);
+  assert.deepEqual(calls.find(([type]) => type === 'request')[1].choices.map(choice => choice.value), ['Item.greatsword', 'Item.dagger']);
 });
 
 test('Vengeful Assault listens on the target side after the roll', () => {

@@ -39,6 +39,60 @@
     },
     "Piuma": {
       "Reason": "Evil target"
+    },
+    "Reactions": {
+      "Menu": {
+        "Name": "Reactions",
+        "Label": "Configure reactions",
+        "Hint": "Enable each reaction, its prompt timeout and what happens when nobody answers.",
+        "Intro": "Each reaction asks its owner through a timed prompt. When time runs out, the chosen fallback applies.",
+        "Save": "Save"
+      },
+      "Columns": {
+        "Reaction": "Reaction",
+        "Timeout": "Timeout (s)",
+        "OnTimeout": "When time runs out",
+        "Npc": "NPCs",
+        "Audience": "PC prompt to"
+      },
+      "OnTimeout": {
+        "decline": "Decline",
+        "accept": "Use automatically",
+        "gm": "Ask the GM"
+      },
+      "NpcMode": {
+        "ask": "Ask the GM",
+        "auto": "Automatic",
+        "off": "Off"
+      },
+      "Audience": {
+        "owner": "Player",
+        "ownerAndGm": "Player and GM",
+        "gm": "GM only"
+      },
+      "General": {
+        "CombatOnly": "Only during an active combat",
+        "ChatSummary": "Post a chat line for each reaction used"
+      },
+      "Types": {
+        "opportunityAttack": "Opportunity attack",
+        "sentinel": "Sentinel",
+        "warCaster": "War Caster",
+        "polearmMaster": "Polearm Master",
+        "vengefulAssault": "Vengeful Assault"
+      },
+      "Prompt": {
+        "Countdown": "Time left:",
+        "Use": "Use reaction",
+        "Decline": "Decline",
+        "Spell": "Spell",
+        "FromEcho": "leaves the reach of your echo. Attack from the echo?",
+        "opportunityAttack": "leaves your reach. Make an opportunity attack?",
+        "polearmMaster": "enters your reach. Attack with your polearm?"
+      },
+      "Sentinel": {
+        "Stopped": "Sentinel: speed 0"
+      }
     }
   }
 }
