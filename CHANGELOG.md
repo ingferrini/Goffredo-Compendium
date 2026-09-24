@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.3.2 - 2026-09-24
+
+- Manifest Echo activities (attack, swap, elevation, dismiss) have their own painterly icons.
+
 ## 0.3.1 - 2026-09-24
 
 - Bundled original painterly icons (256 px WebP, about 5 KB each) for every compendium document, plus a transparent token for the spectral mind. The compendia reference them from the module folder, so nothing needs uploading.

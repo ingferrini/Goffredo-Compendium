@@ -99,7 +99,7 @@
         "_id": "GACEchoAttack001",
         "type": "utility",
         "name": "Attack from Echo / Attacca dall'eco",
-        "img": "icons/skills/melee/strike-weapon-polearm-ice-blue.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-echo-attack.webp",
         "activation": {
           "type": "special",
           "value": null,
@@ -168,7 +168,7 @@
         "_id": "GACEchoSwap00001",
         "type": "utility",
         "name": "Swap Positions / Scambia posizione",
-        "img": "icons/magic/movement/trail-streak-zigzag-yellow.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-echo-swap.webp",
         "activation": {
           "type": "bonus",
           "value": 1,
@@ -236,7 +236,7 @@
         "_id": "GACEchoElev00001",
         "type": "utility",
         "name": "Change Elevation / Cambia quota",
-        "img": "icons/magic/movement/trail-streak-zigzag-blue.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-echo-elevation.webp",
         "activation": {
           "type": "special",
           "value": null,
@@ -304,7 +304,7 @@
         "_id": "GACEchoDismiss01",
         "type": "utility",
         "name": "Dismiss / Congeda",
-        "img": "icons/magic/control/debuff-energy-hold-levitate-blue-yellow.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-echo-dismiss.webp",
         "activation": {
           "type": "bonus",
           "value": 1,

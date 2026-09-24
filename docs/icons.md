@@ -21,6 +21,10 @@ Per i token: `Square 1:1 top-down token image, simple bold shape readable at 64 
 | File | Documento | Soggetto |
 | --- | --- | --- |
 | `manifest-echo.webp` | Manifest Echo, attore GAC - Echo | Translucent grey spectral double of an armoured warrior |
+| `manifest-echo-attack.webp` | Manifest Echo: Attacca dall'eco | Spectral echo lunging with a warhammer strike |
+| `manifest-echo-swap.webp` | Manifest Echo: Scambia posizione | Warrior and echo trading places in an arc of light |
+| `manifest-echo-elevation.webp` | Manifest Echo: Cambia quota | Echo rising with light trails beneath it |
+| `manifest-echo-dismiss.webp` | Manifest Echo: Congeda | Echo dissolving into ash and motes |
 | `unleash-incarnation.webp` | Unleash Incarnation | Warrior and ghostly echo swinging the same warhammer |
 | `manifest-mind.webp` | Manifest Mind, attore GAC - Spectral Mind | Ghostly spellbook dissolving into teal script |
 | `manifest-mind-token.webp` | Token della mente spettrale | Hovering spellbook in a teal halo, transparent |
