@@ -4,31 +4,64 @@ import test from 'node:test';
 import * as usage from '../scripts/reactions/usage.mjs';
 
 function actor({hasPlayerOwner = true} = {}) {
-  const flags = new Map();
+  const effects = new Map();
+  let next = 0;
   return {
-    flags, hasPlayerOwner,
-    getFlag: (_scope, key) => flags.get(key),
-    async setFlag(_scope, key, value) { flags.set(key, value); },
-    async unsetFlag(_scope, key) { flags.delete(key); }
+    hasPlayerOwner,
+    effects,
+    async createEmbeddedDocuments(_type, list) {
+      return list.map(data => {
+        const effect = {id: `e${next += 1}`, disabled: false, ...data};
+        effects.set(effect.id, effect);
+        return effect;
+      });
+    },
+    async deleteEmbeddedDocuments(_type, ids) { ids.forEach(id => effects.delete(id)); }
   };
 }
 
-test('a reaction stays used in the same combat until the actor turn comes back', async () => {
+const values = collection => Array.from(collection.values());
+
+test('using a reaction places a visible marker, and the marker is the reaction state', async () => {
   const ash = actor();
-  const combat = {id: 'c1', round: 2, turn: 3, combatant: {actor: ash}};
-  const midi = () => false;
-  assert.equal(usage.hasUsedReaction(ash, {combat, midi}), false);
+  assert.equal(usage.hasUsedReaction(ash), false);
 
-  await usage.markReactionUsed(ash, {combat, midi: async () => {}});
-  assert.equal(usage.hasUsedReaction(ash, {combat, midi}), true);
-  assert.equal(usage.hasUsedReaction(ash, {combat: {id: 'other'}, midi}), false);
+  await usage.markReactionUsed(ash, {midi: async () => {}});
+  const [marker] = values(ash.effects);
+  assert.equal(marker.img, 'modules/midi-qol/icons/reaction.svg');
+  assert.deepEqual(marker.statuses, ['reaction']);
+  assert.deepEqual(marker.flags.dae.specialDuration, ['turnStart']);
+  assert.equal(usage.hasUsedReaction(ash), true);
 
-  await usage.restoreReaction(combat);
-  assert.equal(usage.hasUsedReaction(ash, {combat, midi}), false);
+  // Deleting the marker by hand gives the reaction back.
+  ash.effects.delete(marker.id);
+  assert.equal(usage.hasUsedReaction(ash), false);
 });
 
-test('Midi reaction state still counts', () => {
-  assert.equal(usage.hasUsedReaction(actor(), {combat: {id: 'c1'}, midi: () => true}), true);
+test('when Midi places its own marker the module adds none', async () => {
+  const korax = actor();
+  await usage.markReactionUsed(korax, {midi: async target => {
+    target.effects.set('dnd5ereaction000', {id: 'dnd5ereaction000', name: 'Reaction used', disabled: false});
+  }});
+  assert.deepEqual(Array.from(korax.effects.keys()), ['dnd5ereaction000']);
+});
+
+test('the module marker is removed when the actor turn starts', async () => {
+  const ash = actor();
+  await usage.markReactionUsed(ash, {midi: async () => {}});
+  ash.effects.set('other', {id: 'other', name: 'Rage', disabled: false});
+  await usage.restoreReaction({combatant: {actor: ash}});
+  assert.deepEqual(Array.from(ash.effects.keys()), ['other']);
+});
+
+test('a visible reaction effect or status counts as used', () => {
+  const withEffect = (name, extra = {}) => ({effects: [{id: 'x', name, disabled: false, ...extra}]});
+  assert.equal(usage.hasUsedReaction(withEffect('Reaction')), true);
+  assert.equal(usage.hasUsedReaction(withEffect('Reazione usata')), true);
+  assert.equal(usage.hasUsedReaction(withEffect('Reactive Strike')), false);
+  assert.equal(usage.hasUsedReaction({effects: [{id: 'dnd5ereaction000', name: 'x'}]}), true);
+  assert.equal(usage.hasUsedReaction({statuses: new Set(['reaction']), effects: []}), true);
+  assert.equal(usage.hasUsedReaction(withEffect('Reaction', {disabled: true})), false);
 });
 
 test('only player characters and publicly named tokens show their names', () => {
@@ -52,13 +85,3 @@ test('the reach grace effect wraps the roll and is removed afterwards, even on f
   assert.deepEqual(deleted, ['e1', 'e1']);
 });
 
-test('a visible reaction effect or status counts as used', () => {
-  const midi = () => false;
-  const withEffect = name => ({...actor(), effects: [{id: 'x', name, disabled: false}]});
-  assert.equal(usage.hasUsedReaction(withEffect('Reaction'), {combat: {id: 'c1'}, midi}), true);
-  assert.equal(usage.hasUsedReaction(withEffect('Reaction used'), {combat: {id: 'c1'}, midi}), true);
-  assert.equal(usage.hasUsedReaction(withEffect('Reactive Strike'), {combat: {id: 'c1'}, midi}), false);
-  assert.equal(usage.hasUsedReaction({...actor(), effects: [{id: 'dnd5ereaction000', name: 'x'}]}, {combat: {id: 'c1'}, midi}), true);
-  assert.equal(usage.hasUsedReaction({...actor(), statuses: new Set(['reaction'])}, {combat: {id: 'c1'}, midi}), true);
-  assert.equal(usage.hasUsedReaction({...actor(), effects: [{id: 'x', name: 'Reaction', disabled: true}]}, {combat: {id: 'c1'}, midi}), false);
-});

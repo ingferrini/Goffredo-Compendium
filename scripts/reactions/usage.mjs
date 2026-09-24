@@ -1,44 +1,60 @@
 import {MODULE_ID} from '../constants.mjs';
-import {hasUsedReaction as midiHasUsedReaction, setReactionUsed as midiSetReactionUsed} from '../platform/midi.mjs';
-import {localize} from '../shared/foundry.mjs';
+import {setReactionUsed as midiSetReactionUsed} from '../platform/midi.mjs';
+import {collectionValues, localize} from '../shared/foundry.mjs';
 
-// The module tracks reactions itself, so it works whatever Midi's
-// "enforce reactions" setting is. A reaction comes back at the start of the
-// actor's own turn.
-const FLAG = 'reactionUsed';
+// A reaction is used exactly while a visible marker sits on the actor: Midi's
+// "Reaction used" effect (its counter lives inside that effect), the
+// module's own marker, a `reaction` status, or a hand-added effect named
+// "Reaction". Deleting the marker gives the reaction back.
+const MARKER_FLAG = 'reactionMarker';
+const MIDI_REACTION_EFFECT = 'dnd5ereaction000';
+const REACTION_EFFECT_NAME = /^(reaction( used)?|reazione( usata)?)$/i;
+const MARKER_ICON = 'modules/midi-qol/icons/reaction.svg';
 const DISPLAY_MODES_VISIBLE_TO_ALL = new Set([30, 50]);
 
-function combatOf(actor) {
-  return globalThis.game?.combats?.find?.(combat => combat.getCombatantsByActor?.(actor)?.length) ?? globalThis.game?.combat;
+function effectsOf(actor) {
+  return collectionValues(actor?.effects);
 }
 
-const MIDI_REACTION_EFFECT = 'dnd5ereaction000';
-const REACTION_EFFECT_NAME = /^reaction( used)?$/i;
+function isOwnMarker(effect) {
+  return Boolean(effect?.flags?.[MODULE_ID]?.[MARKER_FLAG] ?? effect?.getFlag?.(MODULE_ID, MARKER_FLAG));
+}
 
-// Any visible "reaction used" marker counts: Midi's own effect, a status, or a
-// Convenient Effects style "Reaction" effect added by hand.
 export function hasReactionMarker(actor) {
   if (actor?.statuses?.has?.('reaction')) return true;
-  const effects = Array.from(actor?.effects ?? []);
-  return effects.some(effect => !effect.disabled && (
-    effect.id === MIDI_REACTION_EFFECT || REACTION_EFFECT_NAME.test(String(effect.name ?? '').trim())
+  return effectsOf(actor).some(effect => !effect.disabled && (
+    effect.id === MIDI_REACTION_EFFECT
+    || isOwnMarker(effect)
+    || REACTION_EFFECT_NAME.test(String(effect.name ?? '').trim())
   ));
 }
 
-export function hasUsedReaction(actor, {combat = combatOf(actor), midi = midiHasUsedReaction} = {}) {
-  const used = actor?.getFlag?.(MODULE_ID, FLAG);
-  if (used?.combatId && used.combatId === combat?.id) return true;
-  return hasReactionMarker(actor) || Boolean(midi(actor));
+export function hasUsedReaction(actor) {
+  return hasReactionMarker(actor);
 }
 
-export async function markReactionUsed(actor, {combat = combatOf(actor), midi = midiSetReactionUsed} = {}) {
-  if (combat?.id) await actor.setFlag(MODULE_ID, FLAG, {combatId: combat.id, round: combat.round, turn: combat.turn});
+export function reactionMarkerData() {
+  return {
+    name: localize('GAC.Reactions.UsedMarker'),
+    img: MARKER_ICON,
+    statuses: ['reaction'],
+    duration: {value: 1, units: 'rounds'},
+    flags: {[MODULE_ID]: {[MARKER_FLAG]: true}, dae: {specialDuration: ['turnStart']}}
+  };
+}
+
+// Midi places its own marker when its reaction enforcement is on; otherwise the
+// module places one with the same icon.
+export async function markReactionUsed(actor, {midi = midiSetReactionUsed} = {}) {
   await midi(actor);
+  if (hasReactionMarker(actor)) return;
+  await actor.createEmbeddedDocuments('ActiveEffect', [reactionMarkerData()]);
 }
 
 export async function restoreReaction(combat) {
   const actor = combat?.combatant?.actor;
-  if (actor?.getFlag?.(MODULE_ID, FLAG)) await actor.unsetFlag(MODULE_ID, FLAG);
+  const markers = effectsOf(actor).filter(isOwnMarker).map(effect => effect.id);
+  if (markers.length) await actor.deleteEmbeddedDocuments('ActiveEffect', markers);
 }
 
 export function registerReactionUsage(hooks = globalThis.Hooks) {

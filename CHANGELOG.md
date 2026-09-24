@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.3 - 2026-09-24
+
+- The visible marker is now the reaction state. Using a reaction asks Midi to place its "Reaction used" effect; when Midi does not (reaction enforcement off), the module places its own marker with Midi's reaction icon. Deleting any marker gives the reaction back; the module's marker is removed at the start of the actor's turn.
+
 ## 0.4.2 - 2026-09-24
 
 - A reaction also counts as used when the actor shows a reaction marker: Midi's "Reaction used" effect, a `reaction` status, or an enabled effect named "Reaction".

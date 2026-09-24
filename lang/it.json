@@ -94,7 +94,8 @@
         "Stopped": "Sentinel: velocità 0"
       },
       "Anonymous": "una creatura",
-      "ReachGrace": "Portata di reazione"
+      "ReachGrace": "Portata di reazione",
+      "UsedMarker": "Reazione usata"
     }
   }
 }

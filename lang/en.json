@@ -94,7 +94,8 @@
         "Stopped": "Sentinel: speed 0"
       },
       "Anonymous": "a creature",
-      "ReachGrace": "Reaction reach"
+      "ReachGrace": "Reaction reach",
+      "UsedMarker": "Reaction used"
     }
   }
 }
