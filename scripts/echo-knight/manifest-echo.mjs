@@ -131,31 +131,24 @@ export function echoAbilities(ownerAbilities = {}) {
   }));
 }
 
+// CAT merges these updates straight into the source actor data, so they are
+// actor-shaped; the placed token comes from the linked prototype token.
 export function summonUpdates(workflow, name) {
   const actor = workflow.actor;
   const token = workflow.token.document;
   const tokenImage = token.texture?.src ?? actor.prototypeToken?.texture?.src;
   return {
-    actor: {
-      name,
-      system: {
-        abilities: echoAbilities(actor.system.abilities),
-        attributes: {
-          ac: {calc: 'flat', flat: echoArmorClass(actor.system.attributes.prof)},
-          hp: {value: 1, max: 1},
-          senses: actor.system.attributes.senses
-        },
-        traits: {size: actor.system.traits.size}
+    name,
+    system: {
+      abilities: echoAbilities(actor.system.abilities),
+      attributes: {
+        ac: {calc: 'flat', flat: echoArmorClass(actor.system.attributes.prof)},
+        hp: {value: 1, max: 1},
+        senses: actor.system.attributes.senses
       },
-      prototypeToken: {
-        name,
-        width: token.width,
-        height: token.height,
-        sight: actor.prototypeToken.sight,
-        texture: {src: tokenImage}
-      }
+      traits: {size: actor.system.traits.size}
     },
-    token: {
+    prototypeToken: {
       name,
       width: token.width,
       height: token.height,
@@ -207,19 +200,20 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
     return undefined;
   }
 
-  await deps.summonUtils.placeSummons([summon], 15, {token: workflow.token.document});
-  if (!summon.token) {
+  const [placed] = await deps.summonUtils.placeSummons([summon], 15, {token: workflow.token.document}) ?? [];
+  const echoToken = placed ?? summon.token;
+  if (!echoToken) {
     await deps.documentUtils.deleteDocument(marker);
     await clearEchoState(workflow.actor);
     return undefined;
   }
 
-  await summon.token.setFlag(FLAGS.scope, FLAGS.echo, {ownerActorUuid: workflow.actor.uuid});
+  await echoToken.setFlag(FLAGS.scope, FLAGS.echo, {ownerActorUuid: workflow.actor.uuid});
   await setEchoState(workflow.actor, createEchoState({
     ownerActorUuid: workflow.actor.uuid,
     itemUuid: item.uuid,
-    tokenUuid: summon.token.uuid,
-    sceneId: summon.token.parent?.id
+    tokenUuid: echoToken.uuid,
+    sceneId: echoToken.parent?.id
   }));
   return summon;
 }
@@ -276,13 +270,20 @@ export async function swapWithEcho({workflow}, deps = defaultDeps) {
   const ownerToken = workflow.token?.document;
   const echoToken = await echoTokenFor(workflow.actor, deps);
   if (!ownerToken || !echoToken || ownerToken.parent?.id !== echoToken.parent?.id) {
+    console.warn(`${MODULE_ID} | swap: no usable echo`, {
+      state: getEchoState(workflow.actor), ownerToken, echoToken
+    });
     deps.notify('GAC.Echo.NoActive');
     return false;
   }
 
   const ownerDestination = position(echoToken);
   const echoDestination = position(ownerToken);
-  if (!validPosition(ownerDestination) || !validPosition(echoDestination)) return false;
+  if (!validPosition(ownerDestination) || !validPosition(echoDestination)) {
+    console.warn(`${MODULE_ID} | swap: invalid positions`, {ownerDestination, echoDestination});
+    return false;
+  }
+  console.info(`${MODULE_ID} | swap`, {ownerDestination, echoDestination});
 
   const commonOptions = {
     constrainOptions: {ignoreCost: true, ignoreWalls: true},
@@ -331,6 +332,7 @@ export async function checkEchoRange({document: effect, token}, deps = defaultDe
 }
 
 async function onRollFinished({document: item, workflow}) {
+  console.info(`${MODULE_ID} | Manifest Echo activity`, workflow.activity?.identifier);
   switch (workflow.activity.identifier) {
     case 'manifestEcho':
       return summonEcho({item, workflow});
@@ -349,7 +351,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.2',
+  version: '0.1.3',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
   combat: [{pass: 'turnEnd', macro: checkEchoRange, priority: 50}]

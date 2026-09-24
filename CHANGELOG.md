@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.1.3 - 2026-09-24
+
+- The echo now actually receives its owner's stats (AC 14 + proficiency, 1 HP, size, senses, save bonuses, token art); CAT merges summon updates directly into the actor data and the previous nested shape was ignored.
+- Console diagnostics for Manifest Echo activities, swap, elevation and echo movement rollback.
+
 ## 0.1.2 - 2026-09-24
 
 - The echo is now dismissed at the end of its owner's turn when it is more than 30 feet away; the check was hooked to a combat pass CAT never fires. A notification explains the dismissal.

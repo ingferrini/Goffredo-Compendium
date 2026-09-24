@@ -1,4 +1,4 @@
-import {FLAGS} from '../constants.mjs';
+import {FLAGS, MODULE_ID} from '../constants.mjs';
 import {dialogUtils, tokenUtils} from '../proxy.mjs';
 import {movementCost3d} from './rules.mjs';
 import {getEchoState} from './state.mjs';
@@ -105,6 +105,7 @@ export async function handleEchoMovement(token, movement, operation, user, deps 
   const combat = deps.getCombat(token);
   if (!owner || !combat) return 'ignored';
   if (!isOwnerTurn(owner, combat)) {
+    console.info(`${MODULE_ID} | echo move rolled back: not the owner's turn`);
     await rollback(token, movement, deps);
     deps.notify('GAC.Echo.OwnerTurnOnly');
     return 'rolled-back';
@@ -114,6 +115,7 @@ export async function handleEchoMovement(token, movement, operation, user, deps 
   const spent = isCurrentTurn(previous, combat) ? Number(previous.spent) || 0 : 0;
   const projected = spent + echoMovementDistance(movement, token.parent);
   if (projected > MOVEMENT_LIMIT) {
+    console.info(`${MODULE_ID} | echo move rolled back`, {spent, projected});
     await rollback(token, movement, deps);
     deps.notify('GAC.Echo.MovementExceeded');
     return 'rolled-back';
@@ -127,6 +129,7 @@ export async function moveEchoVertically({workflow}, deps = defaultDeps) {
   const state = getEchoState(workflow.actor);
   const echoToken = state?.tokenUuid ? await deps.fromUuid(state.tokenUuid) : undefined;
   if (!echoToken) {
+    console.warn(`${MODULE_ID} | elevation: no usable echo`, {state});
     deps.notify('GAC.Echo.NoActive');
     return false;
   }
@@ -146,6 +149,7 @@ export async function moveEchoVertically({workflow}, deps = defaultDeps) {
       options: {value: current, min: current - remaining, max: current + remaining, step}
     }
   );
+  console.info(`${MODULE_ID} | elevation`, {current, remaining, elevation});
   if (elevation === undefined) return false;
   const destination = Number(elevation);
   if (!Number.isFinite(destination) || Math.abs(destination - current) > remaining) {

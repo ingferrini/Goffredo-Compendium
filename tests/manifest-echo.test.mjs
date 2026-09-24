@@ -101,10 +101,13 @@ test('summon builds a one-hp echo from the current owner and places it within 15
   assert.equal(result.token.uuid, 'Scene.scene.Token.echo');
   const create = calls.find(([type]) => type === 'create')[1];
   assert.equal(create.name, 'Echo of Ash');
-  assert.equal(create.updates.actor.system.attributes.ac.flat, 18);
-  assert.equal(create.updates.actor.system.attributes.hp.value, 1);
-  assert.equal(create.updates.actor.system.traits.size, 'med');
-  assert.equal(create.updates.token.texture.src, 'ash.webp');
+  // CAT merges updates straight into the actor data, so they must be actor-shaped.
+  assert.equal(create.updates.actor, undefined);
+  assert.equal(create.updates.token, undefined);
+  assert.equal(create.updates.system.attributes.ac.flat, 18);
+  assert.equal(create.updates.system.attributes.hp.value, 1);
+  assert.equal(create.updates.system.traits.size, 'med');
+  assert.equal(create.updates.prototypeToken.texture.src, 'ash.webp');
   assert.deepEqual(calls.find(([type]) => type === 'place').slice(1), [15, {token: workflow.token.document}]);
   assert.equal(actor.getFlag('goffredo-compendium', 'echo').tokenUuid, 'Scene.scene.Token.echo');
   assert.equal(result.token.getFlag('goffredo-compendium', 'echo').ownerActorUuid, actor.uuid);
@@ -162,7 +165,7 @@ test('summon copies owner saves and keeps the Echo creature type', async () => {
 
   await summonEcho({item, workflow}, deps);
 
-  const {system} = calls.find(([type]) => type === 'create')[1].updates.actor;
+  const {system} = calls.find(([type]) => type === 'create')[1].updates;
   assert.deepEqual(system.abilities.con, {value: 18, proficient: 0, bonuses: {check: '', save: '4'}});
   assert.equal(system.details, undefined);
 });
