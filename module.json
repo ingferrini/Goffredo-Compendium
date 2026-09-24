@@ -1,0 +1,119 @@
+{
+  "id": "goffredo-compendium",
+  "title": "Goffredo's Automation Compendium",
+  "description": "Bilingual D&D5e 2014 automations for Foundry VTT.",
+  "version": "0.1.0",
+  "library": false,
+  "socket": false,
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14.367",
+    "maximum": "14"
+  },
+  "authors": [
+    {
+      "name": "Goffredo"
+    }
+  ],
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "it",
+      "name": "Italiano",
+      "path": "lang/it.json"
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.3.3",
+          "verified": "5.3.3",
+          "maximum": "5.3.99"
+        }
+      }
+    ],
+    "requires": [
+      {
+        "id": "midi-qol",
+        "type": "module",
+        "compatibility": {
+          "minimum": "14.0.12"
+        }
+      },
+      {
+        "id": "dae",
+        "type": "module",
+        "compatibility": {
+          "minimum": "14.0.14"
+        }
+      },
+      {
+        "id": "cat",
+        "type": "module",
+        "compatibility": {
+          "minimum": "0.0.8"
+        }
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "GACFeatures2014",
+      "label": "GAC Class Features (2014)",
+      "path": "packs/gac-features-2014",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "GACSummons2014",
+      "label": "GAC Summons (2014)",
+      "path": "packs/gac-summons-2014",
+      "type": "Actor",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Goffredo's Automation Compendium",
+      "sorting": "a",
+      "color": "#4b6f87",
+      "folders": [
+        {
+          "name": "2014",
+          "sorting": "a",
+          "color": "#4b6f87",
+          "packs": [
+            "GACFeatures2014",
+            "GACSummons2014"
+          ]
+        }
+      ]
+    }
+  ],
+  "url": "https://github.com/ingferrini/Goffredo-Compendium",
+  "manifest": "https://github.com/ingferrini/Goffredo-Compendium/releases/latest/download/module.json",
+  "download": "https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.1.0/goffredo-compendium.zip",
+  "license": "LICENSE",
+  "readme": "README.md"
+}
+

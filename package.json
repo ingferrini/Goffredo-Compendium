@@ -1,0 +1,28 @@
+{
+  "name": "goffredo-compendium",
+  "version": "0.1.0",
+  "description": "Bilingual D&D5e automation compendia for Foundry VTT.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint .",
+    "build:packs": "node tools/build-packs.mjs",
+    "build:release": "node tools/build-release.mjs",
+    "check": "npm run lint && npm test && npm run build:packs && npm run build:release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ingferrini/Goffredo-Compendium.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@foundryvtt/foundryvtt-cli": "^1.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^10.11.0"
+  }
+}
