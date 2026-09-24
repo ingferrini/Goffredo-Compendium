@@ -1,0 +1,59 @@
+{
+  "name": "Pack Tactics (Companion)",
+  "type": "feat",
+  "img": "icons/creatures/mammals/wolf-howl-moon-gray.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> you have advantage on an attack roll against a creature when the companion named in <em>Requirements</em> is within 5 feet of it and isn't incapacitated.</p><p><strong>Riassunto operativo:</strong> hai vantaggio al tiro per colpire contro una creatura quando il compagno indicato in <em>Requisiti</em> si trova entro 1,5 m da essa e non è incapacitato.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "",
+      "recovery": []
+    },
+    "type": {
+      "value": "",
+      "subtype": ""
+    },
+    "requirements": "Jira",
+    "properties": [],
+    "prerequisites": {
+      "level": null,
+      "items": [],
+      "repeatable": false
+    },
+    "activities": {},
+    "identifier": "pack-tactics-companion",
+    "enchant": {},
+    "advancement": [],
+    "crewed": false
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "pack-tactics-companion"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACPackTactics01",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACPackTactics01"
+}

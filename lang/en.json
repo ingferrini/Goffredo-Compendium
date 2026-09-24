@@ -19,6 +19,26 @@
     "Compatibility": {
       "Title": "Goffredo's Automation Compendium",
       "Missing": "Required automation modules are missing or incompatible: {modules}."
+    },
+    "Mind": {
+      "Name": "Spectral Mind of {name}",
+      "NoActive": "No manifested spectral mind was found.",
+      "OutOfRange": "A target is out of range from the spectral mind.",
+      "TooFar": "The spectral mind vanished because it ended the turn more than 300 feet away.",
+      "CastLabel": "Cast from Mind"
+    },
+    "VengefulAssault": {
+      "Prompt": "You were damaged by a creature in reach. Use your reaction for Vengeful Assault?",
+      "ChooseWeapon": "Choose the weapon for the attack."
+    },
+    "PackTactics": {
+      "Reason": "Companion within 5 feet of the target"
+    },
+    "Frammento": {
+      "Backlash": "psychic backlash"
+    },
+    "Piuma": {
+      "Reason": "Evil target"
     }
   }
 }

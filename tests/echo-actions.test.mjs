@@ -266,8 +266,8 @@ test('action prompts and warnings are localized in both supported languages', as
   }
 });
 
-test('range cleanup runs on the CAT turnEnd combat pass', () => {
-  assert.deepEqual(actions.manifestEcho.combat.map(({pass}) => pass), ['turnEnd']);
+test('range cleanup runs on the CAT actorTurnEnd pass (CAT prefixes the owner scope)', () => {
+  assert.deepEqual(actions.manifestEcho.combat.map(({pass}) => pass), ['actorTurnEnd']);
 });
 
 test('attack from echo stops when the target is beyond reach from the echo, height included', async () => {

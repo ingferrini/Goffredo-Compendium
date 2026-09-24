@@ -19,6 +19,26 @@
     "Compatibility": {
       "Title": "Compendio di Automazioni di Goffredo",
       "Missing": "Mancano moduli di automazione richiesti o compatibili: {modules}."
+    },
+    "Mind": {
+      "Name": "Mente spettrale di {name}",
+      "NoActive": "Non è stata trovata alcuna mente spettrale evocata.",
+      "OutOfRange": "Un bersaglio è fuori portata dalla mente spettrale.",
+      "TooFar": "La mente spettrale è svanita perché ha terminato il turno a più di 90 metri.",
+      "CastLabel": "Lancia dalla mente"
+    },
+    "VengefulAssault": {
+      "Prompt": "Una creatura in portata ti ha ferito. Vuoi usare la reazione per Vengeful Assault?",
+      "ChooseWeapon": "Scegli l'arma per l'attacco."
+    },
+    "PackTactics": {
+      "Reason": "Compagno entro 1,5 m dal bersaglio"
+    },
+    "Frammento": {
+      "Backlash": "contraccolpo psichico"
+    },
+    "Piuma": {
+      "Reason": "Bersaglio malvagio"
     }
   }
 }

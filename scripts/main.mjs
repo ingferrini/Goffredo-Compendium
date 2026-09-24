@@ -3,12 +3,22 @@ import {destroyEchoAtZeroHp, manifestEcho} from './echo-knight/manifest-echo.mjs
 import {registerMovementHooks} from './echo-knight/movement.mjs';
 import {registerOpportunityHooks} from './echo-knight/opportunity-attack.mjs';
 import {unleashIncarnation} from './echo-knight/unleash-incarnation.mjs';
+import {packTacticsAutomation} from './features/pack-tactics.mjs';
+import {frammentoRunico, unattuneBacklash} from './items/frammento-runico.mjs';
+import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
+import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
+import {manifestMind} from './wizard/manifest-mind.mjs';
 import {api} from './proxy.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
 
 const automations = [
   ['manifest-echo', manifestEcho],
-  ['unleash-incarnation', unleashIncarnation]
+  ['unleash-incarnation', unleashIncarnation],
+  ['manifest-mind', manifestMind],
+  ['vengeful-assault', vengefulAssaultAutomation],
+  ['pack-tactics-companion', packTacticsAutomation],
+  ['frammento-runico-instabile', frammentoRunico],
+  ['piuma-regina-corvo', piumaReginaCorvo]
 ];
 
 Hooks.once('init', () => {
@@ -34,5 +44,8 @@ Hooks.once('ready', () => {
   registerOpportunityHooks();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
+  });
+  Hooks.on('updateItem', (item, changes) => {
+    if (game.user.isActiveGM) void unattuneBacklash(item, changes);
   });
 });

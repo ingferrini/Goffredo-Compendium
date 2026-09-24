@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 0.2.0 - 2026-09-24
+
+- Added Manifest Mind (Order of Scribes): spectral mind summon with a Tiny hovering token, 60 ft darkvision and 10 ft dim light; cast wizard spells from the mind with range checked before any slot is spent; move, dismiss, re-manifest with a spell slot, and removal beyond 300 ft.
+- Added Vengeful Assault: reaction attack prompt when damaged by a creature within weapon reach.
+- Added Pack Tactics (Companion): advantage when the named companion is adjacent to the target.
+- Added the GAC Equipment (2014) compendium with Frammento Runico Instabile and Piuma Metallica della Regina Corvo.
+- Fixed echo end-of-turn removal: CAT prefixes combat passes with the owner scope, so the pass is `actorTurnEnd` again.
+
 ## 0.1.5 - 2026-09-24
 
 - Attack from Echo and Unleash Incarnation now enforce weapon reach (melee) or long range (ranged) from the echo's space, always including height difference. The attack-origin override disables Midi-QOL's own range check, so nothing was checked before. Opportunity attacks from the echo skip the check, since the mover has already left reach.

@@ -8,7 +8,7 @@ test('module manifest declares the supported Foundry stack and public packs', as
   const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'));
 
   assert.equal(manifest.id, 'goffredo-compendium');
-  assert.equal(manifest.version, '0.1.5');
+  assert.equal(manifest.version, '0.2.0');
   assert.deepEqual(manifest.compatibility, {
     minimum: '14',
     verified: '14.367',
@@ -33,7 +33,8 @@ test('module manifest declares the supported Foundry stack and public packs', as
     manifest.packs.map(pack => [pack.name, pack.type, pack.system]),
     [
       ['GACFeatures2014', 'Item', 'dnd5e'],
-      ['GACSummons2014', 'Actor', 'dnd5e']
+      ['GACSummons2014', 'Actor', 'dnd5e'],
+      ['GACEquipment2014', 'Item', 'dnd5e']
     ]
   );
   assert.deepEqual(manifest.languages.map(language => language.lang).sort(), ['en', 'it']);
@@ -44,6 +45,6 @@ test('module manifest declares the supported Foundry stack and public packs', as
   );
   assert.equal(
     manifest.download,
-    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.1.5/goffredo-compendium.zip'
+    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.2.0/goffredo-compendium.zip'
   );
 });

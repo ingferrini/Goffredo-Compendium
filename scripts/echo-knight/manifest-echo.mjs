@@ -385,8 +385,8 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.5',
+  version: '0.2.0',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
-  combat: [{pass: 'turnEnd', macro: checkEchoRange, priority: 50}]
+  combat: [{pass: 'actorTurnEnd', macro: checkEchoRange, priority: 50}]
 };

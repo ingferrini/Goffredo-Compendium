@@ -32,6 +32,7 @@ test('release archive contains the installable module and excludes development s
 
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-features-2014/')));
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-summons-2014/')));
+  assert.ok(entries.some(entry => entry.startsWith('packs/gac-equipment-2014/')));
   assert.equal(entries.some(entry => /\/(?:LOCK|LOG|[^/]+\.log)$/.test(entry)), false);
   for (const forbidden of ['node_modules/', 'packData/', 'tests/', 'docs/', '.git/', '.github/']) {
     assert.equal(entries.some(entry => entry.startsWith(forbidden)), false, `${forbidden} must be excluded`);
@@ -57,12 +58,14 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
   const imageEntries = Object.keys(archive).filter(entry => /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(entry));
   assert.deepEqual(imageEntries, []);
 
-  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json'];
+  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json'];
   for (const filename of featureSources) {
     const document = JSON.parse(await readFile(new URL(`packData/gac-features-2014/${filename}`, root), 'utf8'));
     assert.match(document.system.description.value, /Operational summary/i);
     assert.doesNotMatch(document.system.description.value, /magically manifest an echo of yourself/i);
     assert.doesNotMatch(document.system.description.value, /heightened state of fury/i);
+    assert.doesNotMatch(document.system.description.value, /conjure forth the mind of your Awakened Spellbook/i);
+    assert.doesNotMatch(document.system.description.value, /you can use your reaction to make an attack with the weapon against that creature/i);
     assert.equal(document.system.description.chat, '');
   }
 });

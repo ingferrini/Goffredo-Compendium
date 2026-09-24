@@ -1,0 +1,64 @@
+{
+  "name": "Vengeful Assault",
+  "type": "feat",
+  "img": "icons/skills/melee/strike-slashes-orange.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> when a creature within reach of a weapon you wield damages you, you are asked whether to spend your reaction to attack it with that weapon. Once per short or long rest.</p><p><strong>Riassunto operativo:</strong> quando una creatura entro la portata di un'arma che impugni ti infligge danni, ti viene chiesto se usare la reazione per attaccarla con quell'arma. Una volta per riposo breve o lungo.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "1",
+      "recovery": [
+        {
+          "period": "sr",
+          "type": "recoverAll"
+        }
+      ]
+    },
+    "type": {
+      "value": "race",
+      "subtype": ""
+    },
+    "requirements": "Ravenite Dragonborn",
+    "properties": [],
+    "prerequisites": {
+      "level": null,
+      "items": [],
+      "repeatable": false
+    },
+    "activities": {},
+    "identifier": "vengeful-assault",
+    "enchant": {},
+    "advancement": [],
+    "crewed": false
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "vengeful-assault"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACVengefulAslt1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACVengefulAslt1"
+}

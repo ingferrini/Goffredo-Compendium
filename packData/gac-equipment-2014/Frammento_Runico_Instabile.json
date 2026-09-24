@@ -1,0 +1,78 @@
+{
+  "name": "Frammento Runico Instabile",
+  "type": "equipment",
+  "img": "icons/commodities/gems/gem-rough-cushion-blue.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Riassunto operativo:</strong> finché è in sintonia ed equipaggiato come focus, gli incantesimi che infliggono danni radianti infliggono 1d6 radianti aggiuntivi. Ogni 3 turni del portatore in combattimento, e quando la sintonia termina, il portatore subisce 2d6 danni psichici.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Wildemount homebrew",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "quantity": 1,
+    "weight": {
+      "value": 0,
+      "units": "kg"
+    },
+    "price": {
+      "value": 0,
+      "denomination": "gp"
+    },
+    "equipped": false,
+    "rarity": "rare",
+    "identified": true,
+    "attunement": "required",
+    "attuned": false,
+    "armor": {
+      "value": 0,
+      "dex": null
+    },
+    "uses": {
+      "spent": 0,
+      "max": "",
+      "recovery": []
+    },
+    "type": {
+      "value": "trinket",
+      "baseItem": ""
+    },
+    "properties": [
+      "foc",
+      "mgc"
+    ],
+    "identifier": "frammento-runico-instabile",
+    "activities": {}
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "frammento-runico-instabile"
+          }
+        ],
+        "combat": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "frammento-runico-instabile"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACFrammentoRun1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACFrammentoRun1"
+}
