@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFile, rm} from 'node:fs/promises';
+import {readdir, readFile, rm} from 'node:fs/promises';
 import test from 'node:test';
 import {TextDecoder} from 'node:util';
 
@@ -55,8 +55,24 @@ test('release manifest matches the archived manifest and has stable public URLs'
 test('release contains no undeclared artwork or copied rules descriptions', async () => {
   await buildRelease({root});
   const archive = unzipSync(new Uint8Array(await readFile(new URL('dist/goffredo-compendium.zip', root))));
+  // Bundled artwork lives only in assets/icons and every bundled icon is used.
   const imageEntries = Object.keys(archive).filter(entry => /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(entry));
-  assert.deepEqual(imageEntries, []);
+  assert.ok(imageEntries.every(entry => entry.startsWith('assets/icons/')), imageEntries.join(', '));
+
+  const moduleIcon = /^modules\/goffredo-compendium\/(assets\/icons\/[^"]+)$/;
+  const referenced = new Set();
+  for (const pack of ['gac-features-2014', 'gac-summons-2014', 'gac-equipment-2014']) {
+    for (const filename of await readdir(new URL(`packData/${pack}/`, root))) {
+      const source = await readFile(new URL(`packData/${pack}/${filename}`, root), 'utf8');
+      for (const [, path] of source.matchAll(/"(modules\/goffredo-compendium\/[^"]+)"/g)) {
+        const match = path.match(moduleIcon);
+        assert.ok(match, `${filename} references ${path} outside assets/icons`);
+        referenced.add(match[1]);
+      }
+    }
+  }
+  for (const icon of referenced) assert.ok(archive[icon], `${icon} is referenced but not bundled`);
+  assert.deepEqual(imageEntries.filter(entry => !referenced.has(entry)), []);
 
   const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json', 'Great_Weapon_Fighting.json'];
   for (const filename of featureSources) {

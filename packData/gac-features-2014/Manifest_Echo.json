@@ -1,7 +1,7 @@
 {
   "name": "Manifest Echo",
   "type": "feat",
-  "img": "icons/magic/control/silhouette-hold-beam-blue.webp",
+  "img": "modules/goffredo-compendium/assets/icons/manifest-echo.webp",
   "system": {
     "description": {
       "value": "<p><strong>Operational summary:</strong> create and control a linked echo within 15 feet. Use the activities below to attack from it, exchange positions, or dismiss it. The echo is removed if it ends your turn more than 30 feet away.</p><p><strong>Riassunto operativo:</strong> crea e controlla un eco collegato entro 15 piedi. Usa le attività qui sotto per attaccare dalla sua posizione, scambiare le posizioni o congedarlo. L'eco scompare se termina il tuo turno a più di 30 piedi.</p>",
@@ -33,85 +33,340 @@
         "_id": "GACManifestUse01",
         "type": "utility",
         "name": "Manifest / Evoca",
-        "img": "icons/magic/control/silhouette-hold-beam-blue.webp",
-        "activation": {"type": "bonus", "value": 1, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Manifest Echo / Evoca Eco"},
-        "duration": {"concentration": false, "value": "", "units": "inst", "special": "", "override": false},
+        "img": "modules/goffredo-compendium/assets/icons/manifest-echo.webp",
+        "activation": {
+          "type": "bonus",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Manifest Echo / Evoca Eco"
+        },
+        "duration": {
+          "concentration": false,
+          "value": "",
+          "units": "inst",
+          "special": "",
+          "override": false
+        },
         "effects": [],
-        "range": {"value": "15", "units": "ft", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"choice": false, "type": ""}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "manifestEcho", "displayActivityName": true, "confirmTargets": "never"}
+        "range": {
+          "value": "15",
+          "units": "ft",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "choice": false,
+            "type": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "manifestEcho",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        }
       },
       "GACEchoAttack001": {
         "_id": "GACEchoAttack001",
         "type": "utility",
         "name": "Attack from Echo / Attacca dall'eco",
         "img": "icons/skills/melee/strike-weapon-polearm-ice-blue.webp",
-        "activation": {"type": "special", "value": null, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Attack from Echo / Attacca dall'eco"},
-        "duration": {"concentration": false, "units": "inst", "override": false},
+        "activation": {
+          "type": "special",
+          "value": null,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Attack from Echo / Attacca dall'eco"
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
         "effects": [],
-        "range": {"units": "self", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"count": "1", "choice": false, "type": "creature"}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "manifestEchoAttack", "displayActivityName": true, "confirmTargets": "always"},
-        "flags": {"cat": {"hidden": true}}
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1",
+            "choice": false,
+            "type": "creature"
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "manifestEchoAttack",
+          "displayActivityName": true,
+          "confirmTargets": "always"
+        },
+        "flags": {
+          "cat": {
+            "hidden": true
+          }
+        }
       },
       "GACEchoSwap00001": {
         "_id": "GACEchoSwap00001",
         "type": "utility",
         "name": "Swap Positions / Scambia posizione",
         "img": "icons/magic/movement/trail-streak-zigzag-yellow.webp",
-        "activation": {"type": "bonus", "value": 1, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Swap Positions / Scambia posizione"},
-        "duration": {"concentration": false, "units": "inst", "override": false},
+        "activation": {
+          "type": "bonus",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Swap Positions / Scambia posizione"
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
         "effects": [],
-        "range": {"units": "self", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"choice": false, "type": ""}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "manifestEchoSwap", "displayActivityName": true, "confirmTargets": "never"},
-        "flags": {"cat": {"hidden": true}}
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "choice": false,
+            "type": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "manifestEchoSwap",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        },
+        "flags": {
+          "cat": {
+            "hidden": true
+          }
+        }
       },
       "GACEchoElev00001": {
         "_id": "GACEchoElev00001",
         "type": "utility",
         "name": "Change Elevation / Cambia quota",
         "img": "icons/magic/movement/trail-streak-zigzag-blue.webp",
-        "activation": {"type": "special", "value": null, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Change Echo Elevation / Cambia quota dell'eco"},
-        "duration": {"concentration": false, "units": "inst", "override": false},
+        "activation": {
+          "type": "special",
+          "value": null,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Change Echo Elevation / Cambia quota dell'eco"
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
         "effects": [],
-        "range": {"units": "self", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"choice": false, "type": ""}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "manifestEchoElevation", "displayActivityName": true, "confirmTargets": "never"},
-        "flags": {"cat": {"hidden": true}}
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "choice": false,
+            "type": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "manifestEchoElevation",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        },
+        "flags": {
+          "cat": {
+            "hidden": true
+          }
+        }
       },
       "GACEchoDismiss01": {
         "_id": "GACEchoDismiss01",
         "type": "utility",
         "name": "Dismiss / Congeda",
         "img": "icons/magic/control/debuff-energy-hold-levitate-blue-yellow.webp",
-        "activation": {"type": "bonus", "value": 1, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Dismiss Echo / Congeda Eco"},
-        "duration": {"concentration": false, "units": "inst", "override": false},
+        "activation": {
+          "type": "bonus",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Dismiss Echo / Congeda Eco"
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
         "effects": [],
-        "range": {"units": "self", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"choice": false, "type": ""}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "manifestEchoDismiss", "displayActivityName": true, "confirmTargets": "never"},
-        "flags": {"cat": {"hidden": true}}
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "choice": false,
+            "type": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "manifestEchoDismiss",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        },
+        "flags": {
+          "cat": {
+            "hidden": true
+          }
+        }
       }
     },
     "identifier": "manifest-echo",
@@ -123,7 +378,11 @@
     "cat": {
       "macros": {
         "roll": [
-          {"source": "goffredo-compendium", "rules": "2014", "identifier": "manifest-echo"}
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "manifest-echo"
+          }
         ]
       }
     }
@@ -131,6 +390,10 @@
   "effects": [],
   "folder": null,
   "_id": "GACManifestEcho1",
-  "_stats": {"coreVersion": "14.367", "systemId": "dnd5e", "systemVersion": "5.3.3"},
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
   "_key": "!items!GACManifestEcho1"
 }

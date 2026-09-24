@@ -1,7 +1,7 @@
 {
   "name": "Manifest Mind",
   "type": "feat",
-  "img": "icons/magic/perception/eye-ringed-glow-angry-small-teal.webp",
+  "img": "modules/goffredo-compendium/assets/icons/manifest-mind.webp",
   "system": {
     "description": {
       "value": "<p><strong>Operational summary:</strong> conjure a spectral mind within 60 feet (once per long rest, or by spending a spell slot). Use <em>Cast from Mind</em>, then cast a wizard spell on your turn: range and line of sight are measured from the mind. Move it up to 30 feet or dismiss it with a bonus action; it vanishes if it ends your turn more than 300 feet away.</p><p><strong>Riassunto operativo:</strong> evoca una mente spettrale entro 18 m (una volta per riposo lungo, oppure spendendo uno slot). Usa <em>Lancia dalla mente</em>, poi lancia un incantesimo da mago nel tuo turno: portata e linea di vista si misurano dalla mente. Spostala fino a 9 m o congedala con un'azione bonus; scompare se termina il tuo turno a più di 90 m.</p>",
@@ -38,7 +38,7 @@
         "_id": "GACMindSummon001",
         "type": "utility",
         "name": "Manifest / Evoca",
-        "img": "icons/magic/perception/eye-ringed-glow-angry-small-teal.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind.webp",
         "activation": {
           "type": "bonus",
           "value": 1,
@@ -109,7 +109,7 @@
         "_id": "GACMindSlot00001",
         "type": "utility",
         "name": "Manifest with a spell slot / Evoca con uno slot",
-        "img": "icons/magic/perception/eye-ringed-glow-angry-small-teal.webp",
+        "img": "modules/goffredo-compendium/assets/icons/manifest-mind.webp",
         "activation": {
           "type": "bonus",
           "value": 1,

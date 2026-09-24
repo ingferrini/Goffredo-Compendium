@@ -1,34 +1,102 @@
 {
   "name": "Unleash Incarnation",
   "type": "feat",
-  "img": "icons/skills/melee/strike-weapon-polearm-ice-blue.webp",
+  "img": "modules/goffredo-compendium/assets/icons/unleash-incarnation.webp",
   "system": {
     "description": {
       "value": "<p><strong>Operational summary:</strong> after choosing a target and a melee attack, make one additional attack from the active echo and spend one use.</p><p><strong>Riassunto operativo:</strong> dopo aver scelto un bersaglio e un attacco da mischia, effettua un attacco aggiuntivo dall'eco attivo e consuma un utilizzo.</p>",
       "chat": ""
     },
-    "source": {"custom": "Echo Knight automation", "revision": 1, "rules": "2014"},
-    "uses": {"spent": 0, "max": "@abilities.con.mod", "recovery": [{"period": "lr", "type": "recoverAll"}]},
-    "type": {"value": "class", "subtype": ""},
+    "source": {
+      "custom": "Echo Knight automation",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "@abilities.con.mod",
+      "recovery": [
+        {
+          "period": "lr",
+          "type": "recoverAll"
+        }
+      ]
+    },
+    "type": {
+      "value": "class",
+      "subtype": ""
+    },
     "requirements": "Echo Knight 3",
     "properties": [],
-    "prerequisites": {"level": 3, "items": [], "repeatable": false},
+    "prerequisites": {
+      "level": 3,
+      "items": [],
+      "repeatable": false
+    },
     "activities": {
       "GACUnleashUse001": {
         "_id": "GACUnleashUse001",
         "type": "utility",
         "name": "Unleash Incarnation",
-        "img": "icons/skills/melee/strike-weapon-polearm-ice-blue.webp",
-        "activation": {"type": "special", "value": null, "condition": "", "override": false},
-        "consumption": {"targets": [], "scaling": {"allowed": false, "max": ""}, "spellSlot": true},
-        "description": {"chatFlavor": "Unleash Incarnation"},
-        "duration": {"concentration": false, "units": "inst", "override": false},
+        "img": "modules/goffredo-compendium/assets/icons/unleash-incarnation.webp",
+        "activation": {
+          "type": "special",
+          "value": null,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": "Unleash Incarnation"
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
         "effects": [],
-        "range": {"units": "self", "special": "", "override": false},
-        "target": {"template": {"contiguous": false, "type": "", "units": "ft"}, "affects": {"count": "1", "choice": false, "type": "creature"}, "prompt": true, "override": false},
-        "uses": {"spent": 0, "max": "", "recovery": []},
-        "roll": {"formula": "", "name": "", "prompt": false, "visible": false},
-        "midiProperties": {"identifier": "unleashIncarnation", "displayActivityName": true, "confirmTargets": "always"}
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "contiguous": false,
+            "type": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1",
+            "choice": false,
+            "type": "creature"
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "roll": {
+          "formula": "",
+          "name": "",
+          "prompt": false,
+          "visible": false
+        },
+        "midiProperties": {
+          "identifier": "unleashIncarnation",
+          "displayActivityName": true,
+          "confirmTargets": "always"
+        }
       }
     },
     "identifier": "unleash-incarnation",
@@ -40,7 +108,11 @@
     "cat": {
       "macros": {
         "roll": [
-          {"source": "goffredo-compendium", "rules": "2014", "identifier": "unleash-incarnation"}
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "unleash-incarnation"
+          }
         ]
       }
     }
@@ -48,6 +120,10 @@
   "effects": [],
   "folder": null,
   "_id": "GACUnleashInc001",
-  "_stats": {"coreVersion": "14.367", "systemId": "dnd5e", "systemVersion": "5.3.3"},
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
   "_key": "!items!GACUnleashInc001"
 }

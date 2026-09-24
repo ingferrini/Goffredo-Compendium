@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.3.1 - 2026-09-24
+
+- Bundled original painterly icons (256 px WebP, about 5 KB each) for every compendium document, plus a transparent token for the spectral mind. The compendia reference them from the module folder, so nothing needs uploading.
+
 ## 0.3.0 - 2026-09-24
 
 - Added Great Weapon Fighting (2014): one feature on the actor rerolls 1s and 2s once on the damage dice of every melee attack with a two-handed weapon, or a versatile weapon in the two-handed attack mode. Dice that already carry a reroll are left alone.

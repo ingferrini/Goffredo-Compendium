@@ -1,7 +1,7 @@
 {
   "name": "Piuma Metallica della Regina Corvo",
   "type": "consumable",
-  "img": "icons/commodities/materials/feather-blue-grey.webp",
+  "img": "modules/goffredo-compendium/assets/icons/piuma-regina-corvo.webp",
   "system": {
     "description": {
       "value": "<p><strong>Riassunto operativo:</strong> azione bonus, una volta al giorno: fino alla fine del turno hai vantaggio ai tiri per colpire contro creature malvagie.</p>",
@@ -50,7 +50,7 @@
         "_id": "GACPiumaUse00001",
         "type": "utility",
         "name": "Piuma della Regina Corvo",
-        "img": "icons/commodities/materials/feather-blue-grey.webp",
+        "img": "modules/goffredo-compendium/assets/icons/piuma-regina-corvo.webp",
         "activation": {
           "type": "bonus",
           "value": 1,

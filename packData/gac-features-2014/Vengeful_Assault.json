@@ -1,7 +1,7 @@
 {
   "name": "Vengeful Assault",
   "type": "feat",
-  "img": "icons/skills/melee/strike-slashes-orange.webp",
+  "img": "modules/goffredo-compendium/assets/icons/vengeful-assault.webp",
   "system": {
     "description": {
       "value": "<p><strong>Operational summary:</strong> when a creature within reach of a weapon you wield damages you, you are asked whether to spend your reaction to attack it with that weapon. Once per short or long rest.</p><p><strong>Riassunto operativo:</strong> quando una creatura entro la portata di un'arma che impugni ti infligge danni, ti viene chiesto se usare la reazione per attaccarla con quell'arma. Una volta per riposo breve o lungo.</p>",

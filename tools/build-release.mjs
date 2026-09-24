@@ -15,6 +15,7 @@ const RELEASE_PATHS = [
   'CHANGELOG.md',
   'LICENSE',
   'THIRD_PARTY_NOTICES.md',
+  'assets',
   'lang',
   'scripts',
   'packs'

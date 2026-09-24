@@ -75,6 +75,6 @@ npm run check
 
 ## Public-content policy
 
-This repository contains original automation code, empty feature descriptions, configuration metadata, and no copyrighted artwork. It is not affiliated with or endorsed by Wizards of the Coast, Foundry Gaming LLC, or the maintainers of the compatible automation modules.
+This repository contains original automation code, short original feature summaries, configuration metadata, and original AI-generated icons created for this project (`assets/icons`). It contains no third-party or copyrighted artwork. It is not affiliated with or endorsed by Wizards of the Coast, Foundry Gaming LLC, or the maintainers of the compatible automation modules.
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for technical attributions.

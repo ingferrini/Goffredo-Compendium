@@ -1,7 +1,7 @@
 {
   "name": "GAC - Spectral Mind",
   "type": "npc",
-  "img": "icons/magic/perception/eye-ringed-glow-angry-small-teal.webp",
+  "img": "modules/goffredo-compendium/assets/icons/manifest-mind.webp",
   "system": {
     "abilities": {
       "str": {
@@ -139,10 +139,10 @@
     "displayName": 30,
     "actorLink": false,
     "texture": {
-      "src": "icons/magic/perception/eye-ringed-glow-angry-small-teal.webp",
+      "src": "modules/goffredo-compendium/assets/icons/manifest-mind-token.webp",
       "scaleX": 1,
       "scaleY": 1,
-      "tint": "#8fd8ff",
+      "tint": "#ffffff",
       "anchorX": 0.5,
       "anchorY": 0.5,
       "fit": "contain",
