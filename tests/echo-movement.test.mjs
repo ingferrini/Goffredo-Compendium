@@ -226,8 +226,9 @@ test('module lifecycle registers Manifest Echo with CAT and installs movement on
     once.get('ready')();
 
     assert.ok(catCalls.some(([type, data]) => type === 'macro' && data.identifier === 'manifest-echo'));
-    assert.equal(movementHooks.length, 1);
-    assert.equal(movementHooks[0][0], 'moveToken');
+    assert.ok(catCalls.some(([type, data]) => type === 'macro' && data.identifier === 'unleash-incarnation'));
+    assert.equal(movementHooks.filter(([name]) => name === 'preMoveToken').length, 1);
+    assert.equal(movementHooks.filter(([name]) => name === 'moveToken').length, 2);
   } finally {
     delete globalThis.Hooks;
     delete globalThis.game;

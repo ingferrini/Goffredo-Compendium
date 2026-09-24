@@ -154,12 +154,14 @@ function actionDependencies(context, {selection, distance = 30} = {}) {
   };
 }
 
-test('eligible attacks include only equipped melee weapons', () => {
+test('Manifest Echo attacks include all equipped weapons while melee-only mode filters ranged attacks', () => {
   const {actor} = actorContext();
 
-  const result = actions.eligibleEchoAttacks(actor);
+  const all = actions.eligibleEchoAttacks(actor);
+  const melee = actions.eligibleEchoAttacks(actor, {meleeOnly: true});
 
-  assert.deepEqual(result.map(entry => entry.name), ['Longsword']);
+  assert.deepEqual(all.map(entry => entry.name), ['Longsword', 'Longbow']);
+  assert.deepEqual(melee.map(entry => entry.name), ['Longsword']);
 });
 
 test('attack selection rolls the original weapon from the echo and always cleans temporary effects', async () => {

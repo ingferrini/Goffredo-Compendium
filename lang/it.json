@@ -13,7 +13,8 @@
       "ElevationLabel": "Quota",
       "NotEnoughMovement": "Ti servono almeno 15 piedi di movimento residuo per scambiare le posizioni.",
       "SwapInvalid": "Le posizioni non possono essere scambiate.",
-      "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?"
+      "ReactionPrompt": "Vuoi usare la reazione per effettuare un attacco di opportunità dall'eco?",
+      "NoUnleashUses": "Non hai più utilizzi di Unleash Incarnation."
     },
     "Compatibility": {
       "Title": "Compendio di Automazioni di Goffredo",

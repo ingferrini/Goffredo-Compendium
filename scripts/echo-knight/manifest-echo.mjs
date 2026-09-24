@@ -53,6 +53,10 @@ function hasMeleeAttack(item) {
   });
 }
 
+function hasAttack(item) {
+  return collectionValues(item.system?.activities).some(activity => activity.type === 'attack');
+}
+
 function position(token) {
   return {x: token.x, y: token.y, elevation: token.elevation};
 }
@@ -102,11 +106,11 @@ function forceEchoOrigin(midiWorkflow, echoToken) {
   };
 }
 
-export function eligibleEchoAttacks(actor) {
+export function eligibleEchoAttacks(actor, {meleeOnly = false} = {}) {
   return collectionValues(actor?.items).filter(item => (
     item.type === 'weapon'
     && item.system?.equipped === true
-    && hasMeleeAttack(item)
+    && (meleeOnly ? hasMeleeAttack(item) : hasAttack(item))
   ));
 }
 
@@ -209,14 +213,19 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
   return summon;
 }
 
-export async function attackFromEcho({item, workflow}, deps = defaultDeps) {
+export async function attackFromEcho({item, workflow, meleeOnly = false}, deps = defaultDeps) {
   const echoToken = await echoTokenFor(workflow.actor, deps);
   if (!echoToken) {
     deps.notify('GAC.Echo.NoActive');
     return undefined;
   }
 
-  const attacks = eligibleEchoAttacks(workflow.actor);
+  if (!workflow.targets?.size) {
+    deps.notify('GAC.Echo.ChooseTarget');
+    return undefined;
+  }
+
+  const attacks = eligibleEchoAttacks(workflow.actor, {meleeOnly});
   if (!attacks.length) {
     deps.notify('GAC.Echo.NoAttack');
     return undefined;

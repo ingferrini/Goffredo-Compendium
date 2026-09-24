@@ -13,7 +13,8 @@
       "ElevationLabel": "Elevation",
       "NotEnoughMovement": "You need at least 15 feet of movement remaining to exchange positions.",
       "SwapInvalid": "The positions cannot be exchanged.",
-      "ReactionPrompt": "Use your reaction to make an opportunity attack from the echo?"
+      "ReactionPrompt": "Use your reaction to make an opportunity attack from the echo?",
+      "NoUnleashUses": "You have no uses of Unleash Incarnation remaining."
     },
     "Compatibility": {
       "Title": "Goffredo's Automation Compendium",
