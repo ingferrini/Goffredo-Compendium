@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.3.0 - 2026-09-24
+
+- Added Great Weapon Fighting (2014): one feature on the actor rerolls 1s and 2s once on the damage dice of every melee attack with a two-handed weapon, or a versatile weapon in the two-handed attack mode. Dice that already carry a reroll are left alone.
+
 ## 0.2.3 - 2026-09-24
 
 - Midi-QOL 14 exposes the attack origin only through `workflow.token`; assigning `attackingToken` threw. Spells cast from the spectral mind and attacks from the echo now set the origin through the setter and recompute line of sight and cover from it.

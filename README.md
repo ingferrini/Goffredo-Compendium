@@ -47,6 +47,10 @@ Manifest conjures a Tiny, hovering spectral mind within 60 feet (once per long r
 
 When a creature damages the owner and stands within reach (or range) of an equipped weapon, the owner is asked whether to spend the reaction and the once-per-rest use to attack it back.
 
+## Great Weapon Fighting
+
+One feature on the actor covers every weapon: melee attacks with a two-handed weapon, or a versatile weapon used two-handed, reroll damage dice showing 1 or 2 once and keep the new result (2014 rules).
+
 ## Pack Tactics (Companion)
 
 Advantage on attack rolls when the companion named in the feature's **Requirements** field (for example `Jira`) is within 5 feet of every target and isn't incapacitated. Edit the field to bind another companion.

@@ -1,0 +1,59 @@
+{
+  "name": "Great Weapon Fighting",
+  "type": "feat",
+  "img": "icons/weapons/swords/greatsword-crossguard-steel.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> with a melee weapon attack using a two-handed weapon, or a versatile weapon wielded in two hands, every damage die that rolls a 1 or 2 is rerolled once and the new result is kept. Applies to every qualifying weapon automatically.</p><p><strong>Riassunto operativo:</strong> negli attacchi con arma da mischia a due mani, o versatile impugnata a due mani, ogni dado di danno che ottiene 1 o 2 viene ritirato una volta e si tiene il nuovo risultato. Vale in automatico per ogni arma idonea.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "",
+      "recovery": []
+    },
+    "type": {
+      "value": "class",
+      "subtype": "fightingStyle"
+    },
+    "requirements": "Fighting Style",
+    "properties": [],
+    "prerequisites": {
+      "level": null,
+      "items": [],
+      "repeatable": false
+    },
+    "activities": {},
+    "identifier": "great-weapon-fighting",
+    "enchant": {},
+    "advancement": [],
+    "crewed": false
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "great-weapon-fighting"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACGreatWeapFgt1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACGreatWeapFgt1"
+}

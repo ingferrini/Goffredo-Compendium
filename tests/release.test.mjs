@@ -58,7 +58,7 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
   const imageEntries = Object.keys(archive).filter(entry => /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(entry));
   assert.deepEqual(imageEntries, []);
 
-  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json'];
+  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json', 'Great_Weapon_Fighting.json'];
   for (const filename of featureSources) {
     const document = JSON.parse(await readFile(new URL(`packData/gac-features-2014/${filename}`, root), 'utf8'));
     assert.match(document.system.description.value, /Operational summary/i);

@@ -3,6 +3,7 @@ import {destroyEchoAtZeroHp, manifestEcho} from './echo-knight/manifest-echo.mjs
 import {registerMovementHooks} from './echo-knight/movement.mjs';
 import {registerOpportunityHooks} from './echo-knight/opportunity-attack.mjs';
 import {unleashIncarnation} from './echo-knight/unleash-incarnation.mjs';
+import {greatWeaponFightingAutomation} from './features/great-weapon-fighting.mjs';
 import {packTacticsAutomation} from './features/pack-tactics.mjs';
 import {frammentoRunico, unattuneBacklash} from './items/frammento-runico.mjs';
 import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
@@ -17,6 +18,7 @@ const automations = [
   ['manifest-mind', manifestMind],
   ['vengeful-assault', vengefulAssaultAutomation],
   ['pack-tactics-companion', packTacticsAutomation],
+  ['great-weapon-fighting', greatWeaponFightingAutomation],
   ['frammento-runico-instabile', frammentoRunico],
   ['piuma-regina-corvo', piumaReginaCorvo]
 ];
