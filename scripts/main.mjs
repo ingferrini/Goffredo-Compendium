@@ -9,6 +9,7 @@ import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
 import {api} from './proxy.mjs';
+import {registerAttackReactions} from './reactions/attack-reactions.mjs';
 import {registerReactionSettings} from './reactions/config.mjs';
 import {createReactionsMenuClass} from './reactions/menu.mjs';
 import {registerMovementReactions} from './reactions/movement-engine.mjs';
@@ -51,6 +52,7 @@ Hooks.once('ready', () => {
   registerMovementHooks();
   registerMovementReactions();
   registerReactionUsage();
+  registerAttackReactions();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

@@ -61,6 +61,7 @@ Advantage on attack rolls when the companion named in the feature's **Requiremen
 
 - **Opportunity attack** for every combatant when a hostile creature it can see leaves its melee reach (3D, height included); forced movement, teleports and Disengage are excluded. An Echo Knight's echo reacts for its owner with the same single reaction.
 - **Sentinel**: Disengage doesn't protect from the reactor, and a hit stops the mover at the last point inside reach with speed 0 until the end of its turn.
+- **Sentinel (attack on another creature)**: when a hostile creature within 5 feet of the Sentinel holder attacks someone else who lacks Sentinel, the holder may make a melee weapon attack against it. Any attack counts, including one made as a reaction. Distance is measured from the holder's own token, never from an echo.
 - **War Caster**: the prompt also offers single-target action spells.
 - **Polearm Master**: a creature entering the reach of a glaive, halberd, pike, quarterstaff or spear.
 - **Vengeful Assault** uses the same timed prompt.

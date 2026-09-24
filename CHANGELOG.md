@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.5.0 - 2026-09-25
+
+- Added Sentinel's third part: after a hostile creature within 5 feet of a Sentinel holder attacks another target without Sentinel, the holder is offered a melee weapon attack against it (new row in the Reactions panel). Attacks made as reactions count too; the echo never counts as "within 5 feet of you".
+- Reaction rolls for creatures without an active player owner run as the GM.
+
 ## 0.4.6 - 2026-09-25
 
 - The module is English only: the Italian localization is removed, activity names and feature descriptions are English, and the repository documentation is translated. Campaign items keep their original Italian names and descriptions.

@@ -9,7 +9,8 @@ Replace the reaction automations of Gambit's Premades, no longer available, with
 | Version | Content |
 | --- | --- |
 | 0.4.x | Timed prompt service, Reactions panel, movement engine: opportunity attacks (everyone, echo included), Sentinel parts 1-2, War Caster, Polearm Master; Vengeful Assault moved onto the new service; visible reaction marker as the reaction state |
-| 0.5.0 | Reactions to attacks on others (Sentinel part 3, Protection, Interception) and to spells (Mage Slayer) |
+| 0.5.0 | Sentinel part 3 on `midi-qol.RollComplete`: any attack (reactions included) by a hostile creature within 5 ft of the holder's own token against a target without Sentinel |
+| later | Protection, Interception, Mage Slayer, if a character needs them |
 
 ## 3. Per-reaction configuration
 

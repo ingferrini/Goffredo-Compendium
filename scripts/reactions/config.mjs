@@ -3,7 +3,7 @@ import {MODULE_ID} from '../constants.mjs';
 export const REACTIONS_SETTING = 'reactions';
 export const GENERAL_SETTING = 'reactionsGeneral';
 
-export const REACTION_TYPES = Object.freeze(['opportunityAttack', 'sentinel', 'warCaster', 'polearmMaster', 'vengefulAssault']);
+export const REACTION_TYPES = Object.freeze(['opportunityAttack', 'sentinel', 'sentinelAttack', 'warCaster', 'polearmMaster', 'vengefulAssault']);
 export const ON_TIMEOUT = Object.freeze(['decline', 'accept', 'gm']);
 export const NPC_MODES = Object.freeze(['ask', 'auto', 'off']);
 export const AUDIENCES = Object.freeze(['owner', 'ownerAndGm', 'gm']);

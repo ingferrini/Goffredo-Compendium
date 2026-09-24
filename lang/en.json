@@ -76,10 +76,11 @@
       },
       "Types": {
         "opportunityAttack": "Opportunity attack",
-        "sentinel": "Sentinel",
+        "sentinel": "Sentinel (opportunity attacks)",
         "warCaster": "War Caster",
         "polearmMaster": "Polearm Master",
-        "vengefulAssault": "Vengeful Assault"
+        "vengefulAssault": "Vengeful Assault",
+        "sentinelAttack": "Sentinel (attack on another creature)"
       },
       "Prompt": {
         "Countdown": "Time left:",
@@ -88,7 +89,8 @@
         "Spell": "Spell",
         "FromEcho": "leaves the reach of your echo. Attack from the echo?",
         "opportunityAttack": "leaves your reach. Make an opportunity attack?",
-        "polearmMaster": "enters your reach. Attack with your polearm?"
+        "polearmMaster": "enters your reach. Attack with your polearm?",
+        "sentinelAttack": "attacked another creature next to you. Make a Sentinel attack?"
       },
       "Sentinel": {
         "Stopped": "Sentinel: speed 0"

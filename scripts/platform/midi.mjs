@@ -42,7 +42,8 @@ export function distance(from, to) {
 export async function rollItem(item, targets = [], {consume = true, asReaction = false} = {}) {
   const owner = activeOwner(item.actor);
   const currentUser = globalThis.game?.user?.id;
-  const asUser = owner?.id ?? currentUser;
+  // Players roll their own characters; anything else rolls as the GM.
+  const asUser = owner?.id ?? activeGM()?.id ?? currentUser;
   const autoRollDamage = ['always', 'onHit'].includes(midi().configSettings?.()?.autoRollDamage)
     ? midi().configSettings().autoRollDamage
     : 'onHit';
