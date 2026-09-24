@@ -5,3 +5,7 @@ coverage/
 packs/**/LOCK
 packs/**/LOG
 .DS_Store
+
+# Local agent notes, never published
+AGENTS.md
+CLAUDE.md
