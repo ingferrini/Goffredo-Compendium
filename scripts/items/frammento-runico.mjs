@@ -4,6 +4,7 @@ import {isActive} from '../shared/foundry.mjs';
 
 export const FRAMMENTO_IDENTIFIER = 'frammento-runico-instabile';
 const TURN_FLAG = 'frammentoTurns';
+const AWAKENED_FLAG = 'frammentoAwakened';
 const BACKLASH_EVERY = 3;
 
 const defaultDeps = {
@@ -45,9 +46,15 @@ export async function turnBacklash({document: item, combatant}, deps = defaultDe
   return undefined;
 }
 
+// Nothing happens until the first attunement; from then on, ending it hurts.
 export async function unattuneBacklash(item, changes, deps = defaultDeps) {
   if (item?.system?.identifier !== FRAMMENTO_IDENTIFIER || !item.actor) return false;
-  if (changes?.system?.attuned !== false) return false;
+  const attuned = changes?.system?.attuned;
+  if (attuned === true) {
+    if (!item.getFlag?.(MODULE_ID, AWAKENED_FLAG)) await item.setFlag(MODULE_ID, AWAKENED_FLAG, true);
+    return false;
+  }
+  if (attuned !== false || !item.getFlag?.(MODULE_ID, AWAKENED_FLAG)) return false;
   await deps.rollBacklash(item.actor, item);
   return true;
 }

@@ -70,11 +70,18 @@ test('every third owner turn in the same combat triggers the psychic backlash', 
   assert.deepEqual(item.flags.get('frammentoTurns'), {combatId: 'c1', count: 0});
 });
 
-test('ending the attunement triggers the psychic backlash once', async () => {
+test('the backlash on losing attunement starts only after the first attunement', async () => {
   const hits = [];
   const deps = {rollBacklash: async () => hits.push('hit')};
-  assert.equal(await frammento.unattuneBacklash(frammentoItem(), {system: {attuned: false}}, deps), true);
-  assert.equal(await frammento.unattuneBacklash(frammentoItem(), {system: {equipped: false}}, deps), false);
+  const item = frammentoItem({attuned: false});
+
+  assert.equal(await frammento.unattuneBacklash(item, {system: {attuned: false}}, deps), false);
+  assert.equal(hits.length, 0);
+
+  await frammento.unattuneBacklash(item, {system: {attuned: true}}, deps);
+  assert.equal(item.flags.get('frammentoAwakened'), true);
+  assert.equal(await frammento.unattuneBacklash(item, {system: {equipped: false}}, deps), false);
+  assert.equal(await frammento.unattuneBacklash(item, {system: {attuned: false}}, deps), true);
   assert.equal(await frammento.unattuneBacklash({system: {identifier: 'other'}, actor: {}}, {system: {attuned: false}}, deps), false);
   assert.equal(hits.length, 1);
 });

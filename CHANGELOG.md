@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.2.1 - 2026-09-24
+
+- Frammento Runico Instabile: the item awakens on its first attunement; the attunement-loss backlash can only happen after that.
+
 ## 0.2.0 - 2026-09-24
 
 - Added Manifest Mind (Order of Scribes): spectral mind summon with a Tiny hovering token, 60 ft darkvision and 10 ft dim light; cast wizard spells from the mind with range checked before any slot is spent; move, dismiss, re-manifest with a spell slot, and removal beyond 300 ft.

@@ -2,7 +2,7 @@
   "id": "goffredo-compendium",
   "title": "Goffredo's Automation Compendium",
   "description": "Bilingual D&D5e 2014 automations for Foundry VTT.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "library": false,
   "socket": false,
   "compatibility": {
@@ -125,7 +125,7 @@
   ],
   "url": "https://github.com/ingferrini/Goffredo-Compendium",
   "manifest": "https://github.com/ingferrini/Goffredo-Compendium/releases/latest/download/module.json",
-  "download": "https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.2.0/goffredo-compendium.zip",
+  "download": "https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.2.1/goffredo-compendium.zip",
   "license": "LICENSE",
   "readme": "README.md"
 }
