@@ -230,7 +230,7 @@ export async function summonEcho({item, workflow}, deps = defaultDeps) {
   return summon;
 }
 
-export async function attackFromEcho({item, workflow, meleeOnly = false, checkRange = true, weapon}, deps = defaultDeps) {
+export async function attackFromEcho({item, workflow, meleeOnly = false, checkRange = true, weapon, asReaction = false}, deps = defaultDeps) {
   const echoToken = await echoTokenFor(workflow.actor, deps);
   if (!echoToken) {
     deps.notify('GAC.Echo.NoActive');
@@ -285,7 +285,8 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
     if (echoEffect) effects.push(echoEffect);
     if (!ownerEffect || !echoEffect) return undefined;
     await deps.documentUtils.makeDependent(ownerEffect, [echoEffect]);
-    return await deps.workflowUtils.syntheticItemRoll(selected, Array.from(workflow.targets ?? []));
+    const rollOptions = asReaction ? {options: {workflowOptions: {notReaction: true}}} : {};
+    return await deps.workflowUtils.syntheticItemRoll(selected, Array.from(workflow.targets ?? []), rollOptions);
   } finally {
     if (!hookRan) deps.hooks.off(hookName, hookId);
     // The echo effect depends on the owner's: deleting the first removes both.

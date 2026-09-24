@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.4.5 - 2026-09-25
+
+- Reaction rolls (opportunity attacks, echo, Polearm Master, War Caster, Vengeful Assault) tell Midi not to treat them as reactions, so Midi no longer asks for an "additional reaction". The module marks the reaction once, after the attack starts.
+
 ## 0.4.4 - 2026-09-24
 
 - A reaction already marked (Midi recognises out-of-turn attacks on its own) is not marked a second time, so Midi's reaction counter no longer reaches 2.

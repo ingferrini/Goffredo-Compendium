@@ -167,7 +167,7 @@ function scenario({features = [], disengaged = false, answer = 'first', hit = fa
       calls.push(['request', request]);
       return answer === 'first' ? request.choices[0].value : answer;
     },
-    rollItem: async (item, targets) => { calls.push(['roll', item, targets]); return {hitTargets: new Set(hit ? [mover] : [])}; },
+    rollItem: async (item, targets, options) => { calls.push(['roll', item, targets, options]); return {hitTargets: new Set(hit ? [mover] : [])}; },
     setReactionUsed: async actor => calls.push(['reaction', actor]),
     withReactionReach: async (actor, roll) => { calls.push(['grace', actor]); return roll(); },
     publicName: token => token.name,
@@ -183,7 +183,7 @@ test('leaving reach asks for an opportunity attack and rolls the chosen weapon',
   const request = calls.find(([type]) => type === 'request')[1];
   assert.equal(request.reactionId, 'opportunityAttack');
   assert.deepEqual(request.choices.map(choice => choice.label), ['Maul']);
-  assert.ok(calls.some(([type, item, targets]) => type === 'roll' && item.name === 'Maul' && targets[0] === mover));
+  assert.ok(calls.some(([type, item, targets, options]) => type === 'roll' && item.name === 'Maul' && targets[0] === mover && options.asReaction));
   assert.ok(calls.some(([type, actor]) => type === 'reaction' && actor === ashActor));
 });
 
@@ -227,7 +227,7 @@ test('the echo reacts for its owner, sharing one reaction with the owner token',
   const {calls, deps, mover, movement} = scenario({moverPath: [at(4, 0), at(6, 0)], extraReactors: [echoToken]});
   const results = await engine.resolveMovementReactions({mover, movement}, deps);
   assert.equal(results.length, 1);
-  assert.ok(calls.some(([type, args]) => type === 'echo' && args.weapon.name === 'Maul' && args.checkRange === false));
+  assert.ok(calls.some(([type, args]) => type === 'echo' && args.weapon.name === 'Maul' && args.checkRange === false && args.asReaction));
   assert.equal(calls.filter(([type]) => type === 'request').length, 1);
 });
 

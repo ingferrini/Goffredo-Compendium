@@ -28,7 +28,7 @@ function context({spent = 0, reactionUsed = false, hp = 50, damage = 8, distance
       calls.push(['request', request]);
       return answer === 'first' ? request.choices[0].value : answer;
     },
-    async rollItem(rolled, targets) { calls.push(['attack', rolled, targets]); },
+    async rollItem(rolled, targets, options) { calls.push(['attack', rolled, targets, options]); return {}; },
     tokenDistance: () => distance
   };
   return {actor, attacker, calls, defender, deps, item, workflow};
@@ -45,6 +45,9 @@ test('taking damage from a creature in weapon reach requests the reaction and at
   const attack = calls.find(([type]) => type === 'attack');
   assert.equal(attack[1].id, 'greatsword');
   assert.deepEqual(attack[2], [attacker]);
+  assert.deepEqual(attack[3], {asReaction: true});
+  // Marked after the attack, so Midi never asks for an additional reaction.
+  assert.ok(calls.findIndex(([type]) => type === 'attack') < calls.findIndex(([type]) => type === 'reaction'));
   assert.ok(calls.some(([type, target]) => type === 'reaction' && target === actor));
   assert.deepEqual(calls.find(([type]) => type === 'update')[1], {'system.uses.spent': 1});
 });

@@ -36,8 +36,10 @@ export function distance(from, to) {
 }
 
 // Rolls an item against targets through Midi, as its owner when a player owns it.
-// Adapted from CAT's workflowUtils.completeItemUse (MIT).
-export async function rollItem(item, targets = [], {consume = true} = {}) {
+// Adapted from CAT's workflowUtils.completeItemUse (ISC).
+// asReaction: the module tracks the reaction itself, so Midi must neither check
+// nor mark it (otherwise it asks for an "additional reaction").
+export async function rollItem(item, targets = [], {consume = true, asReaction = false} = {}) {
   const owner = activeOwner(item.actor);
   const currentUser = globalThis.game?.user?.id;
   const asUser = owner?.id ?? currentUser;
@@ -48,7 +50,7 @@ export async function rollItem(item, targets = [], {consume = true} = {}) {
     targetUuids: targets.map(target => target.uuid),
     configureDialog: false,
     asUser,
-    workflowOptions: {autoRollAttack: true, autoFastDamage: true, autoRollDamage}
+    workflowOptions: {autoRollAttack: true, autoFastDamage: true, autoRollDamage, ...(asReaction ? {notReaction: true} : {})}
   };
   const remote = asUser !== currentUser;
   if (remote) Object.assign(midiOptions, {workflowData: true, checkGMStatus: true});

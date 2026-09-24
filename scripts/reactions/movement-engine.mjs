@@ -213,6 +213,7 @@ async function performReaction({reactor, mover, choice, choices, deps}) {
       weapon: selected.item,
       meleeOnly: true,
       checkRange: false,
+      asReaction: true,
       workflow: {
         id: `gac-reaction-${mover.uuid}`,
         actor: reactor.actor,
@@ -222,7 +223,7 @@ async function performReaction({reactor, mover, choice, choices, deps}) {
       }
     });
   }
-  return deps.rollItem(selected.item, [mover]);
+  return deps.rollItem(selected.item, [mover], {asReaction: true});
 }
 
 function hitMover(workflow, mover) {

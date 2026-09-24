@@ -78,9 +78,11 @@ export async function vengefulAssault({document: item, workflow, sourceToken}, d
   const weapon = weapons.find(entry => entry.uuid === choice);
   if (!weapon) return undefined;
 
+  const rolled = await deps.rollItem(weapon, [attacker], {asReaction: true});
+  if (!rolled) return undefined;
+  // Marked once, after the attack started.
   await deps.setReactionUsed(actor);
   await item.update({'system.uses.spent': (Number(item.system?.uses?.spent) || 0) + 1});
-  await deps.rollItem(weapon, [attacker]);
   return undefined;
 }
 
