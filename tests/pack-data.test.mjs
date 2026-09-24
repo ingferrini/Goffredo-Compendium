@@ -58,14 +58,21 @@ test('Echo summon is a one-hit-point condition-immune CAT actor', async () => {
   ));
 });
 
-test('English and Italian localization files have identical key trees', async () => {
-  const en = await json('lang/en.json');
-  const it = await json('lang/it.json');
-  const flatten = (value, prefix = '') => Object.entries(value).flatMap(([key, child]) => {
-    const path = prefix ? `${prefix}.${key}` : key;
-    return child && typeof child === 'object' ? flatten(child, path) : [path];
-  });
-  assert.deepEqual(flatten(en).sort(), flatten(it).sort());
+test('the module ships English only', async () => {
+  const manifest = await json('module.json');
+  assert.deepEqual(manifest.languages.map(language => language.lang), ['en']);
+  const files = await readdir(new URL('lang/', root));
+  assert.deepEqual(files, ['en.json']);
+});
+
+test('feature descriptions and activity names carry no Italian text', async () => {
+  for (const filename of await readdir(new URL('packData/gac-features-2014/', root))) {
+    const item = await json(`packData/gac-features-2014/${filename}`);
+    assert.doesNotMatch(item.system.description.value, /Riassunto operativo/, filename);
+    for (const activity of Object.values(item.system.activities ?? {})) {
+      assert.doesNotMatch(activity.name, / \/ /, `${filename}: ${activity.name}`);
+    }
+  }
 });
 
 test('pack source filenames are JSON documents only', async () => {

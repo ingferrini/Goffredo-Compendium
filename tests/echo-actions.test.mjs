@@ -259,9 +259,9 @@ test('owner turn end keeps an echo at or within 30 feet', async () => {
   assert.equal(context.actor.getFlag('goffredo-compendium', 'echo').tokenUuid, context.echoToken.uuid);
 });
 
-test('action prompts and warnings are localized in both supported languages', async () => {
+test('action prompts and warnings are localized in English', async () => {
   const root = new URL('../', import.meta.url);
-  const languages = await Promise.all(['en', 'it'].map(async language => (
+  const languages = await Promise.all(['en'].map(async language => (
     JSON.parse(await readFile(new URL(`lang/${language}.json`, root), 'utf8'))
   )));
 

@@ -1,6 +1,6 @@
 # Goffredo's Automation Compendium
 
-Bilingual Foundry VTT automations for D&D 5e 2014 games: clean-room, rules-text-free implementations of Echo Knight (Manifest Echo, Unleash Incarnation), Order of Scribes Manifest Mind, Ravenite Vengeful Assault, companion-bound Pack Tactics, and two Wildemount campaign items.
+Foundry VTT automations for D&D 5e 2014 games: clean-room, rules-text-free implementations of Echo Knight (Manifest Echo, Unleash Incarnation), Order of Scribes Manifest Mind, Ravenite Vengeful Assault, companion-bound Pack Tactics, and two Wildemount campaign items.
 
 ## Supported stack
 
@@ -72,9 +72,9 @@ This system depends only on Foundry and Midi-QOL, not on CAT.
 - **Frammento Runico Instabile**: while equipped and attuned, spells dealing radiant damage deal an extra 1d6 radiant; every third owner turn in combat, and when attunement ends, the owner takes 2d6 psychic damage.
 - **Piuma Metallica della Regina Corvo**: bonus action, once per day; until the end of the turn, advantage on attack rolls against evil creatures.
 
-## Lingue
+## Language
 
-L'interfaccia del modulo e disponibile in inglese e italiano. I compendi non includono il testo integrale delle regole protette: i nomi identificano le capacita, mentre descrizioni e riferimenti alle regole vanno aggiunti dal materiale posseduto dal tavolo.
+The module interface is in English. The compendia contain no full protected rules text: names identify the features, and rules text comes from the table's own material. Campaign items keep their original Italian names and descriptions.
 
 ## Development
 

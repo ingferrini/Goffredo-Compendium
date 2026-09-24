@@ -1,41 +1,41 @@
-# Icone del compendio
+# Compendium icons
 
-Le icone sono artwork originali generati con l'AI per questo progetto e distribuiti con il modulo in `assets/icons/`. Ogni nuovo documento dei pack riceve un'icona con lo stesso stile.
+Icons are original AI-generated artwork made for this project and shipped with the module in `assets/icons/`. Every new pack document gets an icon in the same style.
 
-## Come si aggiunge un'icona
+## Adding an icon
 
-1. Il prompt si scrive con il modello qui sotto e l'immagine si genera (1024x1024 va bene).
-2. L'originale va in `art/source/` con il nome `<identifier>.jpg` (per i token `<identifier>-token.jpg`). Gli originali restano nel repo ma non entrano nello zip del modulo.
-3. `python tools/build_icons.py` rigenera `assets/icons/<identifier>.webp` a 256x256 (circa 5 KB); i file `-token` perdono lo sfondo nero e diventano trasparenti.
-4. Il documento del pack richiama `modules/goffredo-compendium/assets/icons/<identifier>.webp`.
-5. `tests/release.test.mjs` controlla che ogni icona richiamata sia nel pacchetto e che non ci siano immagini inutilizzate.
+1. Write the prompt from the template below and generate the image (1024x1024 is fine).
+2. Put the original in `art/source/` as `<identifier>.jpg` (tokens: `<identifier>-token.jpg`). Originals stay in the repository but never enter the module ZIP.
+3. Run `python tools/build_icons.py`: it writes `assets/icons/<identifier>.webp` at 256x256 (about 5 KB); `-token` files lose their black background and become transparent.
+4. Reference it from the pack document as `modules/goffredo-compendium/assets/icons/<identifier>.webp`.
+5. `tests/release.test.mjs` checks that every referenced icon is bundled and that no bundled image is unused.
 
-## Modello di prompt
+## Prompt template
 
-> Square 1:1 game icon, simple bold composition readable at 64 pixels. <SOGGETTO>. Painterly dark-fantasy oil painting, realistic, dramatic lighting, muted palette with one accent colour, plain dark background, no text, no border, not cartoon.
+> Square 1:1 game icon, simple bold composition readable at 64 pixels. [SUBJECT]. Painterly dark-fantasy oil painting, realistic, dramatic lighting, muted palette with one accent colour, plain dark background, no text, no border, not cartoon.
 
-Per i token: `Square 1:1 top-down token image, simple bold shape readable at 64 pixels. <SOGGETTO>, centred. Transparent background (if not possible, pure black background). Painterly dark-fantasy oil painting, realistic, no text, no border, not cartoon.`
+Tokens: `Square 1:1 top-down token image, simple bold shape readable at 64 pixels. [SUBJECT], centred. Transparent background (if not possible, pure black background). Painterly dark-fantasy oil painting, realistic, no text, no border, not cartoon.`
 
-## Icone presenti
+## Icons
 
-| File | Documento | Soggetto |
+| File | Document | Subject |
 | --- | --- | --- |
-| `manifest-echo.webp` | Manifest Echo, attore GAC - Echo | Translucent grey spectral double of an armoured warrior |
-| `manifest-echo-attack.webp` | Manifest Echo: Attacca dall'eco | Spectral echo lunging with a warhammer strike |
-| `manifest-echo-swap.webp` | Manifest Echo: Scambia posizione | Warrior and echo trading places in an arc of light |
-| `manifest-echo-elevation.webp` | Manifest Echo: Cambia quota | Echo rising with light trails beneath it |
-| `manifest-echo-dismiss.webp` | Manifest Echo: Congeda | Echo dissolving into ash and motes |
+| `manifest-echo.webp` | Manifest Echo, GAC - Echo actor | Translucent grey spectral double of an armoured warrior |
+| `manifest-echo-attack.webp` | Manifest Echo: Attack from Echo | Spectral echo lunging with a warhammer strike |
+| `manifest-echo-swap.webp` | Manifest Echo: Swap Positions | Warrior and echo trading places in an arc of light |
+| `manifest-echo-elevation.webp` | Manifest Echo: Change Elevation | Echo rising with light trails beneath it |
+| `manifest-echo-dismiss.webp` | Manifest Echo: Dismiss | Echo dissolving into ash and motes |
 | `unleash-incarnation.webp` | Unleash Incarnation | Warrior and ghostly echo swinging the same warhammer |
-| `manifest-mind.webp` | Manifest Mind, attore GAC - Spectral Mind | Ghostly spellbook dissolving into teal script |
-| `manifest-mind-slot.webp` | Manifest Mind: Evoca con uno slot | Spellbook rising from a burning arcane sigil |
-| `manifest-mind-cast.webp` | Manifest Mind: Lancia dalla mente | Spellbook releasing a teal arcane bolt |
-| `manifest-mind-move.webp` | Manifest Mind: Sposta la mente | Spellbook gliding with a curved teal trail |
-| `manifest-mind-dismiss.webp` | Manifest Mind: Congeda | Closed spellbook fading into motes |
-| `manifest-mind-token.webp` | Token della mente spettrale | Hovering spellbook in a teal halo, transparent |
+| `manifest-mind.webp` | Manifest Mind, GAC - Spectral Mind actor | Ghostly spellbook dissolving into teal script |
+| `manifest-mind-slot.webp` | Manifest Mind: Manifest with a spell slot | Spellbook rising from a burning arcane sigil |
+| `manifest-mind-cast.webp` | Manifest Mind: Cast from Mind | Spellbook releasing a teal arcane bolt |
+| `manifest-mind-move.webp` | Manifest Mind: Move Mind | Spellbook gliding with a curved teal trail |
+| `manifest-mind-dismiss.webp` | Manifest Mind: Dismiss | Closed spellbook fading into motes |
+| `manifest-mind-token.webp` | Spectral mind token | Hovering spellbook in a teal halo, transparent |
 | `vengeful-assault.webp` | Vengeful Assault | Black-scaled dragonborn gauntlet counter-striking |
 | `pack-tactics-companion.webp` | Pack Tactics (Companion) | Red-eyed grey wolf beside an armoured dwarf cleric |
 | `great-weapon-fighting.webp` | Great Weapon Fighting | Greatsword in two gauntleted hands |
 | `frammento-runico-instabile.webp` | Frammento Runico Instabile | Stone shard with cracked golden runes and violet sparks |
 | `piuma-regina-corvo.webp` | Piuma Metallica della Regina Corvo | Raven feather of burnished metal |
 
-Il token dell'eco resta quello del proprietario, applicato all'evocazione.
+The echo token uses its owner's token art, applied when it is summoned.

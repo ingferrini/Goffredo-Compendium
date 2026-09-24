@@ -4,7 +4,7 @@
   "img": "modules/goffredo-compendium/assets/icons/pack-tactics-companion.webp",
   "system": {
     "description": {
-      "value": "<p><strong>Operational summary:</strong> you have advantage on an attack roll against a creature when the companion named in <em>Requirements</em> is within 5 feet of it and isn't incapacitated.</p><p><strong>Riassunto operativo:</strong> hai vantaggio al tiro per colpire contro una creatura quando il compagno indicato in <em>Requisiti</em> si trova entro 1,5 m da essa e non è incapacitato.</p>",
+      "value": "<p><strong>Operational summary:</strong> you have advantage on an attack roll against a creature when the companion named in <em>Requirements</em> is within 5 feet of it and isn't incapacitated.</p>",
       "chat": ""
     },
     "source": {

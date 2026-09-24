@@ -1,297 +1,154 @@
 # Goffredo's Automation Compendium - Design
 
-## 1. Obiettivo
+> Updates since this design: the module is English only (campaign items keep their Italian names); icons are bundled in `assets/icons`; reactions are covered by [the reactions design](2026-09-24-reactions-design.md).
 
-Creare un modulo pubblico e riutilizzabile per Foundry VTT che raccolga le automazioni mancanti o non piu funzionanti nella campagna Wildemount, senza trasformare il mondo Foundry o il repository della campagna in fonti tecniche concorrenti.
+## 1. Goal
 
-La prima release, `0.1.0`, automatizza integralmente le capacita Echo Knight 2014 `Manifest Echo` e `Unleash Incarnation`. Le release successive aggiungeranno, una alla volta, le automazioni effettivamente usate dai quattro PG.
+Build a public, reusable Foundry VTT module that collects the automations missing or broken in the Wildemount campaign, without turning the Foundry world or the campaign repository into competing technical sources.
 
-## 2. Repository e distribuzione
+Release `0.1.0` fully automates the 2014 Echo Knight features `Manifest Echo` and `Unleash Incarnation`. Later releases add, one at a time, the automations the four player characters actually use.
 
-- Repository locale separato: `C:\Users\ingfr\OneDrive\Documenti\ChatGPT\Goffredo-Compendium`.
-- Repository GitHub pubblico dedicato.
-- Nome visibile: `Goffredo's Automation Compendium`.
-- ID tecnico e cartella del modulo: `goffredo-compendium`.
-- Branch principale: `main`.
-- Versionamento semantico; prima release funzionale `0.1.0`.
-- Release GitHub con `module.json` stabile e archivio ZIP installabile da Foundry e The Forge.
-- Il repository viene aggiunto allo stesso workspace VS Code della campagna, ma non viene annidato nel repository `Wildemount Campaign`.
+## 2. Repository and distribution
 
-## 3. Compatibilita iniziale
+- Separate local repository: `C:\Users\ingfr\OneDrive\Documenti\ChatGPT\Goffredo-Compendium`.
+- Dedicated public GitHub repository.
+- Display name: `Goffredo's Automation Compendium`.
+- Technical ID and module folder: `goffredo-compendium`.
+- Main branch: `main`.
+- Semantic versioning; first functional release `0.1.0`.
+- GitHub releases with a stable `module.json` and a ZIP installable from Foundry and The Forge.
+- The repository sits in the same VS Code workspace as the campaign, but is not nested in the `Wildemount Campaign` repository.
 
-La matrice verificata iniziale e:
+## 3. Initial compatibility
 
-| Componente | Versione |
+| Component | Version |
 | --- | --- |
 | Foundry VTT | 14.367 |
-| D&D5e | 5.3.3, regole 2014 |
+| D&D5e | 5.3.3, 2014 rules |
 | Midi-QOL | 14.0.12 |
 | DAE | 14.0.14 |
 | CAT | 0.0.8 |
-| Sequencer | 4.2.3, opzionale per le animazioni |
-| Levels | 7.0.3, supportato e testato |
+| Sequencer | 4.2.3, optional for animations |
+| Levels | 7.0.3, supported and tested |
 
-Il manifesto dichiara D&D5e, Midi-QOL, DAE e CAT come dipendenze richieste. Sequencer e Levels sono integrazioni opzionali: l'automazione deve restare funzionale senza animazioni e sulle scene prive di livelli.
+The manifest declares D&D5e, Midi-QOL, DAE and CAT as required dependencies. Sequencer and Levels are optional integrations: automations keep working without animations and on scenes without levels.
 
-Il modulo controlla le dipendenze e le versioni all'avvio. In caso di incompatibilita mostra un avviso al GM e non esegue parzialmente un'automazione rischiosa.
+The module checks dependencies and versions at startup. On incompatibility it warns the GM and never runs a risky automation partially.
 
-## 4. Architettura
+## 4. Architecture
 
 ```text
 Goffredo-Compendium/
   module.json
   scripts/
-    main.js
-    registry.js
-    api/
-    automations/2014/
-      fighter/echo-knight/
-        manifest-echo.js
-        unleash-incarnation.js
-        echo-state.js
   packData/
-    class-features-2014/
-    spells-2014/
-    feats-2014/
-    equipment-2014/
-    summons-2014/
   packs/
   lang/
-    en.json
-    it.json
   tests/
-    unit/
-    fixtures/
   docs/
   LICENSE
   THIRD_PARTY_NOTICES.md
 ```
 
-### 4.1 Codice
+### 4.1 Code
 
-Il modulo usa ES modules. Ogni automazione vive in un file focalizzato e viene registrata tramite un identificatore stabile, per esempio:
+ES modules. Each automation lives in a focused file and is registered under a stable identifier, for example `goffredo.echo-knight.manifest-echo`.
 
-```text
-goffredo.echo-knight.manifest-echo
-goffredo.echo-knight.unleash-incarnation
-```
+Compendium Items hold activities, effects, metadata and the identifier. Executable logic stays in the module, not in world macros or long scripts embedded in Items.
 
-Gli Item dei compendi conservano attivita, effetti, metadati e identificatore. La logica eseguibile resta nel modulo, non in macro di mondo o in lunghi script incorporati negli Item.
+Responsibilities:
 
-Il registro collega gli identificatori agli hook di Midi-QOL, D&D5e, CAT e Foundry necessari. Le API non pubbliche di Foundry vengono evitate quando esiste un equivalente pubblico.
+- D&D5e Activities provide the visible commands and handle actions, uses and recovery;
+- Midi-QOL exposes and resolves attack and reaction workflows;
+- DAE keeps temporary effects and the controls available while the echo is active;
+- CAT runs privileged operations such as creating and removing tokens, even when a player acts;
+- Foundry's public API handles documents, tokens, measurement and turn hooks;
+- Levels is queried only when active, for surfaces, elevation and vertical collisions.
 
-Le responsabilita sono separate come segue:
+No custom socket protocol is introduced while CAT offers adequate GM execution.
 
-- D&D5e Activities fornisce i comandi visibili e gestisce azioni, utilizzi e recuperi;
-- Midi-QOL espone e risolve i workflow di attacco e reazione;
-- DAE conserva gli effetti temporanei e i controlli disponibili mentre l'eco e attivo;
-- CAT esegue le operazioni privilegiate, come creazione e rimozione del token, anche quando ad agire e un giocatore;
-- Foundry Public API gestisce documenti, token, misure e hook di turno;
-- Levels viene interrogato soltanto quando attivo per superfici, elevazione e collisioni verticali.
+### 4.2 Compendia
 
-Non viene introdotto un protocollo socket proprietario finche CAT offre un'esecuzione GM adeguata.
+`Class Features 2014`, `Spells 2014`, `Feats 2014`, `Equipment 2014` (Item) and `Summons 2014` (Actor), grouped with `packFolders` under a visible `Goffredo's Automation Compendium / 2014` folder. Documents are kept in `packData` as readable JSON; LevelDB packs are generated at build time and are not the primary source.
 
-### 4.2 Compendi
+## 5. Content and licensing
 
-I compendi iniziali sono:
-
-- `Class Features 2014`, tipo Item;
-- `Spells 2014`, tipo Item;
-- `Feats 2014`, tipo Item;
-- `Equipment 2014`, tipo Item;
-- `Summons 2014`, tipo Actor.
-
-Il `module.json` usa `packFolders` per raccoglierli sotto una cartella visibile `Goffredo's Automation Compendium`, con sottocartella `2014`.
-
-I documenti sono mantenuti in `packData` come JSON leggibile e revisionabile. Durante la build vengono generati i pack LevelDB destinati alla release; i file generati non sono la fonte primaria.
-
-### 4.3 Localizzazione
-
-- Inglese come lingua predefinita.
-- Traduzione italiana completa in `lang/it.json`.
-- Nomi canonici delle capacita mantenuti in inglese per facilitarne ricerca e riconoscimento.
-- Notifiche, finestre e istruzioni operative passano sempre dal sistema di localizzazione.
-
-## 5. Contenuti e licenze
-
-- Codice originale del progetto pubblicato con licenza MIT.
-- Codice adattato da progetti MIT mantiene avvisi, attribuzioni e copyright applicabili.
-- `THIRD_PARTY_NOTICES.md` documenta per ogni adattamento: progetto, autore, licenza, URL, file o idea di provenienza e natura delle modifiche.
-- Nessuna immagine ufficiale o asset commerciale viene distribuito.
-- Nessuna descrizione integrale non SRD viene inclusa.
-- I contenuti SRD possono usare il testo consentito dalla relativa licenza, accompagnato dalle attribuzioni richieste.
-- Le capacita non SRD ricevono soltanto brevi istruzioni operative originali, sufficienti a usare l'automazione senza riprodurre il testo editoriale ufficiale.
-- Le animazioni opzionali possono richiamare soltanto asset liberamente distribuibili o gia installati dall'utente; l'assenza degli asset non blocca la meccanica.
+- Original code under the MIT license.
+- Code adapted from MIT projects keeps its notices; `THIRD_PARTY_NOTICES.md` records project, author, license, URL, source and changes.
+- No official images or commercial assets.
+- No full non-SRD descriptions; SRD text only with the required attribution.
+- Non-SRD features get only short original operating instructions.
+- Optional animations use only freely distributable or user-installed assets; missing assets never block the mechanics.
 
 ## 6. Manifest Echo
 
-### 6.1 Evocazione
+### 6.1 Summoning
 
-- L'attivita usa un'azione bonus.
-- Il giocatore seleziona un punto libero e visibile entro 15 ft dal proprio token.
-- La distanza viene misurata in tre dimensioni quando la scena usa elevazioni.
-- La posizione puo trovarsi a un'elevazione differente purche sia visibile, libera, entro 15 ft e compatibile con i limiti fisici della scena.
-- Non e consentita l'evocazione attraverso muri, porte chiuse o in spazi occupati.
-- Se esiste gia un eco attivo dello stesso attore, il precedente viene rimosso prima di crearne uno nuovo.
-- L'eco viene creato da un Actor template incluso in `Summons 2014` e configurato dai dati correnti dell'evocatore.
+- Bonus action; the player picks a free, visible point within 15 ft, measured in three dimensions.
+- No summoning through walls, closed doors or occupied spaces.
+- An existing echo of the same actor is removed before a new one is created.
+- The echo comes from an Actor template in `Summons 2014`, configured from the summoner's current data.
 
-### 6.2 Statistiche dell'eco
+### 6.2 Echo statistics
 
-- 1 punto ferita.
-- CA `14 + bonus di competenza` dell'evocatore.
-- Stessa taglia dell'evocatore.
-- Immunita alle condizioni previste dalla capacita.
-- Tiri salvezza risolti usando i bonus dell'evocatore.
-- Token visivamente riconoscibile come eco e collegato in modo univoco all'attore che lo ha evocato.
-- L'eco non e trattato come un normale alleato per effetti che richiedono una creatura, salvo esplicita compatibilita con la regola della capacita.
+1 hit point; AC `14 + proficiency bonus`; the summoner's size; the feature's condition immunities; saving throws with the summoner's bonuses; a token clearly recognisable as the echo and uniquely linked to its summoner.
 
-### 6.3 Stato e proprieta
+### 6.3 State and ownership
 
-L'associazione fra evocatore ed eco viene conservata in flag namespaced del modulo, non nel nome del token. I flag registrano almeno:
+The summoner-echo link lives in namespaced module flags (summoner UUID, echo UUID and token ID, scene, schema version, reaction state), not in token names. Deleting the token, changing scene, disabling the actor or summoning again cleans the state without orphaned references.
 
-- UUID dell'attore evocatore;
-- UUID e token ID dell'eco;
-- scena di appartenenza;
-- versione dello schema dei dati;
-- eventuale stato necessario alle reazioni.
+### 6.4 Movement
 
-La cancellazione del token, il cambio scena, la disattivazione dell'attore o la nuova evocazione ripuliscono lo stato senza lasciare riferimenti orfani.
+- The owner controls the echo token and, on their turn, can move it up to 30 ft in any direction, vertical included, measured in three dimensions.
+- Movement uses the scene's normal system, including collisions and Levels surfaces, with a dedicated control for elevation changes within the movement budget.
+- At the end of the summoner's turn the three-dimensional distance is measured; beyond 30 ft the echo is removed with a localized message.
 
-### 6.4 Movimento
+### 6.5 Attacking from the echo
 
-- Il proprietario di Ash controlla il token dell'eco.
-- Durante il proprio turno puo muoverlo fino a 30 ft senza spendere azioni. Il modulo non dipende dal nome Ash: vale per qualunque evocatore proprietario.
-- `In qualsiasi direzione` include il movimento verticale. La distanza percorsa viene misurata in tre dimensioni.
-- Il movimento usa il normale sistema della scena, incluse collisioni e superfici Levels, con un controllo dedicato per modificare l'elevazione senza superare il budget di movimento.
-- Il modulo traccia la distanza percorsa nel turno e impedisce di superare il limite della capacita.
-- Al termine del turno dell'evocatore viene misurata la distanza tridimensionale fra evocatore ed eco.
-- Se la distanza supera 30 ft, l'eco viene rimosso automaticamente e viene mostrato un messaggio localizzato.
+For each attack of the Attack action the summoner chooses whether it originates from their space or the echo's. The attack uses the summoner's weapon, bonuses and damage; reach, line of sight, cover and distance are measured from the chosen position. No duplicated ammunition, resources or weapon effects.
 
-### 6.5 Attacco dalla posizione dell'eco
+### 6.6 Opportunity attack
 
-- Quando l'evocatore compie l'azione Attack, puo scegliere per ciascun attacco se originarlo dal proprio spazio o da quello dell'eco.
-- L'attacco usa arma, bonus, vantaggi, svantaggi e danni dell'evocatore.
-- Portata, linea di vista, copertura e distanza dal bersaglio vengono calcolate dalla posizione scelta.
-- L'eco non compie un proprio attacco e non possiede un turno separato.
-- Il flusso non duplica consumo di munizioni, risorse o effetti dell'arma.
+When a creature the summoner can see leaves the echo's reach, the owner is offered their reaction; the attack comes from the echo's space. The reaction is spent once, and forced movement and non-provoking movement are excluded.
 
-### 6.6 Attacco di opportunita
+### 6.7 Swapping places
 
-- Se una creatura visibile all'evocatore si allontana di almeno 5 ft dalla portata dell'eco, il proprietario riceve la proposta di usare la propria reazione.
-- L'attacco viene risolto come proveniente dallo spazio dell'eco.
-- La reazione viene consumata una sola volta e rispetta le esclusioni applicabili al movimento forzato e alle forme di movimento che non provocano attacchi di opportunita.
-- Se Midi-QOL ha gia consumato o bloccato la reazione, l'automazione non propone un secondo attacco.
-
-### 6.7 Scambio di posizione
-
-- Attivazione con azione bonus.
-- Richiede un eco valido e presente nella stessa scena.
-- Consuma 15 ft del movimento disponibile dell'evocatore.
-- Evocatore ed eco scambiano posizione ed elevazione in modo atomico.
-- Entrambe le destinazioni devono essere valide; in caso contrario nessun token viene mosso e nessuna risorsa viene consumata.
+Bonus action; requires a valid echo on the same scene; summoner and echo swap position and elevation atomically; both destinations must be valid, otherwise nothing moves and nothing is spent.
 
 ### 6.8 Dismiss
 
-- Attivazione con azione bonus.
-- Rimuove soltanto l'eco associato all'attore che usa la capacita.
-- Ripulisce flag, effetti e controlli collegati.
-- La rimozione manuale del token esegue la stessa pulizia senza richiedere l'azione bonus.
+Bonus action; removes only the acting actor's echo and cleans flags, effects and controls. Deleting the token by hand performs the same cleanup.
 
-### 6.9 Comandi visibili al giocatore
+### 6.9 Player controls
 
-L'Item `Manifest Echo` espone attivita separate e localizzate:
-
-- `Manifest / Evoca`;
-- `Attack from Echo / Attacca dall'eco`;
-- `Swap Positions / Scambia posizione`;
-- `Dismiss / Congeda`.
-
-Quando l'eco e attivo, DAE mantiene un effetto di controllo sull'evocatore che rende disponibili gli stessi comandi nelle interfacce compatibili, senza creare copie permanenti di Item sulla scheda. Il comando di attacco fa scegliere una delle armi o degli attacchi validi dell'evocatore e avvia un solo workflow dalla posizione dell'eco. Il movimento resta un controllo diretto del token, con un comando localizzato dedicato esclusivamente alla variazione di elevazione.
+`Manifest`, `Attack from Echo`, `Swap Positions`, `Dismiss` (plus `Change Elevation`), shown while the echo is active without permanent copies of Items on the sheet.
 
 ## 7. Unleash Incarnation
 
-- E disponibile quando l'attore compie l'azione Attack e possiede un eco valido.
-- Permette un singolo attacco melee aggiuntivo dalla posizione dell'eco.
-- Non concede una nuova azione Attack e non duplica automaticamente Extra Attack.
-- Usa le stesse regole di portata, visuale e copertura dell'attacco originato dall'eco.
-- Numero massimo di utilizzi pari al modificatore di Costituzione, minimo uno.
-- Recupero completo al riposo lungo.
-- Il consumo avviene soltanto quando l'attacco viene effettivamente avviato; annullare la selezione non consuma utilizzi.
-- Il modulo evita una seconda proposta durante la stessa azione Attack dopo che la capacita e stata usata.
+One extra melee attack from the echo's position during the Attack action; uses equal to the Constitution modifier (minimum one), recovered on a long rest; a use is spent only when the attack actually starts; no second offer in the same Attack action.
 
-## 8. Flusso di installazione e aggiornamento degli Item
+## 8. Installing and updating Items
 
-1. Il GM installa e abilita il modulo.
-2. Foundry verifica dipendenze e compatibilita.
-3. Il GM importa gli Item dal compendio oppure applica l'automazione a un Item gia esistente tramite identificatore.
-4. Gli Item importati funzionano senza macro di mondo aggiuntive.
-5. Gli aggiornamenti del modulo non sovrascrivono automaticamente le descrizioni private o importate legalmente sui personaggi.
-6. Una futura funzione di aggiornamento confronta la versione dell'automazione e propone al GM l'allineamento dei soli dati tecnici gestiti dal modulo.
+The GM installs the module, imports Items from the compendium (or applies the automation to an existing Item by identifier). Imported Items need no extra world macros. Module updates never silently overwrite private or legally imported descriptions on characters.
 
-Per la release `0.1.0` l'applicazione automatica agli Item esistenti puo essere limitata a una procedura GM esplicita. Non vengono eseguite migrazioni silenziose sugli attori.
+## 9. Errors and operational safety
 
-## 9. Errori e sicurezza operativa
+No automation changes the actor when an essential prerequisite is missing; composite operations validate everything before spending resources or moving tokens; technical errors go to the console with a short message for the player; configuration warnings go to the GM; hooks are filtered by identifier and actor UUID; nothing depends on the name `Ash`.
 
-- Nessuna automazione modifica l'attore se manca un prerequisito essenziale.
-- Le operazioni composite, come lo scambio, validano tutto prima di consumare risorse o spostare token.
-- Gli errori tecnici completi vengono registrati nella console; al giocatore appare un messaggio breve e comprensibile.
-- Gli avvisi di configurazione sono mostrati al GM e non intasano la chat dei giocatori.
-- Gli hook vengono filtrati per identificatore e actor UUID, evitando interferenze con omonimi o altri Echo Knight.
-- Il modulo non dipende dal nome `Ash` e deve funzionare con qualunque attore compatibile.
+## 10. Verification
 
-## 10. Verifica
+Unit tests cover AC and uses, 15/30 ft distances, echo movement budget, echo selection and validation, state transitions and flag cleanup, double-spend prevention and localization. The Foundry acceptance test runs on a copy of Ash, as GM and as the owning player, on flat and Levels scenes, before the automation is applied to the campaign actor.
 
-### 10.1 Test automatici
+## 11. Out of scope for 0.1.0
 
-I test unitari coprono almeno:
+D&D5e 2024 support; Foundry 13 or earlier; automating every character at once; a general automation builder UI; distributing unlicensed descriptions, images or assets; declaring compatibility with untested future versions.
 
-- calcolo CA e utilizzi;
-- controllo delle distanze 15/30 ft;
-- budget di movimento dell'eco;
-- selezione e validazione dell'eco associato;
-- transizioni di stato e pulizia dei flag;
-- prevenzione dei doppi consumi;
-- fallback di localizzazione inglese e italiano.
+## 12. Acceptance criteria for 0.1.0
 
-### 10.2 Collaudo Foundry
-
-Il collaudo iniziale viene eseguito su una copia di Ash e include:
-
-- uso come GM;
-- uso come giocatore proprietario;
-- scena senza Levels;
-- scena Levels sul piano base;
-- due superfici a elevazioni differenti;
-- ostacoli, porte chiuse e spazio occupato;
-- nuova evocazione con eco gia attivo;
-- cancellazione manuale del token;
-- fine turno oltre 30 ft;
-- attacco melee e ranged dalla posizione dell'eco;
-- reazione e movimento forzato;
-- scambio valido e scambio impossibile;
-- Unleash Incarnation con zero, uno e piu utilizzi;
-- riposo lungo;
-- assenza di Sequencer o asset animati.
-
-Solo dopo il collaudo l'automazione viene applicata agli Item dell'attore Ash usato in campagna.
-
-## 11. Fuori ambito per la release 0.1.0
-
-- Supporto D&D5e 2024.
-- Foundry 13 o versioni precedenti.
-- Automazione completa di tutti i PG nella prima release.
-- Interfaccia grafica generale per costruire automazioni.
-- Distribuzione di descrizioni, immagini o asset non autorizzati.
-- Compatibilita dichiarata con versioni future non ancora testate di Foundry, D&D5e o Midi-QOL.
-
-## 12. Criteri di accettazione della 0.1.0
-
-La release e pronta quando:
-
-1. Il modulo si installa da un manifest GitHub pubblico e si abilita senza errori sulla matrice iniziale.
-2. I compendi appaiono nelle cartelle previste e sono localizzati in inglese e italiano.
-3. Manifest Echo e Unleash Incarnation soddisfano tutti i comportamenti delle sezioni 6 e 7.
-4. Nessun testo o asset non distribuibile e incluso.
-5. Tutti i test automatici passano.
-6. Il collaudo Foundry su copia di Ash passa sia come GM sia come giocatore.
-7. L'attore Ash originale non viene modificato prima dell'approvazione del GM.
+1. The module installs from a public GitHub manifest and enables without errors on the initial stack.
+2. The compendia appear in the expected folders.
+3. Manifest Echo and Unleash Incarnation meet sections 6 and 7.
+4. No non-distributable text or asset is included.
+5. All automated tests pass.
+6. The Foundry acceptance test passes as GM and as player.
+7. The original Ash actor is not changed before GM approval.

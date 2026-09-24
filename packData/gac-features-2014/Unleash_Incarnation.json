@@ -4,7 +4,7 @@
   "img": "modules/goffredo-compendium/assets/icons/unleash-incarnation.webp",
   "system": {
     "description": {
-      "value": "<p><strong>Operational summary:</strong> after choosing a target and a melee attack, make one additional attack from the active echo and spend one use.</p><p><strong>Riassunto operativo:</strong> dopo aver scelto un bersaglio e un attacco da mischia, effettua un attacco aggiuntivo dall'eco attivo e consuma un utilizzo.</p>",
+      "value": "<p><strong>Operational summary:</strong> after choosing a target and a melee attack, make one additional attack from the active echo and spend one use.</p>",
       "chat": ""
     },
     "source": {

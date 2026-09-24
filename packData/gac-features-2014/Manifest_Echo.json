@@ -4,7 +4,7 @@
   "img": "modules/goffredo-compendium/assets/icons/manifest-echo.webp",
   "system": {
     "description": {
-      "value": "<p><strong>Operational summary:</strong> create and control a linked echo within 15 feet. Use the activities below to attack from it, exchange positions, or dismiss it. The echo is removed if it ends your turn more than 30 feet away.</p><p><strong>Riassunto operativo:</strong> crea e controlla un eco collegato entro 15 piedi. Usa le attività qui sotto per attaccare dalla sua posizione, scambiare le posizioni o congedarlo. L'eco scompare se termina il tuo turno a più di 30 piedi.</p>",
+      "value": "<p><strong>Operational summary:</strong> create and control a linked echo within 15 feet. Use the activities below to attack from it, exchange positions, or dismiss it. The echo is removed if it ends your turn more than 30 feet away.</p>",
       "chat": ""
     },
     "source": {
@@ -32,7 +32,7 @@
       "GACManifestUse01": {
         "_id": "GACManifestUse01",
         "type": "utility",
-        "name": "Manifest / Evoca",
+        "name": "Manifest",
         "img": "modules/goffredo-compendium/assets/icons/manifest-echo.webp",
         "activation": {
           "type": "bonus",
@@ -49,7 +49,7 @@
           "spellSlot": true
         },
         "description": {
-          "chatFlavor": "Manifest Echo / Evoca Eco"
+          "chatFlavor": "Manifest Echo"
         },
         "duration": {
           "concentration": false,
@@ -98,7 +98,7 @@
       "GACEchoAttack001": {
         "_id": "GACEchoAttack001",
         "type": "utility",
-        "name": "Attack from Echo / Attacca dall'eco",
+        "name": "Attack from Echo",
         "img": "modules/goffredo-compendium/assets/icons/manifest-echo-attack.webp",
         "activation": {
           "type": "special",
@@ -115,7 +115,7 @@
           "spellSlot": true
         },
         "description": {
-          "chatFlavor": "Attack from Echo / Attacca dall'eco"
+          "chatFlavor": "Attack from Echo"
         },
         "duration": {
           "concentration": false,
@@ -167,7 +167,7 @@
       "GACEchoSwap00001": {
         "_id": "GACEchoSwap00001",
         "type": "utility",
-        "name": "Swap Positions / Scambia posizione",
+        "name": "Swap Positions",
         "img": "modules/goffredo-compendium/assets/icons/manifest-echo-swap.webp",
         "activation": {
           "type": "bonus",
@@ -184,7 +184,7 @@
           "spellSlot": true
         },
         "description": {
-          "chatFlavor": "Swap Positions / Scambia posizione"
+          "chatFlavor": "Swap Positions"
         },
         "duration": {
           "concentration": false,
@@ -235,7 +235,7 @@
       "GACEchoElev00001": {
         "_id": "GACEchoElev00001",
         "type": "utility",
-        "name": "Change Elevation / Cambia quota",
+        "name": "Change Elevation",
         "img": "modules/goffredo-compendium/assets/icons/manifest-echo-elevation.webp",
         "activation": {
           "type": "special",
@@ -252,7 +252,7 @@
           "spellSlot": true
         },
         "description": {
-          "chatFlavor": "Change Echo Elevation / Cambia quota dell'eco"
+          "chatFlavor": "Change Echo Elevation"
         },
         "duration": {
           "concentration": false,
@@ -303,7 +303,7 @@
       "GACEchoDismiss01": {
         "_id": "GACEchoDismiss01",
         "type": "utility",
-        "name": "Dismiss / Congeda",
+        "name": "Dismiss",
         "img": "modules/goffredo-compendium/assets/icons/manifest-echo-dismiss.webp",
         "activation": {
           "type": "bonus",
@@ -320,7 +320,7 @@
           "spellSlot": true
         },
         "description": {
-          "chatFlavor": "Dismiss Echo / Congeda Eco"
+          "chatFlavor": "Dismiss Echo"
         },
         "duration": {
           "concentration": false,

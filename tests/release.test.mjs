@@ -26,8 +26,7 @@ test('release archive contains the installable module and excludes development s
     'LICENSE',
     'THIRD_PARTY_NOTICES.md',
     'scripts/main.mjs',
-    'lang/en.json',
-    'lang/it.json'
+    'lang/en.json'
   ]) assert.ok(entries.includes(required), `${required} must be included`);
 
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-features-2014/')));

@@ -1,66 +1,61 @@
-# Reazioni di combattimento - Design
+# Combat reactions - Design
 
-## 1. Obiettivo
+## 1. Goal
 
-Sostituire le automazioni di reazione di Gambit's Premades, non piu disponibile, con un sistema unico del modulo, regole 2014. Le reazioni che Midi-QOL gestisce gia (attivazione "Reazione" su attacco, colpo, danno, tiro salvezza: Shield, Uncanny Dodge, Hellish Rebuke, Absorb Elements...) restano a Midi.
+Replace the reaction automations of Gambit's Premades, no longer available, with a single module system using 2014 rules. Reactions Midi-QOL already handles (activation "Reaction" on being attacked, hit, damaged or saving: Shield, Uncanny Dodge, Hellish Rebuke, Absorb Elements...) stay with Midi.
 
-## 2. Rilasci
+## 2. Releases
 
-| Versione | Contenuto |
+| Version | Content |
 | --- | --- |
-| 0.4.0 | Servizio di richiesta con timeout, pannello Reazioni, motore del movimento: attacco di opportunita (tutti, eco compreso), Sentinel parti 1-2, War Caster, Polearm Master; Vengeful Assault migrato sul nuovo servizio |
-| 0.5.0 | Reazioni ad attacchi verso altri (Sentinel parte 3, Protection, Interception) e a incantesimi (Mage Slayer) |
+| 0.4.x | Timed prompt service, Reactions panel, movement engine: opportunity attacks (everyone, echo included), Sentinel parts 1-2, War Caster, Polearm Master; Vengeful Assault moved onto the new service; visible reaction marker as the reaction state |
+| 0.5.0 | Reactions to attacks on others (Sentinel part 3, Protection, Interception) and to spells (Mage Slayer) |
 
-## 3. Configurazione per reazione
+## 3. Per-reaction configuration
 
-Ogni tipo di reazione ha una riga nel pannello **Reazioni** (impostazioni del modulo, solo GM), sul modello di Gambit's Premades:
+Each reaction type has a row in the **Reactions** panel (module settings, GM only), following Gambit's Premades:
 
-| Campo | Valori | Default |
+| Field | Values | Default |
 | --- | --- | --- |
-| Attiva | si / no | si |
-| Timeout | secondi (5-120) | 15 |
-| Allo scadere | Rinuncia / Usa automaticamente / Passa al GM | Rinuncia |
-| PNG | Chiedi al GM / Automatico / Spento | Chiedi al GM |
-| Destinatari PG | Giocatore / Giocatore e GM / Solo GM | Giocatore |
+| Enabled | yes / no | yes |
+| Timeout | seconds (5-120) | 15 |
+| When time runs out | Decline / Use automatically / Ask the GM | Decline |
+| NPCs | Ask the GM / Automatic / Off | Ask the GM |
+| PC prompt to | Player / Player and GM / GM only | Player |
 
-Opzioni generali: solo durante un combattimento attivo (default si), riepilogo in chat delle reazioni usate (default si).
+General options: only during an active combat (default yes), a chat line for each reaction used (default yes).
 
-Tipi in 0.4.0: `opportunityAttack`, `sentinel` (modificatori dell'attacco di opportunita), `warCaster`, `polearmMaster`, `vengefulAssault`.
+## 4. Prompt service
 
-## 4. Servizio di richiesta
+- One authority: the active GM detects triggers and sends prompts, so clients never duplicate them.
+- Prompts use Foundry 14 `User#query` with a handler registered in `CONFIG.queries`; the recipient sees a dialog with a countdown, the choices (weapon, spell) and decline.
+- When the timeout expires the dialog closes and the configured fallback applies; "Ask the GM" reopens the prompt for the GM with the same timeout. A declined or expired prompt is as if the reaction was never taken.
+- An offline recipient counts as an expired prompt.
+- With several recipients the first answer wins and the other dialogs close.
 
-- Una sola autorita: il GM attivo calcola gli inneschi e invia le richieste. Nessun doppione tra client.
-- La richiesta usa `User#query` di Foundry 14 con un handler registrato in `CONFIG.queries`; il destinatario vede un dialog con conto alla rovescia, le scelte (arma, incantesimo o rinuncia) e il pulsante di conferma.
-- Allo scadere del timeout il dialog si chiude e si applica l'azione configurata. "Passa al GM" riapre la richiesta al GM con lo stesso timeout.
-- Se il destinatario non e connesso si applica subito l'azione "allo scadere".
-- Se piu destinatari ricevono la stessa richiesta vale la prima risposta; agli altri il dialog viene chiuso.
+## 5. Movement engine
 
-## 5. Motore del movimento
+`moveToken` hook, run by the active GM only; distances along the path come from `movement.origin` and `movement.passed.waypoints`.
 
-Hook `preMoveToken` (distanze iniziali) e `moveToken` (fine movimento), eseguiti solo dal GM attivo.
+Each reacting token on the scene must be hostile to the mover, have its reaction available, not be incapacitated, and see the mover. Reach is the largest reach among melee attacks (equipped weapons for PCs; every melee attack, natural weapons and attack features included, for NPCs), measured in 3D with height. An Echo Knight's echo reacts for its owner with the owner's weapons and the same single reaction.
 
-Per ogni token reattore sulla scena:
+Triggers:
 
-- ostile al token che si muove (disposizioni opposte), non se stesso;
-- reazione non usata, non incapacitato, vede il bersaglio (`tokenUtils.canSee`);
-- portata = massima portata delle armi da mischia impugnate (5 ft minimo), distanza 3D con dislivello;
-- l'eco di un Echo Knight e un reattore del proprietario: stessa reazione, armi del proprietario, portata dall'eco.
+- **Opportunity attack**: the path goes from inside to outside reach. Forced movement, teleports and swaps with the echo are excluded, and so is a mover that took Disengage.
+- **Polearm Master**: the path enters the reach of a glaive, halberd, pike, quarterstaff or spear.
+- **War Caster**: the opportunity attack prompt also offers prepared single-target spells with a one-action casting time.
+- **Sentinel**: Disengage doesn't protect from the reactor; a hit leaves the mover at the last point inside reach with speed 0 until the end of its turn.
 
-Inneschi:
+The reaction roll gets a temporary range grace (the mover has already left reach) and tells Midi not to treat it as a reaction. The reaction is marked once, after the attack starts.
 
-- **Attacco di opportunita**: distanza iniziale <= portata e finale > portata. Esclusi movimento forzato, teletrasporto (`displace`, `blink`, `catForce`), scambio con l'eco, bersagli con Disengage (effetto o status `disengage`/`disengaged`).
-- **Polearm Master**: il bersaglio entra nella portata (iniziale > portata, finale <= portata) e il reattore impugna glaive, halberd, pike, quarterstaff o spear.
-- **War Caster**: quando il reattore puo fare un attacco di opportunita, la richiesta offre anche gli incantesimi preparati a bersaglio singolo con tempo di lancio 1 azione.
-- **Sentinel**:
-  - il Disengage non protegge dal reattore;
-  - se l'attacco di opportunita colpisce, il bersaglio ha velocita 0 fino alla fine del suo turno (effetto DAE `turnEnd`) e torna al punto di partenza del movimento, cioe l'ultimo punto dentro la portata.
+## 6. Reaction state
 
-La reazione viene consumata solo quando l'attacco o l'incantesimo parte davvero. Un token che ha gia reagito in questo movimento non riceve una seconda richiesta.
+A reaction is used exactly while a visible marker is on the actor: Midi's reaction effect (which may reuse Convenient Effects' "Reaction"), the module's own marker, a `reaction` status, or an effect named "Reaction". Deleting the marker gives the reaction back; the module's marker clears at the start of the actor's turn.
 
-## 6. Vengeful Assault
+## 7. Names shown to players
 
-La richiesta passa dal servizio: timeout e comportamento allo scadere configurabili nella riga `vengefulAssault`.
+Prompts and chat lines show player characters and tokens whose name is visible to everyone; other creatures appear as "a creature".
 
-## 7. Test
+## 8. Tests
 
-Unitari, senza Foundry: configurazione e fusione dei default, risoluzione del timeout, idoneita del reattore, inneschi uscita/entrata dalla portata, esclusioni, eco come reattore, Sentinel, War Caster, esecuzione solo sul GM, nomi dei pass e degli hook.
+Unit tests without Foundry: configuration and defaults, timeout fallbacks, reactor eligibility, leaving and entering reach, exclusions, echo as a reactor, Sentinel, War Caster, Polearm Master, GM-only execution, reaction markers, public names.

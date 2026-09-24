@@ -4,7 +4,7 @@
   "img": "modules/goffredo-compendium/assets/icons/great-weapon-fighting.webp",
   "system": {
     "description": {
-      "value": "<p><strong>Operational summary:</strong> with a melee weapon attack using a two-handed weapon, or a versatile weapon wielded in two hands, every damage die that rolls a 1 or 2 is rerolled once and the new result is kept. Applies to every qualifying weapon automatically.</p><p><strong>Riassunto operativo:</strong> negli attacchi con arma da mischia a due mani, o versatile impugnata a due mani, ogni dado di danno che ottiene 1 o 2 viene ritirato una volta e si tiene il nuovo risultato. Vale in automatico per ogni arma idonea.</p>",
+      "value": "<p><strong>Operational summary:</strong> with a melee weapon attack using a two-handed weapon, or a versatile weapon wielded in two hands, every damage die that rolls a 1 or 2 is rerolled once and the new result is kept. Applies to every qualifying weapon automatically.</p>",
       "chat": ""
     },
     "source": {
