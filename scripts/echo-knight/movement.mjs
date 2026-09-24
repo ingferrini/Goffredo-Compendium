@@ -5,6 +5,9 @@ import {getEchoState} from './state.mjs';
 
 const MOVEMENT_LIMIT = 30;
 
+// CAT dialogs render strings verbatim, so localize keys before handing them over.
+const localize = key => globalThis.game?.i18n?.localize?.(key) ?? key;
+
 const defaultDeps = {
   currentUserId: () => globalThis.game?.user?.id,
   dialogUtils,
@@ -136,9 +139,9 @@ export async function moveEchoVertically({workflow}, deps = defaultDeps) {
   const step = Number(echoToken.parent?.grid?.distance) || 5;
   const elevation = await deps.dialogUtils.numberDialog(
     workflow.activity?.name ?? 'Manifest Echo',
-    'GAC.Echo.ElevationPrompt',
+    localize('GAC.Echo.ElevationPrompt'),
     {
-      label: 'GAC.Echo.ElevationLabel',
+      label: localize('GAC.Echo.ElevationLabel'),
       name: 'elevation',
       options: {value: current, min: current - remaining, max: current + remaining, step}
     }
@@ -155,7 +158,11 @@ export async function moveEchoVertically({workflow}, deps = defaultDeps) {
     y: echoToken.y,
     elevation: destination,
     action: 'fly'
-  }], {showRuler: false});
+  }], {
+    // CAT skips wall-constrained moves that keep x/y, which drops elevation-only moves.
+    constrainOptions: {ignoreWalls: true},
+    showRuler: false
+  });
   return true;
 }
 

@@ -3,6 +3,9 @@ import {actorUtils, dialogUtils, queryUtils, tokenUtils} from '../proxy.mjs';
 import {attackFromEcho} from './manifest-echo.mjs';
 import {leftEchoReach} from './rules.mjs';
 
+// CAT dialogs render strings verbatim, so localize keys before handing them over.
+const localize = key => globalThis.game?.i18n?.localize?.(key) ?? key;
+
 const defaultDeps = {
   actorUtils,
   attackFromEcho,
@@ -97,7 +100,7 @@ export function createOpportunityController(deps = defaultDeps) {
 
       const confirmed = await deps.dialogUtils.confirm(
         feature.name,
-        'GAC.Echo.ReactionPrompt',
+        localize('GAC.Echo.ReactionPrompt'),
         {userId: deps.queryUtils.firstOwner(owner, true)}
       );
       if (!confirmed) continue;

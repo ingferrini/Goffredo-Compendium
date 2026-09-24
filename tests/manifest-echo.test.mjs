@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {dismissEcho, summonEcho} from '../scripts/echo-knight/manifest-echo.mjs';
+import {destroyEchoAtZeroHp, dismissEcho, echoAbilities, summonEcho} from '../scripts/echo-knight/manifest-echo.mjs';
 
 function context() {
   const flags = new Map();
@@ -139,6 +139,44 @@ test('dismiss deletes the active marker and clears state', async () => {
 
   await dismissEcho({item, workflow}, deps);
 
+  assert.ok(calls.some(([type, document]) => type === 'delete' && document === marker));
+  assert.equal(actor.getFlag('goffredo-compendium', 'echo'), undefined);
+});
+
+test('echo saves use the owner save totals, not the echo proficiency bonus', () => {
+  const abilities = echoAbilities({
+    str: {value: 18, proficient: 1, save: {value: 8}},
+    dex: {value: 12, proficient: 0, save: {value: 1}},
+    con: {value: 15, proficient: 1, save: 6}
+  });
+
+  assert.deepEqual(abilities.str, {value: 18, proficient: 0, bonuses: {check: '', save: '4'}});
+  assert.equal(abilities.dex.bonuses.save, '0');
+  assert.equal(abilities.con.bonuses.save, '4');
+});
+
+test('summon copies owner saves and keeps the Echo creature type', async () => {
+  const {item, workflow} = context();
+  workflow.actor.system.abilities = {con: {value: 18, proficient: 1, save: {value: 8}}};
+  const {calls, deps} = dependencies();
+
+  await summonEcho({item, workflow}, deps);
+
+  const {system} = calls.find(([type]) => type === 'create')[1].updates.actor;
+  assert.deepEqual(system.abilities.con, {value: 18, proficient: 0, bonuses: {check: '', save: '4'}});
+  assert.equal(system.details, undefined);
+});
+
+test('an echo reduced to 0 hp is dismissed through its owner', async () => {
+  const marker = {uuid: 'ActiveEffect.echo'};
+  const {actor} = context();
+  await actor.setFlag('goffredo-compendium', 'echo', {tokenUuid: 'Token.echo'});
+  const {calls, deps} = dependencies({existingEffect: marker});
+  deps.fromUuid = async uuid => uuid === actor.uuid ? actor : undefined;
+  const echoActor = {token: {getFlag: () => ({ownerActorUuid: actor.uuid})}};
+
+  assert.equal(await destroyEchoAtZeroHp(echoActor, {system: {attributes: {hp: {value: 1}}}}, deps), false);
+  assert.equal(await destroyEchoAtZeroHp(echoActor, {system: {attributes: {hp: {value: 0}}}}, deps), true);
   assert.ok(calls.some(([type, document]) => type === 'delete' && document === marker));
   assert.equal(actor.getFlag('goffredo-compendium', 'echo'), undefined);
 });

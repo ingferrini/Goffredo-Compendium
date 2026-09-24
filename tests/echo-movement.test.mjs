@@ -185,6 +185,7 @@ test('elevation control moves only vertically within the remaining budget', asyn
   assert.equal(dialog[3].options.max, 30);
   const tokenMove = calls.find(([type]) => type === 'move');
   assert.deepEqual(tokenMove[2], [{x: 400, y: 500, elevation: 25, action: 'fly'}]);
+  assert.equal(tokenMove[3].constrainOptions.ignoreWalls, true);
 });
 
 test('movement integration registers exactly one Foundry v14 moveToken hook', () => {

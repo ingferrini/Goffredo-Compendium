@@ -13,6 +13,9 @@ import {echoArmorClass, shouldDismissEcho} from './rules.mjs';
 import {moveEchoVertically} from './movement.mjs';
 import {clearEchoState, createEchoState, getEchoState, setEchoState} from './state.mjs';
 
+// CAT dialogs render strings verbatim, so localize keys before handing them over.
+const localize = key => globalThis.game?.i18n?.localize?.(key) ?? key;
+
 const defaultDeps = {
   actorUtils,
   compendiumUtils,
@@ -65,20 +68,6 @@ function validPosition(value) {
   return ['x', 'y', 'elevation'].every(key => Number.isFinite(Number(value[key])));
 }
 
-function movementSpent(token) {
-  return collectionValues(token.movementHistory).reduce((total, waypoint) => {
-    const cost = Number(waypoint.cost);
-    return total + (Number.isFinite(cost) ? cost : 0);
-  }, 0);
-}
-
-function movementSpeed(token) {
-  const speeds = token.actor?.system?.attributes?.movement ?? {};
-  const selected = Number(speeds[token.movementAction]);
-  if (Number.isFinite(selected) && selected > 0) return selected;
-  return Math.max(0, ...Object.values(speeds).map(Number).filter(Number.isFinite));
-}
-
 async function echoTokenFor(actor, deps) {
   const state = getEchoState(actor);
   if (!state?.tokenUuid) return undefined;
@@ -119,7 +108,30 @@ function echoName(actor) {
   return `Echo of ${actor.name}`;
 }
 
-function summonUpdates(workflow, name) {
+function abilityModifier(score) {
+  return Math.floor((Number(score) - 10) / 2);
+}
+
+function saveTotal(ability) {
+  const save = ability?.save;
+  const value = Number(typeof save === 'object' ? save?.value : save);
+  return Number.isFinite(value) ? value : abilityModifier(ability?.value ?? 10);
+}
+
+// The echo rolls saves with its owner's bonuses: copy the scores and fold the
+// owner's full save total into a flat bonus, so the echo's own proficiency never applies.
+export function echoAbilities(ownerAbilities = {}) {
+  return Object.fromEntries(Object.entries(ownerAbilities).map(([key, ability]) => {
+    const value = Number(ability?.value) || 10;
+    return [key, {
+      value,
+      proficient: 0,
+      bonuses: {check: '', save: String(saveTotal(ability) - abilityModifier(value))}
+    }];
+  }));
+}
+
+export function summonUpdates(workflow, name) {
   const actor = workflow.actor;
   const token = workflow.token.document;
   const tokenImage = token.texture?.src ?? actor.prototypeToken?.texture?.src;
@@ -127,13 +139,12 @@ function summonUpdates(workflow, name) {
     actor: {
       name,
       system: {
-        abilities: actor.system.abilities,
+        abilities: echoAbilities(actor.system.abilities),
         attributes: {
           ac: {calc: 'flat', flat: echoArmorClass(actor.system.attributes.prof)},
           hp: {value: 1, max: 1},
           senses: actor.system.attributes.senses
         },
-        details: {type: actor.system.details.type},
         traits: {size: actor.system.traits.size}
       },
       prototypeToken: {
@@ -232,7 +243,7 @@ export async function attackFromEcho({item, workflow, meleeOnly = false}, deps =
   }
   const selected = await deps.dialogUtils.selectDocumentDialog(
     item.name,
-    'GAC.Echo.ChooseAttack',
+    localize('GAC.Echo.ChooseAttack'),
     attacks,
     {sort: 'alphabetical'}
   );
@@ -269,11 +280,6 @@ export async function swapWithEcho({workflow}, deps = defaultDeps) {
     return false;
   }
 
-  if ((movementSpeed(ownerToken) - movementSpent(ownerToken)) < SWAP_COST) {
-    deps.notify('GAC.Echo.NotEnoughMovement');
-    return false;
-  }
-
   const ownerDestination = position(echoToken);
   const echoDestination = position(ownerToken);
   if (!validPosition(ownerDestination) || !validPosition(echoDestination)) return false;
@@ -295,6 +301,17 @@ export async function swapWithEcho({workflow}, deps = defaultDeps) {
       {...commonOptions, measureOptions: {cost: () => 0}}
     )
   ]);
+  return true;
+}
+
+export async function destroyEchoAtZeroHp(actor, changes, deps = defaultDeps) {
+  const hp = changes?.system?.attributes?.hp?.value;
+  if (hp === undefined || Number(hp) > 0) return false;
+  const echoToken = actor?.token ?? actor?.getActiveTokens?.(false, true)?.[0];
+  const ownerActorUuid = echoToken?.getFlag?.(FLAGS.scope, FLAGS.echo)?.ownerActorUuid;
+  const owner = ownerActorUuid ? await deps.fromUuid(ownerActorUuid) : undefined;
+  if (!owner) return false;
+  await dismissEcho({workflow: {actor: owner}}, deps);
   return true;
 }
 
@@ -331,7 +348,7 @@ async function onRollFinished({document: item, workflow}) {
 
 export const manifestEcho = {
   name: 'Manifest Echo',
-  version: '0.1.0',
+  version: '0.1.1',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: onRollFinished, priority: 50}],
   combat: [{pass: 'actorTurnEnd', macro: checkEchoRange, priority: 50}]

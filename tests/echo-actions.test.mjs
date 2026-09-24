@@ -212,17 +212,17 @@ test('swap exchanges horizontal and vertical positions and records a fixed 15-fo
   assert.equal(moves[1][3].goffredoCompendium.ignoreEchoMovement, true);
 });
 
-test('swap does not move either token without 15 feet of movement remaining', async () => {
+test('swap never blocks on spent movement', async () => {
   const context = actorContext();
-  context.ownerToken.movementHistory = [{cost: 20}];
+  context.ownerToken.movementHistory = [{cost: 30}];
   await context.actor.setFlag('goffredo-compendium', 'echo', {tokenUuid: context.echoToken.uuid});
   const {calls, deps} = actionDependencies(context);
 
   const result = await actions.swapWithEcho({workflow: context.workflow}, deps);
 
-  assert.equal(result, false);
-  assert.equal(calls.some(([type]) => type === 'move'), false);
-  assert.ok(calls.some(([type, key]) => type === 'notify' && key === 'GAC.Echo.NotEnoughMovement'));
+  assert.equal(result, true);
+  assert.equal(calls.filter(([type]) => type === 'move').length, 2);
+  assert.equal(calls.some(([type]) => type === 'notify'), false);
 });
 
 test('owner turn end dismisses an echo beyond 30 feet', async () => {
@@ -258,7 +258,7 @@ test('action prompts and warnings are localized in both supported languages', as
   )));
 
   for (const language of languages) {
-    for (const key of ['NoActive', 'NoAttack', 'ChooseAttack', 'NotEnoughMovement']) {
+    for (const key of ['NoActive', 'NoAttack', 'ChooseAttack', 'ElevationLabel']) {
       assert.equal(typeof language.GAC.Echo[key], 'string', `${key} must be localized`);
       assert.ok(language.GAC.Echo[key].length > 0);
     }

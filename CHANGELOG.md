@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 0.1.1 - 2026-09-24
+
+- Swap Positions no longer blocks on the owner's recorded movement; it always exchanges places.
+- Echo elevation control now actually moves the token and shows localized labels.
+- Dialog prompts (attack choice, reaction, elevation) are localized instead of showing raw keys.
+- Echo saving throws now use the owner's save totals instead of the echo's own proficiency bonus; the echo keeps its Echo creature type.
+- An echo reduced to 0 hit points is dismissed automatically.
+
 ## 0.1.0 - 2026-09-24
 
 - Added bilingual 2014 Manifest Echo and Unleash Incarnation compendium Items.

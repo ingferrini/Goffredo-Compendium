@@ -1,5 +1,5 @@
 import {MODULE_ID} from './constants.mjs';
-import {manifestEcho} from './echo-knight/manifest-echo.mjs';
+import {destroyEchoAtZeroHp, manifestEcho} from './echo-knight/manifest-echo.mjs';
 import {registerMovementHooks} from './echo-knight/movement.mjs';
 import {registerOpportunityHooks} from './echo-knight/opportunity-attack.mjs';
 import {unleashIncarnation} from './echo-knight/unleash-incarnation.mjs';
@@ -32,4 +32,7 @@ Hooks.once('catReady', () => {
 Hooks.once('ready', () => {
   registerMovementHooks();
   registerOpportunityHooks();
+  Hooks.on('updateActor', (actor, changes) => {
+    if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
+  });
 });
