@@ -8,6 +8,7 @@ import {
   tokenUtils
 } from '../proxy.mjs';
 import {forceTokenOrigin, notify, tokenDistance} from '../shared/foundry.mjs';
+import {markTransient} from '../shared/transient.mjs';
 
 const MIND_RANGE = 60;
 const MIND_LEASH = 300;
@@ -126,14 +127,15 @@ export async function armCastFromMind({item, workflow}, deps = defaultDeps) {
     deps.notify('GAC.Mind.NoActive');
     return false;
   }
-  const effectData = deps.documentUtils.getBaseEffectData(item, {
+  // Swept at the next turn change if no spell uses it.
+  const effectData = markTransient(deps.documentUtils.getBaseEffectData(item, {
     name: `${item.name}: ${globalThis.game?.i18n?.localize?.('GAC.Mind.CastLabel') ?? 'Cast'}`,
     img: item.img,
     origin: item.uuid,
     identifier: CAST_MARKER,
     duration: {seconds: 6},
     changes: [{key: ATTACK_ORIGIN_FLAG, type: 'custom', value: 1, priority: 20}]
-  });
+  }));
   const [casterEffect] = await deps.effectUtils.createEffects(workflow.actor, [effectData]);
   const [mindEffect] = await deps.effectUtils.createEffects(mindToken.actor, [effectData]);
   if (!casterEffect || !mindEffect) {

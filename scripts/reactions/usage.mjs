@@ -1,6 +1,7 @@
 import {MODULE_ID} from '../constants.mjs';
 import {setReactionUsed as midiSetReactionUsed} from '../platform/midi.mjs';
 import {collectionValues, localize} from '../shared/foundry.mjs';
+import {markTransient, withTimeout} from '../shared/transient.mjs';
 
 // A reaction is used exactly while a visible marker sits on the actor: Midi's
 // "Reaction used" effect (its counter lives inside that effect), the
@@ -79,13 +80,14 @@ export function publicName(token) {
 // Midi rejects a reaction attack at a creature that has already left reach.
 // A temporary range bonus on the reacting actor covers that single roll.
 export async function withReactionReach(actor, roll) {
-  const [effect] = await actor.createEmbeddedDocuments('ActiveEffect', [{
+  const [effect] = await actor.createEmbeddedDocuments('ActiveEffect', [markTransient({
     name: localize('GAC.Reactions.ReachGrace'),
     img: 'icons/skills/melee/strike-sword-slashing-red.webp',
     system: {changes: [{key: 'flags.midi-qol.range.all', type: 'add', value: '1000', priority: 50}]}
-  }]) ?? [];
+  })]) ?? [];
   try {
-    return await roll();
+    // A roll that never completes must not leave the grace effect behind.
+    return await withTimeout(Promise.resolve().then(roll));
   } finally {
     if (effect && actor.effects?.get?.(effect.id)) await effect.delete();
   }

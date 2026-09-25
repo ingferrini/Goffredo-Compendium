@@ -11,6 +11,7 @@ import {
 } from '../proxy.mjs';
 import {withMoveToken} from '../token-move.mjs';
 import {forceTokenOrigin} from '../shared/foundry.mjs';
+import {markTransient, withTimeout} from '../shared/transient.mjs';
 import {echoArmorClass, shouldDismissEcho} from './rules.mjs';
 import {moveEchoVertically} from './movement.mjs';
 import {clearEchoState, createEchoState, getEchoState, setEchoState} from './state.mjs';
@@ -278,7 +279,7 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
   });
 
   try {
-    const data = deps.documentUtils.getBaseEffectData(item, attackOriginEffect(item));
+    const data = markTransient(deps.documentUtils.getBaseEffectData(item, attackOriginEffect(item)));
     const [ownerEffect] = await deps.effectUtils.createEffects(workflow.actor, [data]);
     if (ownerEffect) effects.push(ownerEffect);
     const [echoEffect] = await deps.effectUtils.createEffects(echoToken.actor, [data]);
@@ -286,7 +287,7 @@ export async function attackFromEcho({item, workflow, meleeOnly = false, checkRa
     if (!ownerEffect || !echoEffect) return undefined;
     await deps.documentUtils.makeDependent(ownerEffect, [echoEffect]);
     const rollOptions = asReaction ? {options: {workflowOptions: {notReaction: true}}} : {};
-    return await deps.workflowUtils.syntheticItemRoll(selected, Array.from(workflow.targets ?? []), rollOptions);
+    return await withTimeout(deps.workflowUtils.syntheticItemRoll(selected, Array.from(workflow.targets ?? []), rollOptions));
   } finally {
     if (!hookRan) deps.hooks.off(hookName, hookId);
     // The echo effect depends on the owner's: deleting the first removes both.

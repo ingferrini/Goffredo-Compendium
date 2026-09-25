@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.7.2 - 2026-09-25
+
+- Fixed helper effects that could stay on an actor forever when a roll never completed ("Reaction reach" range grace, the echo's attack-origin override, the spectral mind's cast arming), giving unlimited range. They are now flagged as transient, removed after the roll or a 60-second timeout, and swept by the GM at every turn change and when the world loads, including leftovers from older versions.
+
 ## 0.7.1 - 2026-09-25
 
 - Legendary actions and resistances spent by the module never go past the maximum, so a manual recharge from the NPC sheet takes effect at once.
