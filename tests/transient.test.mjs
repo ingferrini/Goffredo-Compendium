@@ -36,9 +36,3 @@ test('the reach grace effect is transient', async () => {
   assert.equal(transient.isTransient(created), true);
 });
 
-test('leftovers from older versions are recognised, the echo marker is not', () => {
-  assert.equal(transient.isTransient({name: 'Reaction reach', changes: [{key: 'flags.midi-qol.range.all'}]}), true);
-  assert.equal(transient.isTransient({name: 'Manifest Echo', changes: [{key: 'flags.midi-qol.rangeOverride.attack.all'}]}), true);
-  assert.equal(transient.isTransient({name: 'Manifest Echo', changes: []}), false);
-  assert.equal(transient.isTransient({name: 'Rage', changes: [{key: 'system.bonuses.mwak.damage'}]}), false);
-});

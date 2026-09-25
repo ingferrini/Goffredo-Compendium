@@ -13,20 +13,8 @@ export function markTransient(effectData) {
   return effectData;
 }
 
-function changesOf(effect) {
-  return [...(effect?.changes ?? []), ...(effect?.system?.changes ?? [])];
-}
-
-// Leftovers from versions before the flag existed: the reaction reach grace and
-// the echo's attack-origin override (the echo marker itself has no changes).
-function isLegacyLeftover(effect) {
-  const keys = changesOf(effect).map(change => change.key);
-  if (['Reaction reach', 'Portata di reazione'].includes(effect?.name) && keys.includes('flags.midi-qol.range.all')) return true;
-  return effect?.name === 'Manifest Echo' && keys.includes('flags.midi-qol.rangeOverride.attack.all');
-}
-
 export function isTransient(effect) {
-  return Boolean(effect?.flags?.[MODULE_ID]?.[TRANSIENT_FLAG]) || isLegacyLeftover(effect);
+  return Boolean(effect?.flags?.[MODULE_ID]?.[TRANSIENT_FLAG]);
 }
 
 // Resolves with the roll result, or undefined when the roll never comes back.
