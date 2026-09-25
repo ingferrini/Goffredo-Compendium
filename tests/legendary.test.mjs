@@ -193,3 +193,13 @@ test('the panel saves the legendary section, with 0 meaning no time limit', () =
   assert.equal(saved.lairActions.enabled, false);
   assert.deepEqual(saved.legendaryResistance, {enabled: true, timeout: 30, pause: false, onTimeout: 'accept'});
 });
+
+test('spending never goes past the maximum', async () => {
+  const dragon = actor({legact: {value: 0, max: 3, spent: 3}});
+  await legendary.spendResource(dragon, 'legact', 2);
+  assert.deepEqual(dragon.updates, [{'system.resources.legact.spent': 3}]);
+  const fresh = actor({legres: {value: 3, max: 3, spent: 0}});
+  await legendary.spendResource(fresh, 'legres', 1);
+  assert.deepEqual(fresh.updates, [{'system.resources.legres.spent': 1}]);
+  assert.equal(await legendary.spendResource(fresh, 'hp', 1), false);
+});

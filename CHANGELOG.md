@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.7.1 - 2026-09-25
+
+- Legendary actions and resistances spent by the module never go past the maximum, so a manual recharge from the NPC sheet takes effect at once.
+
 ## 0.7.0 - 2026-09-25
 
 - Added the campaign legendary action "Protocollo di intangibilità" (Maelis Rhor): items with identifier `protocollo-intangibilita` grant, until the start of the user's next turn, resistance to all damage, advantage on saving throws, immunity to grappled and prone, and turn the first damage taken through Midi into 0.

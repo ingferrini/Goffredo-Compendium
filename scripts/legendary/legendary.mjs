@@ -107,8 +107,11 @@ export function lairCandidates(combat, step) {
 
 export async function spendResource(actor, key, amount) {
   if (!SPENDABLE.has(key)) return false;
-  const spent = (Number(resource(actor, key).spent) || 0) + amount;
-  await actor.update({[`system.resources.${key}.spent`]: spent});
+  const {spent = 0, max} = resource(actor, key);
+  // Never spend past the maximum: a manual recharge from the sheet must work at once.
+  const cap = Number(max);
+  const next = (Number(spent) || 0) + amount;
+  await actor.update({[`system.resources.${key}.spent`]: Number.isFinite(cap) && cap > 0 ? Math.min(cap, next) : next});
   return true;
 }
 
