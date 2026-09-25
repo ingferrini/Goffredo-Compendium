@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.7.0 - 2026-09-25
+
+- Added the campaign legendary action "Protocollo di intangibilità" (Maelis Rhor): items with identifier `protocollo-intangibilita` grant, until the start of the user's next turn, resistance to all damage, advantage on saving throws, immunity to grappled and prone, and turn the first damage taken through Midi into 0.
+
 ## 0.6.0 - 2026-09-25
 
 - Added legendary actions between turns: the turn advance is held, the game pauses, players get a notice and the GM chooses an affordable legendary action or skips; then the turn advances.

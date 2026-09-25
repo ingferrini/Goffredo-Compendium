@@ -123,6 +123,9 @@
       "Resistance": "Legendary Resistance",
       "ResistancePrompt": "Failed the saving throw against",
       "UseResistance": "Use Legendary Resistance: succeed instead"
+    },
+    "Campaign": {
+      "ProtocolNegated": "Protocollo di intangibilità: the first damage is negated"
     }
   }
 }

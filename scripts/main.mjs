@@ -9,6 +9,7 @@ import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
 import {registerLegendaryResistance, registerLegendaryTurns} from './legendary/legendary.mjs';
+import {registerProtocollo} from './campaign/protocollo-intangibilita.mjs';
 import {api} from './proxy.mjs';
 import {registerAttackReactions} from './reactions/attack-reactions.mjs';
 import {registerReactionSettings} from './reactions/config.mjs';
@@ -34,6 +35,7 @@ Hooks.once('init', () => {
   registerReactionSettings(game.settings, createReactionsMenuClass());
   registerReactionQueries(globalThis.CONFIG.queries);
   registerLegendaryTurns(Hooks, globalThis.CONFIG.queries);
+  registerProtocollo(Hooks, globalThis.CONFIG.queries);
 });
 
 Hooks.once('catReady', () => {

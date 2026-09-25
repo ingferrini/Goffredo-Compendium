@@ -79,6 +79,7 @@ A separate section of the same panel (GM decisions, never reactions) with enable
 ## Campaign items
 
 - **Frammento Runico Instabile**: while equipped and attuned, spells dealing radiant damage deal an extra 1d6 radiant; every third owner turn in combat, and when attunement ends, the owner takes 2d6 psychic damage.
+- **Protocollo di intangibilità** (Maelis Rhor's legendary action, identifier `protocollo-intangibilita`): until the start of her next turn the first damage she would take through Midi becomes 0, and she has resistance to all damage, advantage on saving throws and immunity to grappled and prone.
 - **Piuma Metallica della Regina Corvo**: bonus action, once per day; until the end of the turn, advantage on attack rolls against evil creatures.
 
 ## Language
