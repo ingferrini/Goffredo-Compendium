@@ -68,6 +68,14 @@ Advantage on attack rolls when the companion named in the feature's **Requiremen
 
 This system depends only on Foundry and Midi-QOL, not on CAT.
 
+## Legendary actions, lair actions and Legendary Resistance
+
+A separate section of the same panel (GM decisions, never reactions) with enable, timeout (0 = no limit), pause and fallback:
+
+- **Legendary actions**: when the turn is advanced, if another creature's turn is ending and an NPC still has legendary actions it can afford, the advance is held, the game pauses, players see "The GM is considering a legendary action…", and the GM picks an action (target first) or skips. The turn then advances normally. Any user can press "next turn": the decision always goes to the GM.
+- **Lair actions**: offered when initiative count 20 (or the actor's lair initiative) is crossed, losing ties, for NPCs whose sheet has a lair; the same lair action can't be picked two rounds in a row.
+- **Legendary Resistance**: after Midi collects saving throws, a failed save of an NPC with Legendary Resistance left can be turned into a success; one use is spent.
+
 ## Campaign items
 
 - **Frammento Runico Instabile**: while equipped and attuned, spells dealing radiant damage deal an extra 1d6 radiant; every third owner turn in combat, and when attunement ends, the owner takes 2d6 psychic damage.

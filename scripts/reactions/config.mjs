@@ -67,6 +67,7 @@ export function allReactionConfigs(settings = globalThis.game?.settings) {
 export function registerReactionSettings(settings, menuClass) {
   settings.register(MODULE_ID, REACTIONS_SETTING, {scope: 'world', config: false, type: Object, default: {}});
   settings.register(MODULE_ID, GENERAL_SETTING, {scope: 'world', config: false, type: Object, default: {...DEFAULT_GENERAL}});
+  settings.register(MODULE_ID, LEGENDARY_SETTING, {scope: 'world', config: false, type: Object, default: {}});
   if (menuClass) {
     settings.registerMenu(MODULE_ID, 'reactionsMenu', {
       name: 'GAC.Reactions.Menu.Name',
@@ -77,4 +78,30 @@ export function registerReactionSettings(settings, menuClass) {
       restricted: true
     });
   }
+}
+
+// Legendary and lair actions and Legendary Resistance are GM decisions, not
+// reactions: they have their own section and never spend a reaction.
+export const LEGENDARY_SETTING = 'legendary';
+export const LEGENDARY_TYPES = Object.freeze(['legendaryActions', 'lairActions', 'legendaryResistance']);
+export const DEFAULT_LEGENDARY = Object.freeze({enabled: true, timeout: 0, pause: true, onTimeout: 'decline'});
+
+export function normalizeLegendary(value = {}) {
+  const timeout = Math.round(Number(value.timeout));
+  return {
+    enabled: value.enabled === undefined ? DEFAULT_LEGENDARY.enabled : Boolean(value.enabled),
+    // 0 means no time limit for the GM.
+    timeout: Number.isFinite(timeout) && timeout > 0 ? Math.min(MAX_TIMEOUT, Math.max(MIN_TIMEOUT, timeout)) : 0,
+    pause: value.pause === undefined ? DEFAULT_LEGENDARY.pause : Boolean(value.pause),
+    onTimeout: value.onTimeout === 'accept' ? 'accept' : 'decline'
+  };
+}
+
+export function getLegendaryConfig(id, settings = globalThis.game?.settings) {
+  return normalizeLegendary(readSetting(settings, LEGENDARY_SETTING)?.[id]);
+}
+
+export function allLegendaryConfigs(settings = globalThis.game?.settings) {
+  const stored = readSetting(settings, LEGENDARY_SETTING);
+  return Object.fromEntries(LEGENDARY_TYPES.map(id => [id, normalizeLegendary(stored?.[id])]));
 }

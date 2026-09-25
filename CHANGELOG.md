@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 0.6.0 - 2026-09-25
+
+- Added legendary actions between turns: the turn advance is held, the game pauses, players get a notice and the GM chooses an affordable legendary action or skips; then the turn advances.
+- Added lair actions at initiative count 20 (losing ties), without repeating the same one two rounds in a row.
+- Added Legendary Resistance after failed saving throws in Midi workflows.
+- The panel has a separate "Legendary actions, lair actions and Legendary Resistance" section (enable, timeout with 0 = no limit, pause, fallback).
+
 ## 0.5.0 - 2026-09-25
 
 - Added Sentinel's third part: after a hostile creature within 5 feet of a Sentinel holder attacks another target without Sentinel, the holder is offered a melee weapon attack against it (new row in the Reactions panel). Attacks made as reactions count too; the echo never counts as "within 5 feet of you".

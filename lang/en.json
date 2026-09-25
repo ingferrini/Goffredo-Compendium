@@ -42,7 +42,7 @@
     },
     "Reactions": {
       "Menu": {
-        "Name": "Reactions",
+        "Name": "Reactions & legendary actions",
         "Label": "Configure reactions",
         "Hint": "Enable each reaction, its prompt timeout and what happens when nobody answers.",
         "Intro": "Each reaction asks its owner through a timed prompt. When time runs out, the chosen fallback applies.",
@@ -98,6 +98,31 @@
       "Anonymous": "a creature",
       "ReachGrace": "Reaction reach",
       "UsedMarker": "Reaction used"
+    },
+    "Legendary": {
+      "Section": "Legendary actions, lair actions and Legendary Resistance",
+      "SectionHint": "GM decisions, not reactions: they never spend a reaction. Timeout 0 waits without a limit.",
+      "Columns": {
+        "Timeout": "Timeout (s, 0 = none)",
+        "Pause": "Pause the game"
+      },
+      "OnTimeout": {
+        "decline": "Skip",
+        "accept": "Use automatically"
+      },
+      "Types": {
+        "legendaryActions": "Legendary actions (end of each other creature's turn)",
+        "lairActions": "Lair actions (initiative 20, losing ties)",
+        "legendaryResistance": "Legendary Resistance (after a failed save)"
+      },
+      "Actions": "Legendary actions",
+      "Lair": "Lair action",
+      "ChooseAction": "Target the creatures on the canvas first, then choose the action.",
+      "PlayerNotice": "The GM is considering a legendary action…",
+      "PlayerNoticeLair": "The GM is considering a lair action…",
+      "Resistance": "Legendary Resistance",
+      "ResistancePrompt": "Failed the saving throw against",
+      "UseResistance": "Use Legendary Resistance: succeed instead"
     }
   }
 }

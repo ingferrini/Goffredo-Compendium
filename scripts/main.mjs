@@ -8,6 +8,7 @@ import {frammentoRunico, unattuneBacklash} from './items/frammento-runico.mjs';
 import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
+import {registerLegendaryResistance, registerLegendaryTurns} from './legendary/legendary.mjs';
 import {api} from './proxy.mjs';
 import {registerAttackReactions} from './reactions/attack-reactions.mjs';
 import {registerReactionSettings} from './reactions/config.mjs';
@@ -32,6 +33,7 @@ Hooks.once('init', () => {
   console.info(`${MODULE_ID} | Initializing`);
   registerReactionSettings(game.settings, createReactionsMenuClass());
   registerReactionQueries(globalThis.CONFIG.queries);
+  registerLegendaryTurns(Hooks, globalThis.CONFIG.queries);
 });
 
 Hooks.once('catReady', () => {
@@ -53,6 +55,7 @@ Hooks.once('ready', () => {
   registerMovementReactions();
   registerReactionUsage();
   registerAttackReactions();
+  registerLegendaryResistance();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

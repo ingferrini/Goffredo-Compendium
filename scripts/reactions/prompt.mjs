@@ -5,6 +5,7 @@ import {getReactionConfig} from './config.mjs';
 
 export const REACTION_QUERY = `${MODULE_ID}.reaction`;
 export const CANCEL_QUERY = `${MODULE_ID}.reactionCancel`;
+export const NOTICE_QUERY = `${MODULE_ID}.notice`;
 
 const openDialogs = new Map();
 const TIMED_OUT = Object.freeze({choice: null, timedOut: true});
@@ -32,7 +33,7 @@ export function showReactionDialog({requestId, title, content, choices, timeout}
       : `<p><strong>${escapeHtml(choices[0]?.label)}</strong></p>`;
     const dialog = new DialogV2({
       window: {title},
-      content: `<p>${escapeHtml(content)}</p>${select}<p class="hint">${escapeHtml(localize('GAC.Reactions.Prompt.Countdown'))} <span data-gac-countdown>${remaining}</span>s</p>`,
+      content: `<p>${escapeHtml(content)}</p>${select}${timeout > 0 ? `<p class="hint">${escapeHtml(localize('GAC.Reactions.Prompt.Countdown'))} <span data-gac-countdown>${remaining}</span>s</p>` : ''}`,
       buttons: [
         {
           action: 'use',
@@ -45,7 +46,8 @@ export function showReactionDialog({requestId, title, content, choices, timeout}
       submit: choice => finish({choice: choice ?? null, timedOut: false})
     });
     dialog.addEventListener?.('close', () => finish({choice: null, timedOut: false}));
-    const timer = globalThis.setInterval(() => {
+    // A timeout of 0 waits for the answer without a countdown.
+    const timer = timeout > 0 && globalThis.setInterval(() => {
       remaining -= 1;
       const counter = dialog.element?.querySelector('[data-gac-countdown]');
       if (counter) counter.textContent = String(Math.max(0, remaining));
@@ -62,6 +64,18 @@ export function registerReactionQueries(queries = globalThis.CONFIG.queries) {
     openDialogs.get(requestId)?.();
     return true;
   };
+  queries[NOTICE_QUERY] = ({text}) => {
+    globalThis.ui?.notifications?.info(text);
+    return true;
+  };
+}
+
+// A short on-screen notice for every connected player.
+export function noticeToPlayers(text, users = globalThis.game?.users) {
+  for (const user of Array.from(users ?? [])) {
+    if (!user.active || user.isGM) continue;
+    void user.query?.(NOTICE_QUERY, {text}).catch(() => undefined);
+  }
 }
 
 const defaultDeps = {
@@ -77,7 +91,8 @@ async function askUser(user, data, deps) {
   if (!user) return TIMED_OUT;
   if (user.id === deps.currentUserId()) return deps.showDialog(data);
   try {
-    return await user.query(REACTION_QUERY, data, {timeout: (data.timeout + 5) * 1000});
+    const options = data.timeout > 0 ? {timeout: (data.timeout + 5) * 1000} : {};
+    return await user.query(REACTION_QUERY, data, options);
   } catch {
     return TIMED_OUT;
   }
@@ -135,4 +150,14 @@ export async function requestReaction({reactionId, actor, title, content, choice
     return second.timedOut ? null : second.choice;
   }
   return null;
+}
+
+// GM decisions outside the reaction rows (legendary and lair actions, Legendary
+// Resistance). Resolves to the chosen value, or null.
+export async function askGM({title, content, choices, timeout = 0, onTimeout = 'decline'}, deps = defaultDeps) {
+  if (!choices?.length) return null;
+  const data = {requestId: deps.randomId(), title, content, choices, timeout};
+  const answer = await askUsers([deps.gm()], data, deps);
+  if (!answer.timedOut) return answer.choice;
+  return onTimeout === 'accept' ? choices[0].value : null;
 }

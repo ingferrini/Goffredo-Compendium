@@ -3,13 +3,17 @@ import {localize} from '../shared/foundry.mjs';
 import {
   AUDIENCES,
   GENERAL_SETTING,
+  LEGENDARY_SETTING,
+  LEGENDARY_TYPES,
   NPC_MODES,
   ON_TIMEOUT,
   REACTION_TYPES,
   REACTIONS_SETTING,
+  allLegendaryConfigs,
   allReactionConfigs,
   getGeneralConfig,
   normalizeGeneral,
+  normalizeLegendary,
   normalizeReaction
 } from './config.mjs';
 
@@ -19,7 +23,7 @@ function options(values, selected, prefix) {
   )).join('');
 }
 
-export function renderReactionsForm(configs, general) {
+export function renderReactionsForm(configs, general, legendary = {}) {
   const rows = REACTION_TYPES.map(id => {
     const config = configs[id];
     return `<tr>
@@ -42,6 +46,25 @@ export function renderReactionsForm(configs, general) {
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
+    <h3>${localize('GAC.Legendary.Section')}</h3>
+    <p class="hint">${localize('GAC.Legendary.SectionHint')}</p>
+    <table>
+      <thead><tr>
+        <th>${localize('GAC.Reactions.Columns.Reaction')}</th>
+        <th>${localize('GAC.Legendary.Columns.Timeout')}</th>
+        <th>${localize('GAC.Legendary.Columns.Pause')}</th>
+        <th>${localize('GAC.Reactions.Columns.OnTimeout')}</th>
+      </tr></thead>
+      <tbody>${LEGENDARY_TYPES.map(id => {
+    const config = legendary[id] ?? normalizeLegendary();
+    return `<tr>
+        <td><label><input type="checkbox" name="${id}.enabled"${config.enabled ? ' checked' : ''}> ${localize(`GAC.Legendary.Types.${id}`)}</label></td>
+        <td><input type="number" name="${id}.timeout" value="${config.timeout}" min="0" max="120" step="1" style="width:4.5em"></td>
+        <td>${id === 'legendaryResistance' ? '' : `<input type="checkbox" name="${id}.pause"${config.pause ? ' checked' : ''}>`}</td>
+        <td><select name="${id}.onTimeout">${options(['decline', 'accept'], config.onTimeout, 'GAC.Legendary.OnTimeout')}</select></td>
+      </tr>`;
+  }).join('')}</tbody>
+    </table>
     <fieldset>
       <label><input type="checkbox" name="general.combatOnly"${general.combatOnly ? ' checked' : ''}> ${localize('GAC.Reactions.General.CombatOnly')}</label>
       <label><input type="checkbox" name="general.chatSummary"${general.chatSummary ? ' checked' : ''}> ${localize('GAC.Reactions.General.ChatSummary')}</label>
@@ -63,7 +86,14 @@ export function parseReactionsForm(values) {
     combatOnly: values['general.combatOnly'] === true || values['general.combatOnly'] === 'on',
     chatSummary: values['general.chatSummary'] === true || values['general.chatSummary'] === 'on'
   });
-  return {reactions, general};
+  const checked = key => values[key] === true || values[key] === 'on';
+  const legendary = Object.fromEntries(LEGENDARY_TYPES.map(id => [id, normalizeLegendary({
+    enabled: checked(`${id}.enabled`),
+    timeout: values[`${id}.timeout`],
+    pause: checked(`${id}.pause`),
+    onTimeout: values[`${id}.onTimeout`]
+  })]));
+  return {reactions, general, legendary};
 }
 
 export function createReactionsMenuClass() {
@@ -78,7 +108,7 @@ export function createReactionsMenuClass() {
     };
 
     async _renderHTML() {
-      return renderReactionsForm(allReactionConfigs(), getGeneralConfig());
+      return renderReactionsForm(allReactionConfigs(), getGeneralConfig(), allLegendaryConfigs());
     }
 
     _replaceHTML(result, content) {
@@ -86,9 +116,10 @@ export function createReactionsMenuClass() {
     }
 
     static async #onSubmit(_event, _form, formData) {
-      const {reactions, general} = parseReactionsForm(formData.object);
+      const {reactions, general, legendary} = parseReactionsForm(formData.object);
       await game.settings.set(MODULE_ID, REACTIONS_SETTING, reactions);
       await game.settings.set(MODULE_ID, GENERAL_SETTING, general);
+      await game.settings.set(MODULE_ID, LEGENDARY_SETTING, legendary);
     }
   };
 }

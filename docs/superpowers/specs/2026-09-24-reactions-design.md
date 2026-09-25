@@ -10,6 +10,7 @@ Replace the reaction automations of Gambit's Premades, no longer available, with
 | --- | --- |
 | 0.4.x | Timed prompt service, Reactions panel, movement engine: opportunity attacks (everyone, echo included), Sentinel parts 1-2, War Caster, Polearm Master; Vengeful Assault moved onto the new service; visible reaction marker as the reaction state |
 | 0.5.0 | Sentinel part 3 on `midi-qol.RollComplete`: any attack (reactions included) by a hostile creature within 5 ft of the holder's own token against a target without Sentinel |
+| 0.6.0 | Legendary actions between turns, lair actions at initiative 20, Legendary Resistance on failed saves (GM decisions in their own panel section, never reactions) |
 | later | Protection, Interception, Mage Slayer, if a character needs them |
 
 ## 3. Per-reaction configuration
