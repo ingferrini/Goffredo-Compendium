@@ -315,6 +315,22 @@ test('a sheet effect with a foreign origin is still recognised by name', () => {
   assert.deepEqual(enlarge.duplicateEffects({effects: [sheet, ours, other]}, item), [sheet]);
 });
 
+test('an effect hung on the spell\'s concentration counts as a duplicate', () => {
+  const item = {uuid: 'Actor.k.Item.er', effects: []};
+  const concentration = {id: 'conc', uuid: 'Actor.k.ActiveEffect.conc'};
+  const macroEffect = {id: 'm', name: 'Enlarge', origin: 'Actor.k.ActiveEffect.conc', flags: {}};
+  const effects = [concentration, macroEffect];
+  assert.deepEqual(enlarge.duplicateEffects({effects}, item, [concentration], concentration), [macroEffect]);
+  assert.deepEqual(enlarge.duplicateEffects({effects}, item, [concentration]), []);
+});
+
+test('the new size starts from the creature\'s own size, not an enlarged one', () => {
+  const kragdar = {_source: {system: {traits: {size: 'med'}}}, system: {traits: {size: 'lg'}}};
+  assert.equal(enlarge.baseSize(kragdar), 'med');
+  const size = enlarge.sizeChanges(kragdar, 'enlarge').find(change => change.key === 'system.traits.size');
+  assert.equal(size.value, 'lg');
+});
+
 test('the token size comes back when the spell ends', async () => {
   const token = {uuid: 'Token.Ash'};
   const updated = [];

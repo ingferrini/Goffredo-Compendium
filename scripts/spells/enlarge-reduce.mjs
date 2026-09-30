@@ -27,13 +27,18 @@ function change(key, value, type = 'override') {
   return {key, type, value: String(value), priority: 20};
 }
 
+// The creature's own size, ignoring effects that already change it.
+export function baseSize(actor) {
+  return actor?._source?.system?.traits?.size ?? actor?.system?.traits?.size;
+}
+
 // One size category up or down, advantage or disadvantage on Strength checks
 // and saves, and +1d4 or -1d4 on weapon damage.
 export function sizeChanges(actor, mode) {
   const roll = mode === 'enlarge' ? 'advantage' : 'disadvantage';
   const damage = mode === 'enlarge' ? '+1d4' : '-1d4';
   return [
-    change('system.traits.size', resized(actor?.system?.traits?.size, mode)),
+    change('system.traits.size', resized(baseSize(actor), mode)),
     change(`flags.midi-qol.${roll}.ability.check.str`, 1, 'custom'),
     change(`flags.midi-qol.${roll}.ability.save.str`, 1, 'custom'),
     change('system.bonuses.mwak.damage', damage, 'add'),
@@ -80,17 +85,20 @@ export async function willingAllies({workflow}, deps = defaultDeps) {
   return undefined;
 }
 
-// Effects the same spell item placed on its own (an effect attached to the
-// activity), which would stack with this one: recognised by origin or by the
-// name of one of the item's effects.
-export function duplicateEffects(actor, item, keep = []) {
+// Effects the same casting placed on its own (an effect attached to the
+// activity, or one a macro of the sheet copy hangs on the concentration),
+// which would stack with this one: recognised by origin or by the name of one
+// of the item's effects.
+export function duplicateEffects(actor, item, keep = [], concentration) {
   const kept = new Set(keep.filter(Boolean).map(effect => effect.id));
   const names = new Set(collectionValues(item?.effects).map(effect => effect.name));
-  return collectionValues(actor?.effects).filter(effect => (
-    !kept.has(effect.id)
-    && effect.flags?.cat?.identifier !== EFFECT
-    && (String(effect.origin ?? '').startsWith(item.uuid) || names.has(effect.name))
-  ));
+  return collectionValues(actor?.effects).filter(effect => {
+    if (kept.has(effect.id) || effect.flags?.cat?.identifier === EFFECT) return false;
+    const origin = String(effect.origin ?? '');
+    return origin.startsWith(item.uuid)
+      || Boolean(concentration?.uuid && origin === concentration.uuid)
+      || names.has(effect.name);
+  });
 }
 
 export function tokenSize(size) {
@@ -109,7 +117,7 @@ export async function castEnlargeReduce({document: item, workflow}, deps = defau
     if (!actor) continue;
     const previous = deps.actorUtils.getEffectByIdentifier(actor, EFFECT);
     const original = previous?.flags?.[MODULE_ID]?.[EFFECT] ?? {width: token.width, height: token.height};
-    const size = resized(actor.system?.traits?.size, mode);
+    const size = resized(baseSize(actor), mode);
     const effectData = deps.documentUtils.getBaseEffectData(item, {
       name: `${item.name}: ${localize(mode === 'enlarge' ? 'GAC.EnlargeReduce.Enlarge' : 'GAC.EnlargeReduce.Reduce')}`,
       img: item.img,
@@ -124,7 +132,7 @@ export async function castEnlargeReduce({document: item, workflow}, deps = defau
     // The new effect exists before the old one goes, so the old one's removal
     // doesn't restore the token size.
     const [effect] = await deps.effectUtils.createEffects(actor, [effectData]) ?? [];
-    for (const duplicate of [previous, ...duplicateEffects(actor, item, [effect, previous, concentration])].filter(Boolean)) {
+    for (const duplicate of [previous, ...duplicateEffects(actor, item, [effect, previous, concentration], concentration)].filter(Boolean)) {
       await deps.documentUtils.deleteDocument(duplicate);
     }
     const squares = tokenSize(size);
@@ -154,7 +162,7 @@ export function registerEnlargeReduceCleanup(hooks = globalThis.Hooks) {
 
 export const enlargeReduce = {
   name: 'Enlarge/Reduce',
-  version: '0.9.2',
+  version: '0.9.3',
   rules: RULESET,
   roll: [
     {pass: 'itemPreambleComplete', macro: willingAllies, priority: 50},

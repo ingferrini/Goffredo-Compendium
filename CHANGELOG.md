@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.3 - 2026-09-30
+
+- Enlarge/Reduce: the new size starts from the creature's own size, so an effect that already enlarged it no longer makes the token 3x3.
+- Enlarge/Reduce: an effect a sheet copy of the spell hangs on its concentration is replaced too.
+
 ## 0.9.2 - 2026-09-30
 
 - Enlarge/Reduce: a sheet copy of the spell no longer applies its own effect next to the module one (it was not recognised because its origin is another effect).
