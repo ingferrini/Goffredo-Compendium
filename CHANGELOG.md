@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.4 - 2026-09-30
+
+- Every compendium activity turns off Midi's automatic Convenient Effects: Midi no longer adds the Convenient Effects "Enlarge" (or any other same-named effect) next to the module's own.
+- Enlarge/Reduce: removed the workarounds for sheet copies of the spell; use the compendium version.
+
 ## 0.9.3 - 2026-09-30
 
 - Enlarge/Reduce: the new size starts from the creature's own size, so an effect that already enlarged it no longer makes the token 3x3.

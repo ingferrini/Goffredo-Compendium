@@ -186,3 +186,14 @@ test('class features and spells for the party carry their CAT macros', async () 
   assert.deepEqual(sizes.map(activity => activity.midiProperties.identifier), ['enlarge', 'reduce']);
   assert.ok(sizes.every(activity => activity.midiProperties.autoFailFriendly));
 });
+
+test('Midi never adds a Convenient Effects copy to a module activity', async () => {
+  for (const directory of ['gac-features-2014', 'gac-spells-2014', 'gac-equipment-2014']) {
+    for (const filename of await readdir(new URL(`packData/${directory}/`, root))) {
+      const item = await json(`packData/${directory}/${filename}`);
+      for (const activity of Object.values(item.system.activities ?? {})) {
+        assert.equal(activity.midiProperties.autoCEEffects, 'none', `${filename}: ${activity.name}`);
+      }
+    }
+  }
+});

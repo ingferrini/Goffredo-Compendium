@@ -160,7 +160,8 @@
         "midiProperties": {
           "identifier": "vampiricTouch",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       },
       "GACVampTouch0001": {
@@ -262,7 +263,8 @@
         "midiProperties": {
           "identifier": "vampiricTouchAttack",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {

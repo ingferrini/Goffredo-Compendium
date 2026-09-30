@@ -148,7 +148,6 @@
       "ChooseType": "Choose the damage type of the bane."
     },
     "EnlargeReduce": {
-      "Choose": "Enlarge or reduce the target?",
       "Enlarge": "Enlarge",
       "Reduce": "Reduce"
     }

@@ -102,7 +102,8 @@
         "midiProperties": {
           "identifier": "manifestMind",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       },
       "GACMindSlot00001": {
@@ -173,7 +174,8 @@
         "midiProperties": {
           "identifier": "manifestMindSlot",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       },
       "GACMindCast00001": {
@@ -248,7 +250,8 @@
         "midiProperties": {
           "identifier": "manifestMindCast",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {
@@ -316,7 +319,8 @@
         "midiProperties": {
           "identifier": "manifestMindMove",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {
@@ -384,7 +388,8 @@
         "midiProperties": {
           "identifier": "manifestMindDismiss",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {

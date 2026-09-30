@@ -135,7 +135,8 @@
         "midiProperties": {
           "identifier": "elementalBane",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       }
     }

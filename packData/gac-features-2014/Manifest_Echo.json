@@ -92,7 +92,8 @@
         "midiProperties": {
           "identifier": "manifestEcho",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       },
       "GACEchoAttack001": {
@@ -156,7 +157,8 @@
         "midiProperties": {
           "identifier": "manifestEchoAttack",
           "displayActivityName": true,
-          "confirmTargets": "always"
+          "confirmTargets": "always",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {
@@ -224,7 +226,8 @@
         "midiProperties": {
           "identifier": "manifestEchoSwap",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {
@@ -292,7 +295,8 @@
         "midiProperties": {
           "identifier": "manifestEchoElevation",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {
@@ -360,7 +364,8 @@
         "midiProperties": {
           "identifier": "manifestEchoDismiss",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         },
         "flags": {
           "cat": {

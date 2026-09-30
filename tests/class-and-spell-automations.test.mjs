@@ -276,52 +276,26 @@ test('allies are always affected, other creatures only on a failed save', () => 
   assert.deepEqual(enlarge.affectedTargets(workflow), [ally, failedFoe]);
 });
 
-test('Enlarge/Reduce replaces the spell\'s own effect and resizes the token', async () => {
+test('Enlarge/Reduce replaces an earlier casting and resizes the token', async () => {
   const item = {name: 'Enlarge/Reduce', uuid: 'Actor.k.Item.er'};
-  const sheetEffect = {id: 'sheet', origin: 'Actor.k.Item.er', flags: {}};
-  const unrelated = {id: 'bless', origin: 'Actor.x.Item.bless', flags: {}};
-  const ally = sizeTarget('Ash', 1, [sheetEffect, unrelated]);
+  const earlier = {id: 'old', flags: {[MODULE_ID]: {enlargeReduce: {tokenUuid: 'Token.Ash', width: 1, height: 1}}}};
+  const ally = sizeTarget('Ash', 1);
   const deps = store();
-  deps.dialogUtils = {buttonDialog: async () => 'enlarge'};
-  const workflow = {token: {document: {disposition: 1}}, targets: new Set([ally]), saves: new Set(), activity: {identifier: 'legacy'}};
+  deps.actorUtils.getEffectByIdentifier = () => earlier;
+  const workflow = {token: {document: {disposition: 1}}, targets: new Set([ally]), saves: new Set(), activity: {identifier: 'enlarge'}};
   await enlarge.castEnlargeReduce({document: item, workflow}, deps);
 
   const [effect] = deps.created;
   assert.deepEqual(effect.flags[MODULE_ID].enlargeReduce, {tokenUuid: 'Token.Ash', width: 1, height: 1});
-  assert.deepEqual(deps.deleted, [sheetEffect]);
+  assert.deepEqual(deps.deleted, [earlier]);
   assert.deepEqual(deps.updated, [[ally.document, {width: 2, height: 2}]]);
 });
 
-test('willing allies skip the save and the sheet copy applies no effect of its own', async () => {
-  const set = [];
-  const activity = {
-    type: 'save', midiProperties: {}, effects: [{_id: 'enlarge'}],
-    toObject: () => ({type: 'save', midiProperties: {confirmTargets: 'never'}, effects: [{_id: 'enlarge'}]})
-  };
-  await enlarge.willingAllies({workflow: {activity}}, {workflowUtils: {setActivity: (...args) => set.push(args)}});
-  assert.deepEqual(set[0][1].midiProperties, {confirmTargets: 'never', autoFailFriendly: true});
-  assert.deepEqual(set[0][1].effects, []);
-
-  const clean = [];
-  await enlarge.willingAllies({workflow: {activity: {type: 'save', midiProperties: {autoFailFriendly: true}, effects: []}}}, {workflowUtils: {setActivity: (...args) => clean.push(args)}});
-  assert.equal(clean.length, 0);
-});
-
-test('a sheet effect with a foreign origin is still recognised by name', () => {
-  const item = {uuid: 'Actor.k.Item.er', effects: [{name: 'Enlarge'}, {name: 'Reduce'}]};
-  const sheet = {id: 'a', name: 'Enlarge', origin: 'Actor.k.ActiveEffect.conc', flags: {}};
-  const ours = {id: 'b', name: 'Enlarge/Reduce: Enlarge', origin: 'Actor.k.Item.er', flags: {cat: {identifier: 'enlargeReduce'}}};
-  const other = {id: 'c', name: 'Bless', origin: 'Actor.x.Item.bless', flags: {}};
-  assert.deepEqual(enlarge.duplicateEffects({effects: [sheet, ours, other]}, item), [sheet]);
-});
-
-test('an effect hung on the spell\'s concentration counts as a duplicate', () => {
-  const item = {uuid: 'Actor.k.Item.er', effects: []};
-  const concentration = {id: 'conc', uuid: 'Actor.k.ActiveEffect.conc'};
-  const macroEffect = {id: 'm', name: 'Enlarge', origin: 'Actor.k.ActiveEffect.conc', flags: {}};
-  const effects = [concentration, macroEffect];
-  assert.deepEqual(enlarge.duplicateEffects({effects}, item, [concentration], concentration), [macroEffect]);
-  assert.deepEqual(enlarge.duplicateEffects({effects}, item, [concentration]), []);
+test('Enlarge/Reduce acts only through its Enlarge and Reduce activities', async () => {
+  const deps = store();
+  const workflow = {token: {document: {disposition: 1}}, targets: new Set([sizeTarget('Ash', 1)]), saves: new Set(), activity: {identifier: 'other'}};
+  await enlarge.castEnlargeReduce({document: {name: 'Enlarge/Reduce'}, workflow}, deps);
+  assert.equal(deps.created.length, 0);
 });
 
 test('the new size starts from the creature\'s own size, not an enlarged one', () => {
@@ -353,5 +327,5 @@ test('new automations register the prefixed CAT passes', () => {
   assert.deepEqual(inspiring.inspiringSmiteAutomation.roll.map(entry => entry.pass), ['itemRollFinished']);
   assert.deepEqual(vampiric.vampiricTouch.roll.map(entry => entry.pass), ['itemDamageRollComplete', 'itemRollFinished']);
   assert.deepEqual(bane.elementalBane.roll.map(entry => entry.pass), ['itemRollFinished', 'targetRollFinished']);
-  assert.deepEqual(enlarge.enlargeReduce.roll.map(entry => entry.pass), ['itemPreambleComplete', 'itemRollFinished']);
+  assert.deepEqual(enlarge.enlargeReduce.roll.map(entry => entry.pass), ['itemRollFinished']);
 });

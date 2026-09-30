@@ -113,7 +113,8 @@
         "midiProperties": {
           "identifier": "piumaReginaCorvo",
           "displayActivityName": true,
-          "confirmTargets": "never"
+          "confirmTargets": "never",
+          "autoCEEffects": "none"
         }
       }
     },

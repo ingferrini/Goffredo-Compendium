@@ -95,7 +95,8 @@
         "midiProperties": {
           "identifier": "unleashIncarnation",
           "displayActivityName": true,
-          "confirmTargets": "always"
+          "confirmTargets": "always",
+          "autoCEEffects": "none"
         }
       }
     },

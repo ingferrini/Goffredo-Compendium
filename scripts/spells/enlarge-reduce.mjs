@@ -1,5 +1,5 @@
 import {MODULE_ID, RULESET} from '../constants.mjs';
-import {actorUtils, dialogUtils, documentUtils, effectUtils, workflowUtils} from '../proxy.mjs';
+import {actorUtils, documentUtils, effectUtils} from '../proxy.mjs';
 import {collectionValues, localize} from '../shared/foundry.mjs';
 
 const EFFECT = 'enlargeReduce';
@@ -9,10 +9,8 @@ const SQUARES = {tiny: 0.5, sm: 1, med: 1, lg: 2, huge: 3, grg: 4};
 
 const defaultDeps = {
   actorUtils,
-  dialogUtils,
   documentUtils,
   effectUtils,
-  workflowUtils,
   fromUuid: (...args) => globalThis.fromUuid(...args)
 };
 
@@ -46,15 +44,6 @@ export function sizeChanges(actor, mode) {
   ];
 }
 
-async function chooseMode(item, activity, deps) {
-  const identifier = activity?.identifier;
-  if (identifier === 'enlarge' || identifier === 'reduce') return identifier;
-  return deps.dialogUtils.buttonDialog(item.name, localize('GAC.EnlargeReduce.Choose'), [
-    [localize('GAC.EnlargeReduce.Enlarge'), 'enlarge', {}],
-    [localize('GAC.EnlargeReduce.Reduce'), 'reduce', {}]
-  ]);
-}
-
 function disposition(token) {
   return (token?.document ?? token)?.disposition;
 }
@@ -69,38 +58,6 @@ export function affectedTargets(workflow) {
   ));
 }
 
-// A sheet copy of the spell may lack Midi's auto-fail for friendly targets and
-// may carry its own Enlarge/Reduce effects. For this casting, allies fail the
-// save on purpose and Midi applies no effect of its own: this automation
-// places the only one.
-export async function willingAllies({workflow}, deps = defaultDeps) {
-  const activity = workflow?.activity;
-  if (activity?.type !== 'save') return undefined;
-  const hasEffects = collectionValues(activity.effects).length > 0;
-  if (activity.midiProperties?.autoFailFriendly && !hasEffects) return undefined;
-  const data = activity.toObject();
-  data.midiProperties = {...data.midiProperties, autoFailFriendly: true};
-  data.effects = [];
-  deps.workflowUtils.setActivity(workflow, data);
-  return undefined;
-}
-
-// Effects the same casting placed on its own (an effect attached to the
-// activity, or one a macro of the sheet copy hangs on the concentration),
-// which would stack with this one: recognised by origin or by the name of one
-// of the item's effects.
-export function duplicateEffects(actor, item, keep = [], concentration) {
-  const kept = new Set(keep.filter(Boolean).map(effect => effect.id));
-  const names = new Set(collectionValues(item?.effects).map(effect => effect.name));
-  return collectionValues(actor?.effects).filter(effect => {
-    if (kept.has(effect.id) || effect.flags?.cat?.identifier === EFFECT) return false;
-    const origin = String(effect.origin ?? '');
-    return origin.startsWith(item.uuid)
-      || Boolean(concentration?.uuid && origin === concentration.uuid)
-      || names.has(effect.name);
-  });
-}
-
 export function tokenSize(size) {
   return SQUARES[size];
 }
@@ -108,8 +65,8 @@ export function tokenSize(size) {
 export async function castEnlargeReduce({document: item, workflow}, deps = defaultDeps) {
   const affected = affectedTargets(workflow);
   if (!affected.length) return undefined;
-  const mode = await chooseMode(item, workflow.activity, deps);
-  if (!mode) return undefined;
+  const mode = workflow.activity?.identifier;
+  if (mode !== 'enlarge' && mode !== 'reduce') return undefined;
   const concentration = deps.effectUtils.getConcentrationEffect(workflow.actor, item);
   for (const target of affected) {
     const token = target.document ?? target;
@@ -132,9 +89,7 @@ export async function castEnlargeReduce({document: item, workflow}, deps = defau
     // The new effect exists before the old one goes, so the old one's removal
     // doesn't restore the token size.
     const [effect] = await deps.effectUtils.createEffects(actor, [effectData]) ?? [];
-    for (const duplicate of [previous, ...duplicateEffects(actor, item, [effect, previous, concentration], concentration)].filter(Boolean)) {
-      await deps.documentUtils.deleteDocument(duplicate);
-    }
+    if (effect && previous) await deps.documentUtils.deleteDocument(previous);
     const squares = tokenSize(size);
     if (squares && token.uuid) await deps.documentUtils.update(token, {width: squares, height: squares});
   }
@@ -162,10 +117,7 @@ export function registerEnlargeReduceCleanup(hooks = globalThis.Hooks) {
 
 export const enlargeReduce = {
   name: 'Enlarge/Reduce',
-  version: '0.9.3',
+  version: '0.9.4',
   rules: RULESET,
-  roll: [
-    {pass: 'itemPreambleComplete', macro: willingAllies, priority: 50},
-    {pass: 'itemRollFinished', macro: castEnlargeReduce, priority: 50}
-  ]
+  roll: [{pass: 'itemRollFinished', macro: castEnlargeReduce, priority: 50}]
 };

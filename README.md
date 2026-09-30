@@ -75,7 +75,7 @@ Advantage on attack rolls when the companion named in the feature's **Requiremen
 
 - **Vampiric Touch**: the casting is the first attack; *Touch* repeats it while you concentrate, with the damage of the slot used. You regain half the necrotic damage dealt.
 - **Elemental Bane**: on a failed Constitution save you choose the type; the target loses resistance to it and takes an extra 2d6 of that type the first time each turn it takes that damage.
-- **Enlarge/Reduce**: size category, Strength advantage or disadvantage, ±1d4 weapon damage, and the token is resized (restored when the spell ends). Allies are always affected and never roll the save; a sheet copy of the spell also works, and its own effect is replaced so the bonuses don't stack.
+- **Enlarge/Reduce**: size category, Strength advantage or disadvantage, ±1d4 weapon damage, and the token is resized (restored when the spell ends). Allies are always affected and never roll the save. Use the compendium copy: its activities turn off Midi's automatic Convenient Effects, which would otherwise add a second "Enlarge" effect.
 
 ## Reactions
 
