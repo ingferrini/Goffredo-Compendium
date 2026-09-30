@@ -159,3 +159,30 @@ test('spells carry their CAT macro and concentration casting activities', async 
   assert.equal(bonus.consumption.spellSlot, false);
   assert.deepEqual(bonus.damage, hurl.damage);
 });
+
+test('class features and spells for the party carry their CAT macros', async () => {
+  const expectations = [
+    ['packData/gac-features-2014/Crusher.json', 'crusher'],
+    ['packData/gac-features-2014/Circle_of_Mortality.json', 'circle-of-mortality'],
+    ['packData/gac-features-2014/Inspiring_Smite.json', 'channel-divinity-inspiring-smite'],
+    ['packData/gac-spells-2014/Vampiric_Touch.json', 'vampiric-touch'],
+    ['packData/gac-spells-2014/Elemental_Bane.json', 'elemental-bane'],
+    ['packData/gac-spells-2014/Enlarge_Reduce.json', 'enlarge-reduce']
+  ];
+  for (const [path, identifier] of expectations) {
+    const item = await json(path);
+    assert.equal(item.system.identifier, identifier, path);
+    assert.equal(item.flags.cat.macros.roll[0].identifier, identifier, path);
+    assert.equal(item._id.length, 16, path);
+    for (const id of Object.keys(item.system.activities)) assert.equal(id.length, 16, `${path}: ${id}`);
+  }
+  const vampiric = Object.values((await json('packData/gac-spells-2014/Vampiric_Touch.json')).system.activities);
+  assert.deepEqual(vampiric.map(activity => activity.midiProperties.identifier), ['vampiricTouch', 'vampiricTouchAttack']);
+  assert.equal(vampiric[1].flags.cat.hidden, true);
+  assert.equal(vampiric[1].consumption.spellSlot, false);
+  const bane = Object.values((await json('packData/gac-spells-2014/Elemental_Bane.json')).system.activities)[0];
+  assert.equal(bane.target.affects.count, '1 + @scaling');
+  const sizes = Object.values((await json('packData/gac-spells-2014/Enlarge_Reduce.json')).system.activities);
+  assert.deepEqual(sizes.map(activity => activity.midiProperties.identifier), ['enlarge', 'reduce']);
+  assert.ok(sizes.every(activity => activity.midiProperties.autoFailFriendly));
+});

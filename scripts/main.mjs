@@ -6,7 +6,13 @@ import {greatWeaponFightingAutomation} from './features/great-weapon-fighting.mj
 import {packTacticsAutomation} from './features/pack-tactics.mjs';
 import {frammentoRunico, unattuneBacklash} from './items/frammento-runico.mjs';
 import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
+import {circleOfMortality} from './classes/circle-of-mortality.mjs';
+import {inspiringSmiteAutomation} from './classes/inspiring-smite.mjs';
+import {crusherAutomation} from './features/crusher.mjs';
 import {dragonsBreath} from './spells/dragons-breath.mjs';
+import {elementalBane} from './spells/elemental-bane.mjs';
+import {enlargeReduce} from './spells/enlarge-reduce.mjs';
+import {vampiricTouch} from './spells/vampiric-touch.mjs';
 import {melfsMinuteMeteors} from './spells/melfs-minute-meteors.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
@@ -32,7 +38,13 @@ const automations = [
   ['frammento-runico-instabile', frammentoRunico],
   ['piuma-regina-corvo', piumaReginaCorvo],
   ['dragons-breath', dragonsBreath],
-  ['melfs-minute-meteors', melfsMinuteMeteors]
+  ['melfs-minute-meteors', melfsMinuteMeteors],
+  ['crusher', crusherAutomation],
+  ['circle-of-mortality', circleOfMortality],
+  ['channel-divinity-inspiring-smite', inspiringSmiteAutomation],
+  ['vampiric-touch', vampiricTouch],
+  ['elemental-bane', elementalBane],
+  ['enlarge-reduce', enlargeReduce]
 ];
 
 Hooks.once('init', () => {

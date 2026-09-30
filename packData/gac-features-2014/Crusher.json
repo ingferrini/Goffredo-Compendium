@@ -1,0 +1,59 @@
+{
+  "name": "Crusher",
+  "type": "feat",
+  "img": "icons/weapons/hammers/hammer-double-stone.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> when an attack that deals bludgeoning damage hits, you are asked whether to move the target 5 feet (once per turn in combat, only if it is at most one size larger than you); aim the crosshair within 5 feet of it. On a critical hit with bludgeoning damage, the target carries an effect granting advantage to every attack against it until the start of your next turn. Remember to add the +1 to Strength or Constitution on the sheet.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "",
+      "recovery": []
+    },
+    "type": {
+      "value": "feat",
+      "subtype": ""
+    },
+    "requirements": "",
+    "properties": [],
+    "prerequisites": {
+      "level": null,
+      "items": [],
+      "repeatable": false
+    },
+    "activities": {},
+    "identifier": "crusher",
+    "enchant": {},
+    "advancement": [],
+    "crewed": false
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "crusher"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACCrusherFeat01",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACCrusherFeat01"
+}

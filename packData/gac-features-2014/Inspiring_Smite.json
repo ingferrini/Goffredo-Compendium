@@ -1,0 +1,123 @@
+{
+  "name": "Channel Divinity: Inspiring Smite",
+  "type": "feat",
+  "img": "icons/magic/life/heart-area-circle-red-green.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> use it right after dealing damage with Divine Smite. It rolls 2d8 + your paladin level and lets you split that many temporary hit points among you and allies within 30 feet; a creature keeps the higher of its current and new temporary hit points. Link its consumption to your Channel Divinity uses if you track them on the sheet.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "uses": {
+      "spent": 0,
+      "max": "",
+      "recovery": []
+    },
+    "type": {
+      "value": "class",
+      "subtype": "channelDivinity"
+    },
+    "requirements": "Oath of Glory 3",
+    "properties": [],
+    "prerequisites": {
+      "level": null,
+      "items": [],
+      "repeatable": false
+    },
+    "activities": {
+      "GACInspireUse001": {
+        "_id": "GACInspireUse001",
+        "type": "utility",
+        "name": "Inspiring Smite",
+        "img": "icons/magic/life/heart-area-circle-red-green.webp",
+        "activation": {
+          "type": "bonus",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": false
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "",
+            "type": "",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "midiProperties": {
+          "identifier": "inspiringSmite",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        }
+      }
+    },
+    "identifier": "channel-divinity-inspiring-smite",
+    "enchant": {},
+    "advancement": [],
+    "crewed": false
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "channel-divinity-inspiring-smite"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACInspireSmite1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACInspireSmite1"
+}

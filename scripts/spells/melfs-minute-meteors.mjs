@@ -1,6 +1,9 @@
 import {MODULE_ID, RULESET} from '../constants.mjs';
 import {actorUtils, documentUtils, effectUtils, itemUtils, workflowUtils} from '../proxy.mjs';
 import {notify} from '../shared/foundry.mjs';
+import {turnKey} from '../shared/turn.mjs';
+
+export {turnKey};
 
 const EFFECT = 'melfsMinuteMeteors';
 const HURL = 'melfsMinuteMeteorsHurl';
@@ -21,13 +24,6 @@ const defaultDeps = {
 // Six meteors at 3rd level, two more for each slot level above it.
 export function meteorCount(castLevel) {
   return 6 + 2 * (Math.max(BASE_LEVEL, Number(castLevel) || BASE_LEVEL) - BASE_LEVEL);
-}
-
-// One or two meteors per casting or bonus action: in combat each turn is one
-// volley; outside combat there is no turn to count.
-export function turnKey(combat) {
-  if (!combat?.started) return undefined;
-  return `${combat.id}.${combat.round}.${combat.turn}`;
 }
 
 function meteorName(item, count) {

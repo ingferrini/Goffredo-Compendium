@@ -1,0 +1,165 @@
+{
+  "name": "Elemental Bane",
+  "type": "spell",
+  "img": "icons/magic/light/projectiles-pink-purple.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> one creature (one more per slot level above 4th) makes a Constitution save. On a failure you choose acid, cold, fire, lightning or thunder: while you concentrate it loses resistance to that type, and the first time each turn it takes damage of that type it takes an extra 2d6 of it, rolled and applied automatically. If every target succeeds, concentration ends.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "identifier": "elemental-bane",
+    "level": 4,
+    "school": "trs",
+    "properties": [
+      "vocal",
+      "somatic",
+      "concentration"
+    ],
+    "materials": {
+      "value": "",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "activation": {
+      "type": "action",
+      "value": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": "1",
+      "units": "minute"
+    },
+    "range": {
+      "value": 90,
+      "units": "ft",
+      "special": ""
+    },
+    "target": {
+      "template": {
+        "count": "",
+        "contiguous": false,
+        "type": "",
+        "size": "",
+        "width": "",
+        "height": "",
+        "units": "ft"
+      },
+      "affects": {
+        "count": "1",
+        "type": "creature",
+        "choice": false,
+        "special": ""
+      }
+    },
+    "method": "spell",
+    "prepared": 0,
+    "activities": {
+      "GACElemCast00001": {
+        "_id": "GACElemCast00001",
+        "type": "save",
+        "name": "Cast",
+        "img": "icons/magic/light/projectiles-pink-purple.webp",
+        "activation": {
+          "type": "action",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": true,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": true,
+          "value": "1",
+          "units": "minute",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "value": "90",
+          "units": "ft",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1 + @scaling",
+            "type": "creature",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": true
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "damage": {
+          "onSave": "none",
+          "parts": []
+        },
+        "save": {
+          "ability": [
+            "con"
+          ],
+          "dc": {
+            "calculation": "spellcasting",
+            "formula": ""
+          }
+        },
+        "midiProperties": {
+          "identifier": "elementalBane",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        }
+      }
+    }
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "elemental-bane"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACElemBane00001",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACElemBane00001"
+}

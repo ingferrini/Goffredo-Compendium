@@ -52,6 +52,18 @@ When a creature damages the owner and stands within reach (or range) of an equip
 
 One feature on the actor covers every weapon: melee attacks with a two-handed weapon, or a versatile weapon used two-handed, reroll damage dice showing 1 or 2 once and keep the new result (2014 rules).
 
+## Crusher
+
+After a hit that deals bludgeoning damage you are asked whether to move the target 5 feet (once per turn in combat, target at most one size larger); aim the crosshair. A bludgeoning critical hit puts an effect on the target: attacks against it have advantage until the start of your next turn.
+
+## Circle of Mortality
+
+Healing dice from your spells are maximized on a creature at 0 hit points; with several targets only the downed ones get the difference.
+
+## Channel Divinity: Inspiring Smite
+
+Use it after a Divine Smite: it rolls 2d8 + paladin level and lets you split the temporary hit points among you and allies within 30 feet.
+
 ## Pack Tactics (Companion)
 
 Advantage on attack rolls when the companion named in the feature's **Requirements** field (for example `Jira`) is within 5 feet of every target and isn't incapacitated. Edit the field to bind another companion.
@@ -60,6 +72,10 @@ Advantage on attack rolls when the companion named in the feature's **Requiremen
 
 - **Dragon's Breath**: target one willing creature and choose the damage type. While your concentration lasts, that creature has a *Dragon's Breath: Exhale* action (15-foot cone, Dexterity save against your spell save DC, 3d6 plus 1d6 per slot level above 2nd, half on a success). The action is removed when the spell ends.
 - **Melf's Minute Meteors**: casting creates the meteors (six, plus two per slot level above 3rd), counted in the effect's name, and reveals *Hurl Meteor* (5-foot-radius sphere within 120 feet, Dexterity save, 2d6 fire, half on a success). Right after casting, *Hurl Meteor* costs nothing; at the end of that turn it is replaced by *Hurl Meteor (Bonus Action)*, which Midi counts as your bonus action. In combat a third meteor in the same turn is blocked; the last meteor ends the spell and its concentration.
+
+- **Vampiric Touch**: the casting is the first attack; *Touch* repeats it while you concentrate, with the damage of the slot used. You regain half the necrotic damage dealt.
+- **Elemental Bane**: on a failed Constitution save you choose the type; the target loses resistance to it and takes an extra 2d6 of that type the first time each turn it takes that damage.
+- **Enlarge/Reduce**: size category, Strength advantage or disadvantage, ±1d4 weapon damage, and token size through Active Token Effects. Allies are always affected.
 
 ## Reactions
 

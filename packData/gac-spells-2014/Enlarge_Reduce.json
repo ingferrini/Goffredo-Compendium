@@ -1,0 +1,246 @@
+{
+  "name": "Enlarge/Reduce",
+  "type": "spell",
+  "img": "icons/magic/control/energy-stream-link-large-blue.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> pick Enlarge or Reduce. Allies are affected without resisting; other creatures resist with a Constitution save. The target changes size by one category (the token is resized when Active Token Effects is active), has advantage (Enlarge) or disadvantage (Reduce) on Strength checks and saves, and deals +1d4 or -1d4 damage with weapon attacks while you concentrate. An existing Enlarge/Reduce item with a single activity asks which one to apply.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "identifier": "enlarge-reduce",
+    "level": 2,
+    "school": "trs",
+    "properties": [
+      "vocal",
+      "somatic",
+      "material",
+      "concentration"
+    ],
+    "materials": {
+      "value": "a pinch of powdered iron",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "activation": {
+      "type": "action",
+      "value": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": "1",
+      "units": "minute"
+    },
+    "range": {
+      "value": 30,
+      "units": "ft",
+      "special": ""
+    },
+    "target": {
+      "template": {
+        "count": "",
+        "contiguous": false,
+        "type": "",
+        "size": "",
+        "width": "",
+        "height": "",
+        "units": "ft"
+      },
+      "affects": {
+        "count": "1",
+        "type": "creature",
+        "choice": false,
+        "special": ""
+      }
+    },
+    "method": "spell",
+    "prepared": 0,
+    "activities": {
+      "GACEnlargeAct001": {
+        "_id": "GACEnlargeAct001",
+        "type": "save",
+        "name": "Enlarge",
+        "img": "icons/magic/control/energy-stream-link-large-blue.webp",
+        "activation": {
+          "type": "action",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": true,
+          "value": "1",
+          "units": "minute",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "value": "30",
+          "units": "ft",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1",
+            "type": "creature",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "damage": {
+          "onSave": "none",
+          "parts": []
+        },
+        "save": {
+          "ability": [
+            "con"
+          ],
+          "dc": {
+            "calculation": "spellcasting",
+            "formula": ""
+          }
+        },
+        "midiProperties": {
+          "identifier": "enlarge",
+          "displayActivityName": true,
+          "confirmTargets": "never",
+          "autoFailFriendly": true
+        }
+      },
+      "GACReduceAct0001": {
+        "_id": "GACReduceAct0001",
+        "type": "save",
+        "name": "Reduce",
+        "img": "icons/magic/control/energy-stream-link-large-blue.webp",
+        "activation": {
+          "type": "action",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": true,
+          "value": "1",
+          "units": "minute",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "value": "30",
+          "units": "ft",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1",
+            "type": "creature",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "damage": {
+          "onSave": "none",
+          "parts": []
+        },
+        "save": {
+          "ability": [
+            "con"
+          ],
+          "dc": {
+            "calculation": "spellcasting",
+            "formula": ""
+          }
+        },
+        "midiProperties": {
+          "identifier": "reduce",
+          "displayActivityName": true,
+          "confirmTargets": "never",
+          "autoFailFriendly": true
+        }
+      }
+    }
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "enlarge-reduce"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACEnlargeReduc1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACEnlargeReduc1"
+}

@@ -74,7 +74,7 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
   for (const icon of referenced) assert.ok(archive[icon], `${icon} is referenced but not bundled`);
   assert.deepEqual(imageEntries.filter(entry => !referenced.has(entry)), []);
 
-  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json', 'Great_Weapon_Fighting.json'];
+  const featureSources = ['Manifest_Echo.json', 'Unleash_Incarnation.json', 'Manifest_Mind.json', 'Vengeful_Assault.json', 'Pack_Tactics_Companion.json', 'Great_Weapon_Fighting.json', 'Crusher.json', 'Circle_of_Mortality.json', 'Inspiring_Smite.json'];
   for (const filename of featureSources) {
     const document = JSON.parse(await readFile(new URL(`packData/gac-features-2014/${filename}`, root), 'utf8'));
     assert.match(document.system.description.value, /Operational summary/i);
@@ -82,14 +82,20 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
     assert.doesNotMatch(document.system.description.value, /heightened state of fury/i);
     assert.doesNotMatch(document.system.description.value, /conjure forth the mind of your Awakened Spellbook/i);
     assert.doesNotMatch(document.system.description.value, /you can use your reaction to make an attack with the weapon against that creature/i);
+    assert.doesNotMatch(document.system.description.value, /You are practiced in the art of crushing your enemies/i);
+    assert.doesNotMatch(document.system.description.value, /manipulate the line between life and death/i);
+    assert.doesNotMatch(document.system.description.value, /distribute temporary hit points to creatures of your choice/i);
     assert.equal(document.system.description.chat, '');
   }
 
-  for (const filename of ['Dragons_Breath.json', 'Melfs_Minute_Meteors.json']) {
+  for (const filename of ['Dragons_Breath.json', 'Melfs_Minute_Meteors.json', 'Vampiric_Touch.json', 'Elemental_Bane.json', 'Enlarge_Reduce.json']) {
     const document = JSON.parse(await readFile(new URL(`packData/gac-spells-2014/${filename}`, root), 'utf8'));
     assert.match(document.system.description.value, /Operational summary/i);
     assert.doesNotMatch(document.system.description.value, /imbue it with the power to spew magical energy/i);
     assert.doesNotMatch(document.system.description.value, /You create six tiny meteors in your space/i);
+    assert.doesNotMatch(document.system.description.value, /touch of your shadow-wreathed hand/i);
+    assert.doesNotMatch(document.system.description.value, /The first time each turn the affected target takes damage/i);
+    assert.doesNotMatch(document.system.description.value, /cause a creature or an object you can see within range to grow larger or smaller/i);
     assert.equal(document.system.description.chat, '');
   }
 });

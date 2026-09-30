@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.0 - 2026-09-30
+
+- Added Crusher: optional 5-foot push once per turn after a bludgeoning hit, and advantage against the target after a bludgeoning critical hit until the start of the attacker's next turn.
+- Added Circle of Mortality: spell healing dice are maximized for creatures at 0 hit points.
+- Added Channel Divinity: Inspiring Smite: 2d8 + paladin level temporary hit points split among allies within 30 feet.
+- Added Vampiric Touch, Elemental Bane and Enlarge/Reduce to the spell compendium.
+
 ## 0.8.1 - 2026-09-30
 
 - Melf's Minute Meteors: the free *Hurl Meteor* is available only in the casting turn; afterwards it is replaced by *Hurl Meteor (Bonus Action)*, which costs a bonus action.

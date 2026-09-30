@@ -136,6 +136,21 @@
       "NoneLeft": "No meteors are left.",
       "VolleySpent": "You have already hurled two meteors this turn.",
       "UseBonus": "The casting turn is over: use Hurl Meteor (Bonus Action)."
+    },
+    "Crusher": {
+      "Crushed": "Crushed",
+      "PushPrompt": "Move the target 5 feet to an unoccupied space?"
+    },
+    "InspiringSmite": {
+      "Distribute": "Split {total} temporary hit points among creatures within 30 feet."
+    },
+    "ElementalBane": {
+      "ChooseType": "Choose the damage type of the bane."
+    },
+    "EnlargeReduce": {
+      "Choose": "Enlarge or reduce the target?",
+      "Enlarge": "Enlarge",
+      "Reduce": "Reduce"
     }
   }
 }
