@@ -292,15 +292,27 @@ test('Enlarge/Reduce replaces the spell\'s own effect and resizes the token', as
   assert.deepEqual(deps.updated, [[ally.document, {width: 2, height: 2}]]);
 });
 
-test('willing allies skip the save through Midi\'s friendly auto-fail', async () => {
+test('willing allies skip the save and the sheet copy applies no effect of its own', async () => {
   const set = [];
-  const activity = {type: 'save', midiProperties: {}, toObject: () => ({type: 'save', midiProperties: {confirmTargets: 'never'}})};
+  const activity = {
+    type: 'save', midiProperties: {}, effects: [{_id: 'enlarge'}],
+    toObject: () => ({type: 'save', midiProperties: {confirmTargets: 'never'}, effects: [{_id: 'enlarge'}]})
+  };
   await enlarge.willingAllies({workflow: {activity}}, {workflowUtils: {setActivity: (...args) => set.push(args)}});
   assert.deepEqual(set[0][1].midiProperties, {confirmTargets: 'never', autoFailFriendly: true});
+  assert.deepEqual(set[0][1].effects, []);
 
-  const already = [];
-  await enlarge.willingAllies({workflow: {activity: {type: 'save', midiProperties: {autoFailFriendly: true}}}}, {workflowUtils: {setActivity: (...args) => already.push(args)}});
-  assert.equal(already.length, 0);
+  const clean = [];
+  await enlarge.willingAllies({workflow: {activity: {type: 'save', midiProperties: {autoFailFriendly: true}, effects: []}}}, {workflowUtils: {setActivity: (...args) => clean.push(args)}});
+  assert.equal(clean.length, 0);
+});
+
+test('a sheet effect with a foreign origin is still recognised by name', () => {
+  const item = {uuid: 'Actor.k.Item.er', effects: [{name: 'Enlarge'}, {name: 'Reduce'}]};
+  const sheet = {id: 'a', name: 'Enlarge', origin: 'Actor.k.ActiveEffect.conc', flags: {}};
+  const ours = {id: 'b', name: 'Enlarge/Reduce: Enlarge', origin: 'Actor.k.Item.er', flags: {cat: {identifier: 'enlargeReduce'}}};
+  const other = {id: 'c', name: 'Bless', origin: 'Actor.x.Item.bless', flags: {}};
+  assert.deepEqual(enlarge.duplicateEffects({effects: [sheet, ours, other]}, item), [sheet]);
 });
 
 test('the token size comes back when the spell ends', async () => {

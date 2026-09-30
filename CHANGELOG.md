@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.2 - 2026-09-30
+
+- Enlarge/Reduce: a sheet copy of the spell no longer applies its own effect next to the module one (it was not recognised because its origin is another effect).
+
 ## 0.9.1 - 2026-09-30
 
 - Enlarge/Reduce: the token is resized directly and restored when the spell ends (Active Token Effects did not apply the change).

@@ -64,25 +64,32 @@ export function affectedTargets(workflow) {
   ));
 }
 
-// A sheet copy of the spell may lack Midi's auto-fail for friendly targets:
-// switch it on for this casting so willing allies don't roll the save.
+// A sheet copy of the spell may lack Midi's auto-fail for friendly targets and
+// may carry its own Enlarge/Reduce effects. For this casting, allies fail the
+// save on purpose and Midi applies no effect of its own: this automation
+// places the only one.
 export async function willingAllies({workflow}, deps = defaultDeps) {
   const activity = workflow?.activity;
-  if (activity?.type !== 'save' || activity.midiProperties?.autoFailFriendly) return undefined;
+  if (activity?.type !== 'save') return undefined;
+  const hasEffects = collectionValues(activity.effects).length > 0;
+  if (activity.midiProperties?.autoFailFriendly && !hasEffects) return undefined;
   const data = activity.toObject();
   data.midiProperties = {...data.midiProperties, autoFailFriendly: true};
+  data.effects = [];
   deps.workflowUtils.setActivity(workflow, data);
   return undefined;
 }
 
 // Effects the same spell item placed on its own (an effect attached to the
-// activity), which would stack with this one.
+// activity), which would stack with this one: recognised by origin or by the
+// name of one of the item's effects.
 export function duplicateEffects(actor, item, keep = []) {
   const kept = new Set(keep.filter(Boolean).map(effect => effect.id));
+  const names = new Set(collectionValues(item?.effects).map(effect => effect.name));
   return collectionValues(actor?.effects).filter(effect => (
     !kept.has(effect.id)
-    && String(effect.origin ?? '').startsWith(item.uuid)
     && effect.flags?.cat?.identifier !== EFFECT
+    && (String(effect.origin ?? '').startsWith(item.uuid) || names.has(effect.name))
   ));
 }
 
@@ -147,7 +154,7 @@ export function registerEnlargeReduceCleanup(hooks = globalThis.Hooks) {
 
 export const enlargeReduce = {
   name: 'Enlarge/Reduce',
-  version: '0.9.1',
+  version: '0.9.2',
   rules: RULESET,
   roll: [
     {pass: 'itemPreambleComplete', macro: willingAllies, priority: 50},
