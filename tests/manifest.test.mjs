@@ -8,7 +8,7 @@ test('module manifest declares the supported Foundry stack and public packs', as
   const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'));
 
   assert.equal(manifest.id, 'goffredo-compendium');
-  assert.equal(manifest.version, '0.9.0');
+  assert.equal(manifest.version, '0.9.1');
   assert.deepEqual(manifest.compatibility, {
     minimum: '14',
     verified: '14.367',
@@ -46,6 +46,6 @@ test('module manifest declares the supported Foundry stack and public packs', as
   );
   assert.equal(
     manifest.download,
-    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.9.0/goffredo-compendium.zip'
+    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.9.1/goffredo-compendium.zip'
   );
 });

@@ -248,32 +248,75 @@ test('the cursed creature takes an extra 2d6 the first time each turn', async ()
 
 // Enlarge/Reduce
 
-test('Enlarge/Reduce moves one size category and resizes the token', () => {
+test('Enlarge/Reduce moves one size category', () => {
   assert.equal(enlarge.resized('med', 'enlarge'), 'lg');
   assert.equal(enlarge.resized('med', 'reduce'), 'sm');
   assert.equal(enlarge.resized('grg', 'enlarge'), 'grg');
+  assert.equal(enlarge.tokenSize('lg'), 2);
   const changes = Object.fromEntries(enlarge.sizeChanges(actor('Kragdar', 'med'), 'enlarge').map(change => [change.key, change.value]));
   assert.equal(changes['system.traits.size'], 'lg');
-  assert.equal(changes['ATL.width'], '2');
   assert.equal(changes['system.bonuses.mwak.damage'], '+1d4');
   assert.equal(changes['flags.midi-qol.advantage.ability.save.str'], '1');
   const reduce = Object.fromEntries(enlarge.sizeChanges(actor('Ogre', 'lg'), 'reduce').map(change => [change.key, change.value]));
-  assert.equal(reduce['ATL.width'], '1');
+  assert.equal(reduce['system.traits.size'], 'med');
   assert.equal(reduce['flags.midi-qol.disadvantage.ability.check.str'], '1');
 });
 
-test('allies are always affected, other creatures only on a failed save', async () => {
-  const ally = {document: {disposition: 1}, actor: actor('Ash')};
-  const savedFoe = {document: {disposition: -1}, actor: actor('Orc')};
-  const failedFoe = {document: {disposition: -1}, actor: actor('Goblin')};
+function sizeTarget(name, dispositionValue, effects = []) {
+  const target = actor(name);
+  target.effects = effects;
+  return {document: {uuid: `Token.${name}`, disposition: dispositionValue, width: 1, height: 1, actor: target}, actor: target};
+}
+
+test('allies are always affected, other creatures only on a failed save', () => {
+  const ally = sizeTarget('Ash', 1);
+  const savedFoe = sizeTarget('Orc', -1);
+  const failedFoe = sizeTarget('Goblin', -1);
   const workflow = {token: {document: {disposition: 1}}, targets: new Set([ally, savedFoe, failedFoe]), saves: new Set([ally, savedFoe])};
   assert.deepEqual(enlarge.affectedTargets(workflow), [ally, failedFoe]);
+});
 
+test('Enlarge/Reduce replaces the spell\'s own effect and resizes the token', async () => {
+  const item = {name: 'Enlarge/Reduce', uuid: 'Actor.k.Item.er'};
+  const sheetEffect = {id: 'sheet', origin: 'Actor.k.Item.er', flags: {}};
+  const unrelated = {id: 'bless', origin: 'Actor.x.Item.bless', flags: {}};
+  const ally = sizeTarget('Ash', 1, [sheetEffect, unrelated]);
   const deps = store();
-  deps.dialogUtils = {buttonDialog: async () => 'reduce'};
-  await enlarge.castEnlargeReduce({document: {name: 'Enlarge/Reduce'}, workflow: {...workflow, activity: {identifier: 'enlargeReduceLegacy'}}}, deps);
-  assert.deepEqual(deps.created.map(effect => effect.actor.name), ['Ash', 'Goblin']);
-  assert.ok(deps.created[0].changes.some(change => change.key === 'system.traits.size' && change.value === 'sm'));
+  deps.dialogUtils = {buttonDialog: async () => 'enlarge'};
+  const workflow = {token: {document: {disposition: 1}}, targets: new Set([ally]), saves: new Set(), activity: {identifier: 'legacy'}};
+  await enlarge.castEnlargeReduce({document: item, workflow}, deps);
+
+  const [effect] = deps.created;
+  assert.deepEqual(effect.flags[MODULE_ID].enlargeReduce, {tokenUuid: 'Token.Ash', width: 1, height: 1});
+  assert.deepEqual(deps.deleted, [sheetEffect]);
+  assert.deepEqual(deps.updated, [[ally.document, {width: 2, height: 2}]]);
+});
+
+test('willing allies skip the save through Midi\'s friendly auto-fail', async () => {
+  const set = [];
+  const activity = {type: 'save', midiProperties: {}, toObject: () => ({type: 'save', midiProperties: {confirmTargets: 'never'}})};
+  await enlarge.willingAllies({workflow: {activity}}, {workflowUtils: {setActivity: (...args) => set.push(args)}});
+  assert.deepEqual(set[0][1].midiProperties, {confirmTargets: 'never', autoFailFriendly: true});
+
+  const already = [];
+  await enlarge.willingAllies({workflow: {activity: {type: 'save', midiProperties: {autoFailFriendly: true}}}}, {workflowUtils: {setActivity: (...args) => already.push(args)}});
+  assert.equal(already.length, 0);
+});
+
+test('the token size comes back when the spell ends', async () => {
+  const token = {uuid: 'Token.Ash'};
+  const updated = [];
+  const deps = {
+    actorUtils: {getEffectByIdentifier: () => undefined},
+    fromUuid: async () => token,
+    documentUtils: {async update(...args) { updated.push(args); }}
+  };
+  const effect = {parent: {}, flags: {cat: {identifier: 'enlargeReduce'}, [MODULE_ID]: {enlargeReduce: {tokenUuid: 'Token.Ash', width: 1, height: 1}}}};
+  assert.equal(await enlarge.restoreTokenSize(effect, deps), true);
+  assert.deepEqual(updated, [[token, {width: 1, height: 1}]]);
+
+  deps.actorUtils.getEffectByIdentifier = () => ({id: 'newer'});
+  assert.equal(await enlarge.restoreTokenSize(effect, deps), false);
 });
 
 test('new automations register the prefixed CAT passes', () => {
@@ -282,5 +325,5 @@ test('new automations register the prefixed CAT passes', () => {
   assert.deepEqual(inspiring.inspiringSmiteAutomation.roll.map(entry => entry.pass), ['itemRollFinished']);
   assert.deepEqual(vampiric.vampiricTouch.roll.map(entry => entry.pass), ['itemDamageRollComplete', 'itemRollFinished']);
   assert.deepEqual(bane.elementalBane.roll.map(entry => entry.pass), ['itemRollFinished', 'targetRollFinished']);
-  assert.deepEqual(enlarge.enlargeReduce.roll.map(entry => entry.pass), ['itemRollFinished']);
+  assert.deepEqual(enlarge.enlargeReduce.roll.map(entry => entry.pass), ['itemPreambleComplete', 'itemRollFinished']);
 });

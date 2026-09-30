@@ -1,5 +1,5 @@
-import {RULESET} from '../constants.mjs';
-import {actorUtils, dialogUtils, documentUtils, effectUtils} from '../proxy.mjs';
+import {MODULE_ID, RULESET} from '../constants.mjs';
+import {actorUtils, dialogUtils, documentUtils, effectUtils, workflowUtils} from '../proxy.mjs';
 import {collectionValues, localize} from '../shared/foundry.mjs';
 
 const EFFECT = 'enlargeReduce';
@@ -7,7 +7,14 @@ const SIZES = ['tiny', 'sm', 'med', 'lg', 'huge', 'grg'];
 // Grid squares a creature of each size occupies.
 const SQUARES = {tiny: 0.5, sm: 1, med: 1, lg: 2, huge: 3, grg: 4};
 
-const defaultDeps = {actorUtils, dialogUtils, documentUtils, effectUtils};
+const defaultDeps = {
+  actorUtils,
+  dialogUtils,
+  documentUtils,
+  effectUtils,
+  workflowUtils,
+  fromUuid: (...args) => globalThis.fromUuid(...args)
+};
 
 export function resized(size, mode) {
   const index = SIZES.indexOf(size);
@@ -21,21 +28,17 @@ function change(key, value, type = 'override') {
 }
 
 // One size category up or down, advantage or disadvantage on Strength checks
-// and saves, and +1d4 or -1d4 on weapon damage. The token is resized through
-// Active Token Effects when it is active.
+// and saves, and +1d4 or -1d4 on weapon damage.
 export function sizeChanges(actor, mode) {
-  const size = resized(actor?.system?.traits?.size, mode);
   const roll = mode === 'enlarge' ? 'advantage' : 'disadvantage';
   const damage = mode === 'enlarge' ? '+1d4' : '-1d4';
-  const changes = [
-    change('system.traits.size', size),
+  return [
+    change('system.traits.size', resized(actor?.system?.traits?.size, mode)),
     change(`flags.midi-qol.${roll}.ability.check.str`, 1, 'custom'),
     change(`flags.midi-qol.${roll}.ability.save.str`, 1, 'custom'),
     change('system.bonuses.mwak.damage', damage, 'add'),
     change('system.bonuses.rwak.damage', damage, 'add')
   ];
-  if (SQUARES[size]) changes.push(change('ATL.width', SQUARES[size]), change('ATL.height', SQUARES[size]));
-  return changes;
 }
 
 async function chooseMode(item, activity, deps) {
@@ -61,17 +64,45 @@ export function affectedTargets(workflow) {
   ));
 }
 
+// A sheet copy of the spell may lack Midi's auto-fail for friendly targets:
+// switch it on for this casting so willing allies don't roll the save.
+export async function willingAllies({workflow}, deps = defaultDeps) {
+  const activity = workflow?.activity;
+  if (activity?.type !== 'save' || activity.midiProperties?.autoFailFriendly) return undefined;
+  const data = activity.toObject();
+  data.midiProperties = {...data.midiProperties, autoFailFriendly: true};
+  deps.workflowUtils.setActivity(workflow, data);
+  return undefined;
+}
+
+// Effects the same spell item placed on its own (an effect attached to the
+// activity), which would stack with this one.
+export function duplicateEffects(actor, item, keep = []) {
+  const kept = new Set(keep.filter(Boolean).map(effect => effect.id));
+  return collectionValues(actor?.effects).filter(effect => (
+    !kept.has(effect.id)
+    && String(effect.origin ?? '').startsWith(item.uuid)
+    && effect.flags?.cat?.identifier !== EFFECT
+  ));
+}
+
+export function tokenSize(size) {
+  return SQUARES[size];
+}
+
 export async function castEnlargeReduce({document: item, workflow}, deps = defaultDeps) {
   const affected = affectedTargets(workflow);
   if (!affected.length) return undefined;
   const mode = await chooseMode(item, workflow.activity, deps);
   if (!mode) return undefined;
   const concentration = deps.effectUtils.getConcentrationEffect(workflow.actor, item);
-  for (const token of affected) {
-    const actor = token.actor ?? token.document?.actor;
+  for (const target of affected) {
+    const token = target.document ?? target;
+    const actor = token.actor ?? target.actor;
     if (!actor) continue;
     const previous = deps.actorUtils.getEffectByIdentifier(actor, EFFECT);
-    if (previous) await deps.documentUtils.deleteDocument(previous);
+    const original = previous?.flags?.[MODULE_ID]?.[EFFECT] ?? {width: token.width, height: token.height};
+    const size = resized(actor.system?.traits?.size, mode);
     const effectData = deps.documentUtils.getBaseEffectData(item, {
       name: `${item.name}: ${localize(mode === 'enlarge' ? 'GAC.EnlargeReduce.Enlarge' : 'GAC.EnlargeReduce.Reduce')}`,
       img: item.img,
@@ -81,14 +112,45 @@ export async function castEnlargeReduce({document: item, workflow}, deps = defau
       parentEntity: concentration,
       changes: sizeChanges(actor, mode)
     });
-    await deps.effectUtils.createEffects(actor, [effectData]);
+    effectData.flags ??= {};
+    effectData.flags[MODULE_ID] = {[EFFECT]: {tokenUuid: token.uuid, width: original.width, height: original.height}};
+    // The new effect exists before the old one goes, so the old one's removal
+    // doesn't restore the token size.
+    const [effect] = await deps.effectUtils.createEffects(actor, [effectData]) ?? [];
+    for (const duplicate of [previous, ...duplicateEffects(actor, item, [effect, previous, concentration])].filter(Boolean)) {
+      await deps.documentUtils.deleteDocument(duplicate);
+    }
+    const squares = tokenSize(size);
+    if (squares && token.uuid) await deps.documentUtils.update(token, {width: squares, height: squares});
   }
   return undefined;
 }
 
+// When the spell ends the token gets its size back, unless another casting
+// still affects the creature.
+export async function restoreTokenSize(effect, deps = defaultDeps) {
+  const saved = effect?.flags?.[MODULE_ID]?.[EFFECT];
+  if (effect?.flags?.cat?.identifier !== EFFECT || !saved?.tokenUuid) return false;
+  if (deps.actorUtils.getEffectByIdentifier(effect.parent, EFFECT)) return false;
+  const token = await deps.fromUuid(saved.tokenUuid);
+  if (!token || !saved.width || !saved.height) return false;
+  await deps.documentUtils.update(token, {width: saved.width, height: saved.height});
+  return true;
+}
+
+export function registerEnlargeReduceCleanup(hooks = globalThis.Hooks) {
+  return hooks.on('deleteActiveEffect', effect => {
+    if (!globalThis.game?.user?.isActiveGM) return;
+    void restoreTokenSize(effect).catch(error => console.error('goffredo-compendium | token size restore failed', error));
+  });
+}
+
 export const enlargeReduce = {
   name: 'Enlarge/Reduce',
-  version: '0.9.0',
+  version: '0.9.1',
   rules: RULESET,
-  roll: [{pass: 'itemRollFinished', macro: castEnlargeReduce, priority: 50}]
+  roll: [
+    {pass: 'itemPreambleComplete', macro: willingAllies, priority: 50},
+    {pass: 'itemRollFinished', macro: castEnlargeReduce, priority: 50}
+  ]
 };

@@ -11,7 +11,7 @@ import {inspiringSmiteAutomation} from './classes/inspiring-smite.mjs';
 import {crusherAutomation} from './features/crusher.mjs';
 import {dragonsBreath} from './spells/dragons-breath.mjs';
 import {elementalBane} from './spells/elemental-bane.mjs';
-import {enlargeReduce} from './spells/enlarge-reduce.mjs';
+import {enlargeReduce, registerEnlargeReduceCleanup} from './spells/enlarge-reduce.mjs';
 import {vampiricTouch} from './spells/vampiric-touch.mjs';
 import {melfsMinuteMeteors} from './spells/melfs-minute-meteors.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
@@ -76,6 +76,7 @@ Hooks.once('ready', () => {
   registerAttackReactions();
   registerLegendaryResistance();
   registerTransientSweep();
+  registerEnlargeReduceCleanup();
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

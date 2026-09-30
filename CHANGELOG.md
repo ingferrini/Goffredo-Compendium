@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.1 - 2026-09-30
+
+- Enlarge/Reduce: the token is resized directly and restored when the spell ends (Active Token Effects did not apply the change).
+- Enlarge/Reduce: the effect a sheet copy of the spell applies on its own is replaced, so the +1d4 no longer stacks.
+- Enlarge/Reduce: allies never roll the saving throw, even on a sheet copy without Midi's friendly auto-fail.
+
 ## 0.9.0 - 2026-09-30
 
 - Added Crusher: optional 5-foot push once per turn after a bludgeoning hit, and advantage against the target after a bludgeoning critical hit until the start of the attacker's next turn.
