@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.9.5 - 2026-09-30
+
+- Enlarge/Reduce: Strength advantage and disadvantage now use the Midi 14 flags (advantage.check.str, advantage.save.str); the old keys were ignored.
+- Protocollo di intangibilità: advantage on saving throws now uses the Midi 14 flag advantage.save.all.
+
 ## 0.9.4 - 2026-09-30
 
 - Every compendium activity turns off Midi's automatic Convenient Effects: Midi no longer adds the Convenient Effects "Enlarge" (or any other same-named effect) next to the module's own.

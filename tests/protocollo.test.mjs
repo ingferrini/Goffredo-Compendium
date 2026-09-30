@@ -23,7 +23,7 @@ test('using the protocol grants resistance, save advantage, grapple/prone immuni
   assert.equal(effect.flags['goffredo-compendium'].protocolShield, true);
   const keys = effect.system.changes.map(change => `${change.key}=${change.value}`);
   assert.ok(keys.includes('system.traits.dr.value=psychic'));
-  assert.ok(keys.includes('flags.midi-qol.advantage.ability.save.all=1'));
+  assert.ok(keys.includes('flags.midi-qol.advantage.save.all=1'));
   assert.ok(keys.includes('system.traits.ci.value=grappled'));
   assert.ok(keys.includes('system.traits.ci.value=prone'));
   assert.equal(await protocol.applyProtocol({item: {system: {identifier: 'detect'}}, actor}), false);

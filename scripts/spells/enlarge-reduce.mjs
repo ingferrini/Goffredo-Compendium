@@ -37,8 +37,8 @@ export function sizeChanges(actor, mode) {
   const damage = mode === 'enlarge' ? '+1d4' : '-1d4';
   return [
     change('system.traits.size', resized(baseSize(actor), mode)),
-    change(`flags.midi-qol.${roll}.ability.check.str`, 1, 'custom'),
-    change(`flags.midi-qol.${roll}.ability.save.str`, 1, 'custom'),
+    change(`flags.midi-qol.${roll}.check.str`, 1, 'custom'),
+    change(`flags.midi-qol.${roll}.save.str`, 1, 'custom'),
     change('system.bonuses.mwak.damage', damage, 'add'),
     change('system.bonuses.rwak.damage', damage, 'add')
   ];
@@ -117,7 +117,7 @@ export function registerEnlargeReduceCleanup(hooks = globalThis.Hooks) {
 
 export const enlargeReduce = {
   name: 'Enlarge/Reduce',
-  version: '0.9.4',
+  version: '0.9.5',
   rules: RULESET,
   roll: [{pass: 'itemRollFinished', macro: castEnlargeReduce, priority: 50}]
 };

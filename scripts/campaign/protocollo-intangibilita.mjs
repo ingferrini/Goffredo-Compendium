@@ -25,7 +25,7 @@ export function protocolEffectData(item) {
     flags: {[MODULE_ID]: {[SHIELD_FLAG]: true}, dae: {specialDuration: ['turnStart']}},
     system: {changes: [
       ...damageTypes().map(type => ({key: 'system.traits.dr.value', type: 'add', value: type, priority: 20})),
-      {key: 'flags.midi-qol.advantage.ability.save.all', type: 'custom', value: '1', priority: 20},
+      {key: 'flags.midi-qol.advantage.save.all', type: 'custom', value: '1', priority: 20},
       {key: 'system.traits.ci.value', type: 'add', value: 'grappled', priority: 20},
       {key: 'system.traits.ci.value', type: 'add', value: 'prone', priority: 20}
     ]}

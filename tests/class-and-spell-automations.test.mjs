@@ -256,10 +256,10 @@ test('Enlarge/Reduce moves one size category', () => {
   const changes = Object.fromEntries(enlarge.sizeChanges(actor('Kragdar', 'med'), 'enlarge').map(change => [change.key, change.value]));
   assert.equal(changes['system.traits.size'], 'lg');
   assert.equal(changes['system.bonuses.mwak.damage'], '+1d4');
-  assert.equal(changes['flags.midi-qol.advantage.ability.save.str'], '1');
+  assert.equal(changes['flags.midi-qol.advantage.save.str'], '1');
   const reduce = Object.fromEntries(enlarge.sizeChanges(actor('Ogre', 'lg'), 'reduce').map(change => [change.key, change.value]));
   assert.equal(reduce['system.traits.size'], 'med');
-  assert.equal(reduce['flags.midi-qol.disadvantage.ability.check.str'], '1');
+  assert.equal(reduce['flags.midi-qol.disadvantage.check.str'], '1');
 });
 
 function sizeTarget(name, dispositionValue, effects = []) {
