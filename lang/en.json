@@ -134,7 +134,8 @@
     },
     "Meteors": {
       "NoneLeft": "No meteors are left.",
-      "VolleySpent": "You have already hurled two meteors this turn."
+      "VolleySpent": "You have already hurled two meteors this turn.",
+      "UseBonus": "The casting turn is over: use Hurl Meteor (Bonus Action)."
     }
   }
 }

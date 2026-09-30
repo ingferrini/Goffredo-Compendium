@@ -97,15 +97,21 @@ test('Melf\'s Minute Meteors creates six meteors plus two per higher slot', () =
 
 function meteorContext({state, combat = {started: true, id: 'c', round: 2, turn: 1}} = {}) {
   const store = effectStore();
+  const visibility = [];
   const effect = state ? {id: 'meteors', flags: {[MODULE_ID]: {melfsMinuteMeteors: state}}} : undefined;
   const deps = {
     ...store,
     actorUtils: {getEffectByIdentifier: () => effect},
     workflowUtils: {getCastLevel: () => 4},
-    combat: () => combat
+    itemUtils: {
+      async rehideActivities(...args) { visibility.push(['hide', ...args]); },
+      async unhideActivities(...args) { visibility.push(['show', ...args]); }
+    },
+    combat: () => combat,
+    fromUuid: async () => item
   };
   const item = {name: "Melf's Minute Meteors", img: 'meteor.webp', uuid: 'Item.meteors'};
-  return {deps, effect, item, store};
+  return {deps, effect, item, store, visibility};
 }
 
 test('casting the meteors stores the count and reveals the hurl activity', async () => {
@@ -115,22 +121,51 @@ test('casting the meteors stores the count and reveals the hurl activity', async
   const [effect] = context.store.created;
   assert.equal(effect.name, "Melf's Minute Meteors (8)");
   assert.deepEqual(effect.unhideActivities, ['melfsMinuteMeteorsHurl']);
-  assert.deepEqual(effect.flags[MODULE_ID].melfsMinuteMeteors, {meteors: 8, turn: 'c.2.1', thrown: 0});
+  assert.deepEqual(effect.flags[MODULE_ID].melfsMinuteMeteors, {meteors: 8, castTurn: 'c.2.1', turn: 'c.2.1', thrown: 0, bonus: false});
 });
 
 test('a third meteor in the same combat turn is blocked, a new turn is not', async () => {
-  const activity = {identifier: 'melfsMinuteMeteorsHurl'};
-  const spent = meteorContext({state: {meteors: 4, turn: 'c.2.1', thrown: 2}});
-  assert.equal(await meteors.checkHurl({activity, actor: {}}, spent.deps), true);
+  const free = {identifier: 'melfsMinuteMeteorsHurl'};
+  const bonus = {identifier: 'melfsMinuteMeteorsHurlBonus'};
+  const spent = meteorContext({state: {meteors: 4, castTurn: 'c.2.1', turn: 'c.2.1', thrown: 2}});
+  assert.equal(await meteors.checkHurl({activity: free, actor: {}}, spent.deps), true);
 
-  const nextTurn = meteorContext({state: {meteors: 4, turn: 'c.1.1', thrown: 2}});
-  assert.equal(await meteors.checkHurl({activity, actor: {}}, nextTurn.deps), undefined);
+  const nextTurn = meteorContext({state: {meteors: 4, castTurn: 'c.1.1', turn: 'c.1.1', thrown: 2, bonus: true}});
+  assert.equal(await meteors.checkHurl({activity: bonus, actor: {}}, nextTurn.deps), undefined);
 
   const outOfCombat = meteorContext({state: {meteors: 4, turn: 'c.2.1', thrown: 2}, combat: null});
-  assert.equal(await meteors.checkHurl({activity, actor: {}}, outOfCombat.deps), undefined);
+  assert.equal(await meteors.checkHurl({activity: free, actor: {}}, outOfCombat.deps), undefined);
 
   const empty = meteorContext();
-  assert.equal(await meteors.checkHurl({activity, actor: {}}, empty.deps), true);
+  assert.equal(await meteors.checkHurl({activity: free, actor: {}}, empty.deps), true);
+});
+
+test('the free volley gives way to the bonus-action hurl after the casting turn', async () => {
+  const context = meteorContext({state: {meteors: 6, castTurn: 'c.2.1', turn: 'c.2.1', thrown: 1, bonus: false}});
+  await meteors.endCastingTurn({document: context.effect}, context.deps);
+  assert.deepEqual(context.store.updated[0][1], {
+    'flags.cat.unhideActivities': ['melfsMinuteMeteorsHurlBonus'],
+    [`flags.${MODULE_ID}.melfsMinuteMeteors.bonus`]: true
+  });
+  assert.deepEqual(context.visibility, [
+    ['hide', context.item, ['melfsMinuteMeteorsHurl'], {favorite: true}],
+    ['show', context.item, ['melfsMinuteMeteorsHurlBonus'], {favorite: true}]
+  ]);
+
+  const already = meteorContext({state: {meteors: 6, bonus: true}});
+  await meteors.endCastingTurn({document: already.effect}, already.deps);
+  assert.equal(already.store.updated.length, 0);
+});
+
+test('the free hurl is refused and swapped when used after the casting turn', async () => {
+  const context = meteorContext({state: {meteors: 6, castTurn: undefined, turn: undefined, thrown: 0, bonus: false}});
+  const activity = {identifier: 'melfsMinuteMeteorsHurl', item: context.item};
+  assert.equal(await meteors.checkHurl({activity, actor: {}}, context.deps), true);
+  assert.equal(context.visibility.length, 2);
+
+  const castTurn = meteorContext({state: {meteors: 6, castTurn: 'c.2.1', turn: 'c.2.1', thrown: 1, bonus: false}});
+  assert.equal(await meteors.checkHurl({activity, actor: {}}, castTurn.deps), undefined);
+  assert.equal(castTurn.visibility.length, 0);
 });
 
 test('hurling spends a meteor and the last one ends the spell', async () => {
@@ -150,4 +185,5 @@ test('hurling spends a meteor and the last one ends the spell', async () => {
 test('spell automations register the prefixed CAT passes', () => {
   assert.deepEqual(breath.dragonsBreath.roll.map(entry => entry.pass), ['itemRollFinished']);
   assert.deepEqual(meteors.melfsMinuteMeteors.roll.map(entry => entry.pass), ['itemPreTargeting', 'itemRollFinished']);
+  assert.deepEqual(meteors.melfsMinuteMeteors.combat.map(entry => entry.pass), ['actorTurnEnd']);
 });

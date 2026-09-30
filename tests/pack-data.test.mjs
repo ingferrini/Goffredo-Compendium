@@ -144,7 +144,7 @@ test('spells carry their CAT macro and concentration casting activities', async 
   assert.equal(meteors.system.level, 3);
   assert.equal(meteors.flags.cat.macros.roll[0].identifier, 'melfs-minute-meteors');
   const activities = Object.values(meteors.system.activities);
-  assert.deepEqual(activities.map(activity => activity.midiProperties.identifier), ['melfsMinuteMeteors', 'melfsMinuteMeteorsHurl']);
+  assert.deepEqual(activities.map(activity => activity.midiProperties.identifier), ['melfsMinuteMeteors', 'melfsMinuteMeteorsHurl', 'melfsMinuteMeteorsHurlBonus']);
   const hurl = activities[1];
   assert.equal(hurl.flags.cat.hidden, true);
   assert.equal(hurl.consumption.spellSlot, false);
@@ -152,4 +152,10 @@ test('spells carry their CAT macro and concentration casting activities', async 
   assert.deepEqual([hurl.target.template.type, hurl.target.template.size], ['sphere', '5']);
   assert.equal(hurl.range.value, '120');
   assert.deepEqual(hurl.damage.parts[0].types, ['fire']);
+  assert.equal(hurl.activation.type, 'special');
+  const bonus = activities[2];
+  assert.equal(bonus.activation.type, 'bonus');
+  assert.equal(bonus.flags.cat.hidden, true);
+  assert.equal(bonus.consumption.spellSlot, false);
+  assert.deepEqual(bonus.damage, hurl.damage);
 });

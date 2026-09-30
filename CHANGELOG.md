@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.8.1 - 2026-09-30
+
+- Melf's Minute Meteors: the free *Hurl Meteor* is available only in the casting turn; afterwards it is replaced by *Hurl Meteor (Bonus Action)*, which costs a bonus action.
+
 ## 0.8.0 - 2026-09-30
 
 - Added the `GAC Spells (2014)` compendium with Dragon's Breath and Melf's Minute Meteors.
