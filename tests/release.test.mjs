@@ -32,6 +32,7 @@ test('release archive contains the installable module and excludes development s
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-features-2014/')));
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-summons-2014/')));
   assert.ok(entries.some(entry => entry.startsWith('packs/gac-equipment-2014/')));
+  assert.ok(entries.some(entry => entry.startsWith('packs/gac-spells-2014/')));
   assert.equal(entries.some(entry => /\/(?:LOCK|LOG|[^/]+\.log)$/.test(entry)), false);
   for (const forbidden of ['node_modules/', 'packData/', 'tests/', 'docs/', '.git/', '.github/']) {
     assert.equal(entries.some(entry => entry.startsWith(forbidden)), false, `${forbidden} must be excluded`);
@@ -60,7 +61,7 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
 
   const moduleIcon = /^modules\/goffredo-compendium\/(assets\/icons\/[^"]+)$/;
   const referenced = new Set();
-  for (const pack of ['gac-features-2014', 'gac-summons-2014', 'gac-equipment-2014']) {
+  for (const pack of ['gac-features-2014', 'gac-summons-2014', 'gac-equipment-2014', 'gac-spells-2014']) {
     for (const filename of await readdir(new URL(`packData/${pack}/`, root))) {
       const source = await readFile(new URL(`packData/${pack}/${filename}`, root), 'utf8');
       for (const [, path] of source.matchAll(/"(modules\/goffredo-compendium\/[^"]+)"/g)) {
@@ -81,6 +82,14 @@ test('release contains no undeclared artwork or copied rules descriptions', asyn
     assert.doesNotMatch(document.system.description.value, /heightened state of fury/i);
     assert.doesNotMatch(document.system.description.value, /conjure forth the mind of your Awakened Spellbook/i);
     assert.doesNotMatch(document.system.description.value, /you can use your reaction to make an attack with the weapon against that creature/i);
+    assert.equal(document.system.description.chat, '');
+  }
+
+  for (const filename of ['Dragons_Breath.json', 'Melfs_Minute_Meteors.json']) {
+    const document = JSON.parse(await readFile(new URL(`packData/gac-spells-2014/${filename}`, root), 'utf8'));
+    assert.match(document.system.description.value, /Operational summary/i);
+    assert.doesNotMatch(document.system.description.value, /imbue it with the power to spew magical energy/i);
+    assert.doesNotMatch(document.system.description.value, /You create six tiny meteors in your space/i);
     assert.equal(document.system.description.chat, '');
   }
 });

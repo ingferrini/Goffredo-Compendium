@@ -21,11 +21,12 @@ In Foundry, open **Add-on Modules > Install Module**, paste the manifest URL, an
 https://github.com/ingferrini/Goffredo-Compendium/releases/latest/download/module.json
 ```
 
-Enable the module and its required dependencies in the world. Three compendia appear under **Goffredo's Automation Compendium / 2014**:
+Enable the module and its required dependencies in the world. Four compendia appear under **Goffredo's Automation Compendium / 2014**:
 
 - `GAC Class Features (2014)`
 - `GAC Summons (2014)`
 - `GAC Equipment (2014)`
+- `GAC Spells (2014)`
 
 Import the features and items from the compendia onto the character, replacing any unautomated copy. Do not edit the compendium originals. CAT reads the embedded identifiers automatically when the imported Items are used.
 
@@ -54,6 +55,11 @@ One feature on the actor covers every weapon: melee attacks with a two-handed we
 ## Pack Tactics (Companion)
 
 Advantage on attack rolls when the companion named in the feature's **Requirements** field (for example `Jira`) is within 5 feet of every target and isn't incapacitated. Edit the field to bind another companion.
+
+## Spells
+
+- **Dragon's Breath**: target one willing creature and choose the damage type. While your concentration lasts, that creature has a *Dragon's Breath: Exhale* action (15-foot cone, Dexterity save against your spell save DC, 3d6 plus 1d6 per slot level above 2nd, half on a success). The action is removed when the spell ends.
+- **Melf's Minute Meteors**: casting creates the meteors (six, plus two per slot level above 3rd), counted in the effect's name, and reveals *Hurl Meteor* (5-foot-radius sphere within 120 feet, Dexterity save, 2d6 fire, half on a success). In combat a third meteor in the same turn is blocked; the last meteor ends the spell and its concentration. *Hurl Meteor* has no action cost on the sheet: use it right after casting and with your bonus action on later turns.
 
 ## Reactions
 

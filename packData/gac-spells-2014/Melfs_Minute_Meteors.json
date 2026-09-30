@@ -1,0 +1,252 @@
+{
+  "name": "Melf's Minute Meteors",
+  "type": "spell",
+  "img": "icons/magic/fire/projectile-meteor-salvo-heavy-red.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> cast it to create six meteors (+2 for each slot level above 3rd), shown in the effect name. Use <em>Hurl Meteor</em> once or twice right after casting and once or twice with your bonus action on each later turn: a 5-foot-radius sphere within 120 feet, Dexterity save against your spell save DC, 2d6 fire damage (half on a success). In combat the module blocks a third meteor in the same turn; the spell ends when the last meteor is hurled or concentration is lost.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "identifier": "melfs-minute-meteors",
+    "level": 3,
+    "school": "evo",
+    "properties": [
+      "vocal",
+      "somatic",
+      "material",
+      "concentration"
+    ],
+    "materials": {
+      "value": "niter, sulfur, and pine tar formed into a bead",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "activation": {
+      "type": "action",
+      "value": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": "10",
+      "units": "minute"
+    },
+    "range": {
+      "value": null,
+      "units": "self",
+      "special": ""
+    },
+    "target": {
+      "template": {
+        "count": "",
+        "contiguous": false,
+        "type": "",
+        "size": "",
+        "width": "",
+        "height": "",
+        "units": "ft"
+      },
+      "affects": {
+        "count": "",
+        "type": "",
+        "choice": false,
+        "special": ""
+      }
+    },
+    "method": "spell",
+    "prepared": 0,
+    "activities": {
+      "GACMeteorsCast01": {
+        "_id": "GACMeteorsCast01",
+        "type": "utility",
+        "name": "Cast",
+        "img": "icons/magic/fire/projectile-meteor-salvo-heavy-red.webp",
+        "activation": {
+          "type": "action",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": true,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": true,
+          "value": "10",
+          "units": "minute",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "units": "self",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "",
+            "type": "",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "midiProperties": {
+          "identifier": "melfsMinuteMeteors",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        }
+      },
+      "GACMeteorsHurl01": {
+        "_id": "GACMeteorsHurl01",
+        "type": "save",
+        "name": "Hurl Meteor",
+        "img": "icons/magic/fire/projectile-embers-orange.webp",
+        "activation": {
+          "type": "special",
+          "value": null,
+          "condition": "",
+          "override": true
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": false,
+            "max": ""
+          },
+          "spellSlot": false
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": false,
+          "units": "inst",
+          "override": true
+        },
+        "effects": [],
+        "range": {
+          "value": "120",
+          "units": "ft",
+          "special": "",
+          "override": true
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "sphere",
+            "size": "5",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "",
+            "type": "creature",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": true
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "damage": {
+          "onSave": "half",
+          "parts": [
+            {
+              "number": 2,
+              "denomination": 6,
+              "bonus": "",
+              "types": [
+                "fire"
+              ],
+              "custom": {
+                "enabled": false,
+                "formula": ""
+              },
+              "scaling": {
+                "mode": "",
+                "number": null,
+                "formula": ""
+              }
+            }
+          ]
+        },
+        "save": {
+          "ability": [
+            "dex"
+          ],
+          "dc": {
+            "calculation": "spellcasting",
+            "formula": ""
+          }
+        },
+        "midiProperties": {
+          "identifier": "melfsMinuteMeteorsHurl",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        },
+        "flags": {
+          "cat": {
+            "hidden": true
+          }
+        }
+      }
+    }
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "melfs-minute-meteors"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACMinuteMeteor1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACMinuteMeteor1"
+}

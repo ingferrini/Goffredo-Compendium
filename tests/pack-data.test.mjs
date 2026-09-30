@@ -76,7 +76,7 @@ test('feature descriptions and activity names carry no Italian text', async () =
 });
 
 test('pack source filenames are JSON documents only', async () => {
-  for (const directory of ['packData/gac-features-2014/', 'packData/gac-summons-2014/', 'packData/gac-equipment-2014/']) {
+  for (const directory of ['packData/gac-features-2014/', 'packData/gac-summons-2014/', 'packData/gac-equipment-2014/', 'packData/gac-spells-2014/']) {
     const files = await readdir(new URL(directory, root));
     assert.ok(files.length > 0);
     assert.ok(files.every(file => file.endsWith('.json')));
@@ -127,4 +127,29 @@ test('reactive, companion and homebrew items carry their CAT macros', async () =
   }
   const pack = await json('packData/gac-features-2014/Pack_Tactics_Companion.json');
   assert.equal(pack.system.requirements, 'Jira');
+});
+
+test('spells carry their CAT macro and concentration casting activities', async () => {
+  const breath = await json('packData/gac-spells-2014/Dragons_Breath.json');
+  assert.equal(breath.type, 'spell');
+  assert.equal(breath.system.level, 2);
+  assert.equal(breath.flags.cat.macros.roll[0].identifier, 'dragons-breath');
+  const [cast] = Object.values(breath.system.activities);
+  assert.equal(cast.midiProperties.identifier, 'dragonsBreath');
+  assert.equal(cast.activation.type, 'bonus');
+  assert.equal(cast.duration.concentration, true);
+  assert.equal(cast.target.affects.count, '1');
+
+  const meteors = await json('packData/gac-spells-2014/Melfs_Minute_Meteors.json');
+  assert.equal(meteors.system.level, 3);
+  assert.equal(meteors.flags.cat.macros.roll[0].identifier, 'melfs-minute-meteors');
+  const activities = Object.values(meteors.system.activities);
+  assert.deepEqual(activities.map(activity => activity.midiProperties.identifier), ['melfsMinuteMeteors', 'melfsMinuteMeteorsHurl']);
+  const hurl = activities[1];
+  assert.equal(hurl.flags.cat.hidden, true);
+  assert.equal(hurl.consumption.spellSlot, false);
+  for (const key of ['activation', 'duration', 'range', 'target']) assert.equal(hurl[key].override, true, key);
+  assert.deepEqual([hurl.target.template.type, hurl.target.template.size], ['sphere', '5']);
+  assert.equal(hurl.range.value, '120');
+  assert.deepEqual(hurl.damage.parts[0].types, ['fire']);
 });

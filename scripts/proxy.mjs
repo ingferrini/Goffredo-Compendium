@@ -40,6 +40,7 @@ export const dialogUtils = createProxy(['utils', 'dialogUtils']);
 export const documentUtils = createProxy(['utils', 'documentUtils']);
 export const effectUtils = createProxy(['utils', 'effectUtils']);
 export const genericUtils = createProxy(['utils', 'genericUtils']);
+export const itemUtils = createProxy(['utils', 'itemUtils']);
 export const queryUtils = createProxy(['utils', 'queryUtils']);
 export const summonUtils = createProxy(['utils', 'summonUtils']);
 export const tokenUtils = createProxy(['utils', 'tokenUtils']);

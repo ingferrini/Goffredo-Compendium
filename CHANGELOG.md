@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.8.0 - 2026-09-30
+
+- Added the `GAC Spells (2014)` compendium with Dragon's Breath and Melf's Minute Meteors.
+- Dragon's Breath grants the touched creature an Exhale action of the chosen damage type, scaled by the slot level and removed with the caster's concentration.
+- Melf's Minute Meteors tracks the remaining meteors, allows at most two per turn in combat and ends the spell when the last one is hurled.
+
 ## 0.7.3 - 2026-09-25
 
 - Removed the one-off cleanup of leftovers from older versions; only flagged transient effects are swept.

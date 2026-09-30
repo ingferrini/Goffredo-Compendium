@@ -5,7 +5,8 @@ export const RULESET = '2014';
 export const PACKS = Object.freeze({
   features: `${MODULE_ID}.GACFeatures2014`,
   summons: `${MODULE_ID}.GACSummons2014`,
-  equipment: `${MODULE_ID}.GACEquipment2014`
+  equipment: `${MODULE_ID}.GACEquipment2014`,
+  spells: `${MODULE_ID}.GACSpells2014`
 });
 
 export const REQUIRED_MODULES = Object.freeze([

@@ -6,6 +6,8 @@ import {greatWeaponFightingAutomation} from './features/great-weapon-fighting.mj
 import {packTacticsAutomation} from './features/pack-tactics.mjs';
 import {frammentoRunico, unattuneBacklash} from './items/frammento-runico.mjs';
 import {piumaReginaCorvo} from './items/piuma-regina-corvo.mjs';
+import {dragonsBreath} from './spells/dragons-breath.mjs';
+import {melfsMinuteMeteors} from './spells/melfs-minute-meteors.mjs';
 import {vengefulAssaultAutomation} from './species/vengeful-assault.mjs';
 import {manifestMind} from './wizard/manifest-mind.mjs';
 import {registerLegendaryResistance, registerLegendaryTurns} from './legendary/legendary.mjs';
@@ -28,7 +30,9 @@ const automations = [
   ['pack-tactics-companion', packTacticsAutomation],
   ['great-weapon-fighting', greatWeaponFightingAutomation],
   ['frammento-runico-instabile', frammentoRunico],
-  ['piuma-regina-corvo', piumaReginaCorvo]
+  ['piuma-regina-corvo', piumaReginaCorvo],
+  ['dragons-breath', dragonsBreath],
+  ['melfs-minute-meteors', melfsMinuteMeteors]
 ];
 
 Hooks.once('init', () => {

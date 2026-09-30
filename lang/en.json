@@ -126,6 +126,15 @@
     },
     "Campaign": {
       "ProtocolNegated": "Protocollo di intangibilità: the first damage is negated"
+    },
+    "DragonsBreath": {
+      "Exhale": "Exhale",
+      "ChooseType": "Choose the damage type of the breath.",
+      "ExhaleSummary": "Granted by Dragon's Breath. Use your action to exhale a 15-foot cone; each creature in it makes a Dexterity saving throw, taking the damage on a failure and half on a success. The action disappears when the spell ends."
+    },
+    "Meteors": {
+      "NoneLeft": "No meteors are left.",
+      "VolleySpent": "You have already hurled two meteors this turn."
     }
   }
 }

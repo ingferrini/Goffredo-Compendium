@@ -1,0 +1,152 @@
+{
+  "name": "Dragon's Breath",
+  "type": "spell",
+  "img": "icons/magic/fire/beam-jet-stream-embers.webp",
+  "system": {
+    "description": {
+      "value": "<p><strong>Operational summary:</strong> touch a willing creature and choose acid, cold, fire, lightning or poison. While you concentrate, it gains the <em>Dragon's Breath: Exhale</em> action: a 15-foot cone, Dexterity save against your spell save DC, 3d6 damage (half on a success), +1d6 for each slot level above 2nd. The action disappears when the spell ends.</p>",
+      "chat": ""
+    },
+    "source": {
+      "custom": "Goffredo's Automation Compendium",
+      "revision": 1,
+      "rules": "2014"
+    },
+    "identifier": "dragons-breath",
+    "level": 2,
+    "school": "trs",
+    "properties": [
+      "vocal",
+      "somatic",
+      "material",
+      "concentration"
+    ],
+    "materials": {
+      "value": "a hot pepper",
+      "consumed": false,
+      "cost": 0,
+      "supply": 0
+    },
+    "activation": {
+      "type": "bonus",
+      "value": 1,
+      "condition": ""
+    },
+    "duration": {
+      "value": "1",
+      "units": "minute"
+    },
+    "range": {
+      "value": null,
+      "units": "touch",
+      "special": ""
+    },
+    "target": {
+      "template": {
+        "count": "",
+        "contiguous": false,
+        "type": "",
+        "size": "",
+        "width": "",
+        "height": "",
+        "units": "ft"
+      },
+      "affects": {
+        "count": "1",
+        "type": "willing",
+        "choice": false,
+        "special": ""
+      }
+    },
+    "method": "spell",
+    "prepared": 0,
+    "activities": {
+      "GACDragonsCast01": {
+        "_id": "GACDragonsCast01",
+        "type": "utility",
+        "name": "Cast",
+        "img": "icons/magic/fire/beam-jet-stream-embers.webp",
+        "activation": {
+          "type": "bonus",
+          "value": 1,
+          "condition": "",
+          "override": false
+        },
+        "consumption": {
+          "targets": [],
+          "scaling": {
+            "allowed": true,
+            "max": ""
+          },
+          "spellSlot": true
+        },
+        "description": {
+          "chatFlavor": ""
+        },
+        "duration": {
+          "concentration": true,
+          "value": "1",
+          "units": "minute",
+          "override": false
+        },
+        "effects": [],
+        "range": {
+          "units": "touch",
+          "special": "",
+          "override": false
+        },
+        "target": {
+          "template": {
+            "count": "",
+            "contiguous": false,
+            "type": "",
+            "size": "",
+            "width": "",
+            "height": "",
+            "units": "ft"
+          },
+          "affects": {
+            "count": "1",
+            "type": "willing",
+            "choice": false,
+            "special": ""
+          },
+          "prompt": true,
+          "override": false
+        },
+        "uses": {
+          "spent": 0,
+          "max": "",
+          "recovery": []
+        },
+        "midiProperties": {
+          "identifier": "dragonsBreath",
+          "displayActivityName": true,
+          "confirmTargets": "never"
+        }
+      }
+    }
+  },
+  "flags": {
+    "cat": {
+      "macros": {
+        "roll": [
+          {
+            "source": "goffredo-compendium",
+            "rules": "2014",
+            "identifier": "dragons-breath"
+          }
+        ]
+      }
+    }
+  },
+  "effects": [],
+  "folder": null,
+  "_id": "GACDragonsBreat1",
+  "_stats": {
+    "coreVersion": "14.367",
+    "systemId": "dnd5e",
+    "systemVersion": "5.3.3"
+  },
+  "_key": "!items!GACDragonsBreat1"
+}
