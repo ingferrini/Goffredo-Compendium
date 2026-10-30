@@ -1,7 +1,7 @@
 import {MODULE_ID} from '../constants.mjs';
 import {connectedPlayers, createPresentationBrowserClass, toggleAllRecipients} from './browser.mjs';
-import {createPresentationDisplay} from './display.mjs';
-import {defaultPresentationRoot, indexPresentationLibrary, normalizeLibraryConfig, searchPresentationLibrary} from './library.mjs';
+import {confirmOverlayClose, createPresentationDisplay} from './display.mjs';
+import {defaultPresentationRoot, ensurePresentationRoot, entriesInFolder, folderPaths, indexPresentationLibrary, normalizeLibraryConfig, searchPresentationLibrary} from './library.mjs';
 import {createCloseMessage, createShowMessage, isActiveGmSender, isMessageForUser, normalizePresentationMessage} from './protocol.mjs';
 
 export const LIBRARY_SETTING = 'presentationLibrary';
@@ -38,21 +38,27 @@ export function registerPresentations() {
       const Popout = globalThis.foundry?.applications?.apps?.ImagePopout ?? globalThis.ImagePopout;
       const app = new Popout(url, {title, shareable: false}); await app.render(true); return app;
     },
-    confirmLocalClose: () => globalThis.Dialog.confirm({title: game.i18n.localize('GAC.Presentations.Actions.Close'), content: `<p>${game.i18n.localize('GAC.Presentations.Overlay.Confirm')}</p>`}),
+    confirmLocalClose: confirmOverlayClose,
     localize: key => game.i18n.localize(key), notifyError: message => ui.notifications.error(message)
   });
-  let entries = [], warnings = [], query = '', selectedImage = null, recipients = new Set(), browser = null, activePresentation = null;
+  let entries = [], warnings = [], query = '', selectedImage = null, selectedFolder = '', expandedFolders = new Set(), recipients = new Set(), browser = null, activePresentation = null;
   const users = () => connectedPlayers(game.users);
   const controller = {
-    model: () => ({entries: searchPresentationLibrary(entries, query), warnings, query, selectedImage, recipients, users: users(), config: normalizeLibraryConfig(game.settings.get(MODULE_ID, LIBRARY_SETTING), game.world.id), activePresentation}),
+    model: () => ({entries: searchPresentationLibrary(entriesInFolder(entries, selectedFolder), query), warnings, query, selectedImage, selectedEntry: entries.find(entry => entry.url === selectedImage) ?? null, folders: folderPaths(entries), selectedFolder, expandedFolders, recipients, users: users(), config: normalizeLibraryConfig(game.settings.get(MODULE_ID, LIBRARY_SETTING), game.world.id), activePresentation}),
     setQuery: value => { query = value; }, selectImage: value => { selectedImage = value; },
     setRecipient: (id, checked) => { checked ? recipients.add(id) : recipients.delete(id); },
-    async action(action, element) {
+    async action(action, element, trigger) {
       if (action === 'selectAllPlayers') recipients = toggleAllRecipients(users(), users().every(user => recipients.has(user.id)));
       if (action === 'refreshLibrary') {
         const config = normalizeLibraryConfig({source: element.querySelector('[data-field="source"]').value, root: element.querySelector('[data-field="root"]').value}, game.world.id);
         await game.settings.set(MODULE_ID, LIBRARY_SETTING, config);
+        await ensurePresentationRoot(config, {browse: (source, path) => globalThis.FilePicker.browse(source, path), createDirectory: (source, path) => globalThis.FilePicker.createDirectory(source, path)});
         ({entries, warnings} = await indexPresentationLibrary(config, {browse: (source, path) => globalThis.FilePicker.browse(source, path)}));
+      }
+      if (action === 'folder') {
+        selectedFolder = trigger.dataset.folder;
+        const hasChildren = folderPaths(entries).some(folder => folder.startsWith(`${selectedFolder}/`));
+        if (selectedFolder && hasChildren) expandedFolders.has(selectedFolder) ? expandedFolders.delete(selectedFolder) : expandedFolders.add(selectedFolder);
       }
       if (action === 'selectRoot') {
         const current = element.querySelector('[data-field="root"]').value;

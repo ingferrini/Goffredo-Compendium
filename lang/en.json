@@ -138,7 +138,9 @@
         "Close": "Close"
       },
       "Library": {"Empty": "No images were found in this folder.", "Warnings": "Some folders could not be read ({count})."},
-      "Overlay": {"Label": "Image presented by the GM", "Confirm": "The GM is still presenting this image. Close it only for you?"},
+      "Folders": {"Title": "Folders", "All": "All presentations"},
+      "Preview": {"Title": "Selected presentation", "Empty": "Select an image to preview it."},
+      "Overlay": {"Label": "Image presented by the GM", "ConfirmTitle": "Close presentation?", "Confirm": "The GM is still presenting this image. Close it only for you?", "KeepOpen": "Keep open", "CloseForMe": "Close for me"},
       "Standard": {"Title": "Image from the GM"},
       "Errors": {"Image": "The presented image could not be loaded."}
     },

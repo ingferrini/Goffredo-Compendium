@@ -56,3 +56,37 @@ export function searchPresentationLibrary(entries, query) {
   const needle = String(query ?? '').trim().toLocaleLowerCase();
   return needle ? entries.filter(entry => entry.searchText.includes(needle)) : [...entries];
 }
+
+export async function ensurePresentationRoot(config, {browse, createDirectory}) {
+  const {source, root} = normalizeLibraryConfig(config);
+  const parts = root.split('/').filter(Boolean);
+  let path = '';
+  for (const part of parts) {
+    path = path ? `${path}/${part}` : part;
+    try {
+      await browse(source, path);
+    } catch {
+      await createDirectory(source, path);
+    }
+  }
+  return {source, root};
+}
+
+export function folderPaths(entries) {
+  const folders = new Set();
+  for (const entry of entries) {
+    const parts = String(entry.relativePath ?? '').split('/');
+    parts.pop();
+    for (let index = 1; index <= parts.length; index += 1) folders.add(parts.slice(0, index).join('/'));
+  }
+  return [...folders].sort((a, b) => a.localeCompare(b));
+}
+
+export function entriesInFolder(entries, folder) {
+  if (!folder) return [...entries];
+  const prefix = `${folder}/`;
+  return entries.filter(entry => {
+    const remainder = String(entry.relativePath ?? '').slice(prefix.length);
+    return String(entry.relativePath ?? '').startsWith(prefix) && !remainder.includes('/');
+  });
+}
