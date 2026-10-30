@@ -124,6 +124,24 @@
       "ResistancePrompt": "Failed the saving throw against",
       "UseResistance": "Use Legendary Resistance: succeed instead"
     },
+    "Presentations": {
+      "Control": {"Title": "Present images"},
+      "Browser": {"Title": "Image presentations"},
+      "Search": {"Placeholder": "Search by filename or folder"},
+      "Audience": {"Title": "Recipients", "All": "All connected players", "None": "No players are connected."},
+      "Actions": {
+        "SelectFolder": "Select folder",
+        "Refresh": "Refresh library",
+        "ShowStandard": "Show standard",
+        "ShowFullscreen": "Show fullscreen",
+        "CloseEveryone": "Close for everyone",
+        "Close": "Close"
+      },
+      "Library": {"Empty": "No images were found in this folder.", "Warnings": "Some folders could not be read ({count})."},
+      "Overlay": {"Label": "Image presented by the GM", "Confirm": "The GM is still presenting this image. Close it only for you?"},
+      "Standard": {"Title": "Image from the GM"},
+      "Errors": {"Image": "The presented image could not be loaded."}
+    },
     "Campaign": {
       "ProtocolNegated": "Protocollo di intangibilità: the first damage is negated"
     },

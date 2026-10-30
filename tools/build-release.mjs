@@ -18,6 +18,7 @@ const RELEASE_PATHS = [
   'assets',
   'lang',
   'scripts',
+  'styles',
   'packs'
 ];
 const VOLATILE_PACK_FILES = new Set(['LOCK', 'LOG']);
