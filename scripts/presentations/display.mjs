@@ -1,5 +1,28 @@
 const OVERLAY_ID = 'goffredo-compendium-presentation-overlay';
 
+export function confirmOverlayClose({document, overlay, localize}) {
+  return new Promise(resolve => {
+    const prompt = document.createElement('div');
+    prompt.className = 'gac-presentation-confirm';
+    prompt.setAttribute('role', 'dialog');
+    prompt.setAttribute('aria-modal', 'true');
+    const heading = document.createElement('h3');
+    heading.textContent = localize('GAC.Presentations.Overlay.ConfirmTitle');
+    const message = document.createElement('p');
+    message.textContent = localize('GAC.Presentations.Overlay.Confirm');
+    const keep = document.createElement('button');
+    keep.type = 'button'; keep.textContent = localize('GAC.Presentations.Overlay.KeepOpen');
+    const close = document.createElement('button');
+    close.type = 'button'; close.textContent = localize('GAC.Presentations.Overlay.CloseForMe');
+    const finish = value => { prompt.remove(); resolve(value); };
+    keep.addEventListener('click', () => finish(false));
+    close.addEventListener('click', () => finish(true));
+    prompt.append(heading, message, keep, close);
+    overlay.append(prompt);
+    keep.focus();
+  });
+}
+
 export function createPresentationDisplay({document, openImage, confirmLocalClose, localize, notifyError}) {
   let active = null;
   let popout = null;
@@ -7,7 +30,7 @@ export function createPresentationDisplay({document, openImage, confirmLocalClos
   const remove = () => { popout?.close?.(); popout = null; overlay?.remove?.(); overlay = null; active = null; };
   const requestLocalClose = async () => {
     if (!active) return false;
-    if (active.mode === 'fullscreen' && !await confirmLocalClose()) return false;
+    if (active.mode === 'fullscreen' && !await confirmLocalClose({document, overlay, localize})) return false;
     remove();
     return true;
   };

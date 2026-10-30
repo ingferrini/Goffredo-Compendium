@@ -1,7 +1,14 @@
 .gac-presentation-browser { display: flex; flex-direction: column; gap: .75rem; height: 100%; }
 .gac-presentation-config { display: grid; grid-template-columns: 9rem 1fr auto auto; gap: .4rem; }
 .gac-presentation-browser fieldset { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
-.gac-presentation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .65rem; overflow: auto; min-height: 12rem; }
+.gac-presentation-workspace { display: grid; grid-template-columns: 13rem minmax(18rem, 1fr) minmax(16rem, 34%); gap: .65rem; min-height: 24rem; overflow: hidden; }
+.gac-presentation-folders, .gac-presentation-preview { display: flex; flex-direction: column; gap: .45rem; overflow: auto; padding: .55rem; background: rgb(0 0 0 / 12%); }
+.gac-presentation-folder { width: 100%; padding-left: calc(.45rem + var(--folder-depth, 0) * 1rem); text-align: left; }
+.gac-presentation-folder.selected { outline: 2px solid var(--color-border-highlight); }
+.gac-presentation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); align-content: start; gap: .65rem; overflow: auto; min-height: 12rem; }
+.gac-presentation-preview img { width: 100%; min-height: 14rem; max-height: 24rem; object-fit: contain; background: #111; }
+.gac-presentation-preview small { overflow-wrap: anywhere; }
+.gac-presentation-actions { display: grid; gap: .45rem; margin-top: auto; }
 .gac-presentation-card { display: grid; grid-template-rows: 110px auto; gap: .25rem; padding: .35rem; border: 1px solid var(--color-border-light-2); border-radius: 4px; cursor: pointer; }
 .gac-presentation-card:has(input:checked) { outline: 2px solid var(--color-border-highlight); }
 .gac-presentation-card input { position: absolute; opacity: 0; }
@@ -12,4 +19,7 @@
 #goffredo-compendium-presentation-overlay img { width: 100vw; height: 100vh; object-fit: contain; }
 #goffredo-compendium-presentation-overlay button { position: absolute; top: 1rem; right: 1rem; padding: .55rem .8rem; color: #fff; background: rgb(0 0 0 / 70%); border: 1px solid #aaa; border-radius: 4px; }
 #goffredo-compendium-presentation-overlay button:focus-visible { outline: 3px solid #fff; }
+.gac-presentation-confirm { position: absolute; z-index: 2; left: 50%; top: 50%; width: min(28rem, calc(100% - 2rem)); transform: translate(-50%, -50%); padding: 1rem; color: #fff; background: #262626; border: 1px solid #888; border-radius: 6px; box-shadow: 0 1rem 3rem #000; }
+.gac-presentation-confirm button { position: static !important; margin-right: .5rem; }
 @media (prefers-reduced-motion: no-preference) { #goffredo-compendium-presentation-overlay { transition: opacity 160ms ease; } }
+@media (max-width: 850px) { .gac-presentation-workspace { grid-template-columns: 11rem 1fr; }.gac-presentation-preview { grid-column: 1 / -1; }.gac-presentation-config { grid-template-columns: 1fr 1fr; }.gac-presentation-config input { grid-column: 1 / -1; } }

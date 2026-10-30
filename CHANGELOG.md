@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.10.2 - 2026-10-30
+
+- Made the presentation browser resizable and added a large GM preview for the selected image.
+- Added expandable image folders and automatic creation of a missing presentation root on the configured Foundry/Forge source.
+- Moved the player's local-close confirmation inside the fullscreen overlay so it always remains visible above the presented image.
+
 ## 0.10.1 - 2026-10-30
 
 - Fixed the Image Presentations scene-control button on Foundry 14 by registering its hook during initialization and using the v14 `onChange` control callback.
