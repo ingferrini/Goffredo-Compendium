@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented here.
 
+## 0.10.1 - 2026-10-30
+
+- Fixed the Image Presentations scene-control button on Foundry 14 by registering its hook during initialization and using the v14 `onChange` control callback.
+
 ## 0.10.0 - 2026-10-30
 
 - Added a GM-only, Forge-compatible presentation library that searches a dedicated image folder by filename and subfolder without sending its index to players.
