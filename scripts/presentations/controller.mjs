@@ -7,10 +7,27 @@ import {createCloseMessage, createShowMessage, isActiveGmSender, isMessageForUse
 export const LIBRARY_SETTING = 'presentationLibrary';
 export const ACTIVE_PRESENTATION_SETTING = 'activePresentation';
 export const PRESENTATION_SOCKET = `module.${MODULE_ID}`;
+let openPresentationBrowser = () => {};
 
 export function registerPresentationSettings(settings, worldId) {
   settings.register(MODULE_ID, LIBRARY_SETTING, {scope: 'world', config: false, type: Object, default: {source: 'forgevtt', root: defaultPresentationRoot(worldId)}});
   settings.register(MODULE_ID, ACTIVE_PRESENTATION_SETTING, {scope: 'world', config: false, type: Object, default: {}});
+}
+
+export function registerPresentationControl(hooks, deps = {}) {
+  hooks.on('getSceneControlButtons', controls => {
+    const isGM = deps.isGM?.() ?? globalThis.game?.user?.isGM;
+    if (!isGM || !controls.tokens?.tools) return;
+    controls.tokens.tools['gac-presentations'] = {
+      name: 'gac-presentations',
+      title: 'GAC.Presentations.Control.Title',
+      icon: 'fa-solid fa-images',
+      order: Object.keys(controls.tokens.tools).length,
+      button: true,
+      visible: true,
+      onChange: deps.open ?? (() => openPresentationBrowser())
+    };
+  });
 }
 
 export function registerPresentations() {
@@ -69,10 +86,12 @@ export function registerPresentations() {
   const stored = normalizePresentationMessage(game.settings.get(MODULE_ID, ACTIVE_PRESENTATION_SETTING));
   if (stored?.mode === 'fullscreen') { activePresentation = stored; void receive(stored); }
   const Browser = createPresentationBrowserClass(controller);
-  Hooks.on('getSceneControlButtons', controls => {
-    if (!game.user.isGM) return;
-    const tool = {name: 'gac-presentations', title: 'GAC.Presentations.Control.Title', icon: 'fas fa-images', button: true, onClick: async () => { browser ??= new Browser(); await browser.render(true); if (!entries.length) { await controller.action('refreshLibrary', browser.element); await browser.render(); } }};
-    if (controls.tokens?.tools) controls.tokens.tools['gac-presentations'] = tool;
-    else if (Array.isArray(controls)) controls.find(control => control.name === 'token')?.tools?.push(tool);
-  });
+  openPresentationBrowser = async () => {
+    browser ??= new Browser();
+    await browser.render({force: true});
+    if (!entries.length) {
+      await controller.action('refreshLibrary', browser.element);
+      await browser.render();
+    }
+  };
 }

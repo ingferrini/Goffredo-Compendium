@@ -27,7 +27,7 @@ import {registerReactionQueries} from './reactions/prompt.mjs';
 import {registerReactionUsage} from './reactions/usage.mjs';
 import {registerTransientSweep} from './shared/transient.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
-import {registerPresentations, registerPresentationSettings} from './presentations/controller.mjs';
+import {registerPresentationControl, registerPresentations, registerPresentationSettings} from './presentations/controller.mjs';
 
 const automations = [
   ['manifest-echo', manifestEcho],
@@ -55,6 +55,7 @@ Hooks.once('init', () => {
   registerLegendaryTurns(Hooks, globalThis.CONFIG.queries);
   registerProtocollo(Hooks, globalThis.CONFIG.queries);
   registerPresentationSettings(game.settings, game.world.id);
+  registerPresentationControl(Hooks);
 });
 
 Hooks.once('catReady', () => {
