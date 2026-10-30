@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.10.0 - 2026-10-30
+
+- Added a GM-only, Forge-compatible presentation library that searches a dedicated image folder by filename and subfolder without sending its index to players.
+- Images can be shown to all connected players or selected individual players in a standard Foundry window or a synchronized fullscreen overlay.
+- Fullscreen presentations survive reloads for addressed players; players may hide them locally after confirmation, while the GM can close them for everyone.
+
 ## 0.9.5 - 2026-09-30
 
 - Enlarge/Reduce: Strength advantage and disadvantage now use the Midi 14 flags (advantage.check.str, advantage.save.str); the old keys were ignored.

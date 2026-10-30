@@ -108,6 +108,12 @@ A separate section of the same panel (GM decisions, never reactions) with enable
 
 The module interface is in English. The compendia contain no full protected rules text: names identify the features, and rules text comes from the table's own material. Campaign items keep their original Italian names and descriptions.
 
+## Image presentations
+
+The GM can open **Image presentations** from the scene controls and search a dedicated image library by filename or subfolder. The default root is `assets/<world-id>/presentations/`; Forge users can select their Asset Library source and folder once from the browser. Only the GM indexes that folder. Players receive only the selected image URL.
+
+**Show standard** opens a normal movable Foundry image window. **Show fullscreen** opens a synchronized black-backed overlay; a player may hide it locally only after confirmation, while the GM can close it for everyone. The GM may address all connected players or select individual connected non-GM users. Fullscreen presentations survive an addressed player's reload; standard windows do not.
+
 ## Development
 
 ```bash
