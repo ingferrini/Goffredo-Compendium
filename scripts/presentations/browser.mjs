@@ -57,7 +57,15 @@ export function createPresentationBrowserClass(controller) {
   return class PresentationBrowser extends ApplicationV2 {
     static DEFAULT_OPTIONS = PRESENTATION_BROWSER_OPTIONS;
     async _renderHTML() { return renderPresentationBrowser(controller.model(), {localize: key => game.i18n.localize(key)}); }
-    _replaceHTML(result, content) { content.innerHTML = result; }
+    _replaceHTML(result, content) {
+      const scrollers = ['.gac-presentation-grid', '.gac-presentation-folders', '.gac-presentation-preview'];
+      const tops = scrollers.map(selector => content.querySelector(selector)?.scrollTop ?? 0);
+      const field = content.querySelector('[data-field="query"]');
+      const caret = field && globalThis.document?.activeElement === field ? field.selectionStart : null;
+      content.innerHTML = result;
+      scrollers.forEach((selector, index) => { const element = content.querySelector(selector); if (element) element.scrollTop = tops[index]; });
+      if (caret !== null) { const next = content.querySelector('[data-field="query"]'); next?.focus(); next?.setSelectionRange(caret, caret); }
+    }
     _onRender(context, options) {
       super._onRender(context, options);
       const root = this.element;

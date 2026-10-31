@@ -21,6 +21,23 @@ function imageFile(path) {
   return IMAGE_EXTENSIONS.includes(clean.split('.').pop()?.toLocaleLowerCase());
 }
 
+function decoded(value) {
+  try { return decodeURIComponent(value); } catch { return value; }
+}
+
+// Forge may return absolute, percent-encoded URLs while FilePicker still expects
+// source-relative paths for browse calls. Compare decoded forms, but retain the
+// original URL on each entry for image loading.
+function relativeToRoot(url, root) {
+  const path = decoded(String(url).split(/[?#]/, 1)[0].replaceAll('\\', '/')).replace(/\/+$/g, '');
+  const decodedRoot = decoded(root).replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
+  if (path === decodedRoot) return '';
+  if (path.startsWith(`${decodedRoot}/`)) return path.slice(decodedRoot.length + 1);
+  const marker = `/${decodedRoot}/`;
+  const markerIndex = path.indexOf(marker);
+  return markerIndex >= 0 ? path.slice(markerIndex + marker.length) : null;
+}
+
 export async function indexPresentationLibrary(config, {browse}) {
   const {source, root} = normalizeLibraryConfig(config);
   const queue = [root];
@@ -34,13 +51,12 @@ export async function indexPresentationLibrary(config, {browse}) {
     try {
       const result = await browse(source, path);
       for (const directory of result?.dirs ?? []) {
-        const normalized = String(directory).replaceAll('\\', '/').replace(/\/+$/g, '');
-        if (insideRoot(normalized, root)) queue.push(normalized);
+        const relativeDirectory = relativeToRoot(directory, root);
+        if (relativeDirectory !== null) queue.push(relativeDirectory ? `${root}/${relativeDirectory}` : root);
       }
       for (const url of result?.files ?? []) {
         if (!imageFile(url)) continue;
-        const normalized = String(url).replaceAll('\\', '/');
-        const relativePath = insideRoot(normalized, root) ? normalized.slice(root.length + 1) : normalized.split('/').pop();
+        const relativePath = relativeToRoot(url, root) ?? decoded(String(url).split(/[?#]/, 1)[0]).split('/').pop();
         const filename = relativePath.split('/').pop();
         entries.push({url, filename, relativePath, searchText: relativePath.toLocaleLowerCase()});
       }

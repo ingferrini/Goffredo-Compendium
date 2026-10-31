@@ -1,7 +1,7 @@
-.gac-presentation-browser { display: flex; flex-direction: column; gap: .75rem; height: 100%; }
+.gac-presentation-browser { display: flex; flex: 1 1 auto; flex-direction: column; gap: .75rem; min-height: 0; }
 .gac-presentation-config { display: grid; grid-template-columns: 9rem 1fr auto auto; gap: .4rem; }
 .gac-presentation-browser fieldset { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
-.gac-presentation-workspace { display: grid; grid-template-columns: 13rem minmax(18rem, 1fr) minmax(16rem, 34%); gap: .65rem; min-height: 24rem; overflow: hidden; }
+.gac-presentation-workspace { display: grid; grid-template-columns: 13rem minmax(18rem, 1fr) minmax(16rem, 34%); gap: .65rem; flex: 1 1 0; min-height: 12rem; overflow: hidden; }
 .gac-presentation-folders, .gac-presentation-preview { display: flex; flex-direction: column; gap: .45rem; overflow: auto; padding: .55rem; background: rgb(0 0 0 / 12%); }
 .gac-presentation-folder { width: 100%; padding-left: calc(.45rem + var(--folder-depth, 0) * 1rem); text-align: left; }
 .gac-presentation-folder.selected { outline: 2px solid var(--color-border-highlight); }
@@ -9,7 +9,7 @@
 .gac-presentation-preview img { width: 100%; min-height: 14rem; max-height: 24rem; object-fit: contain; background: #111; }
 .gac-presentation-preview small { overflow-wrap: anywhere; }
 .gac-presentation-actions { display: grid; gap: .45rem; margin-top: auto; }
-.gac-presentation-card { display: grid; grid-template-rows: 110px auto; gap: .25rem; padding: .35rem; border: 1px solid var(--color-border-light-2); border-radius: 4px; cursor: pointer; }
+.gac-presentation-card { position: relative; display: grid; grid-template-rows: 110px auto; gap: .25rem; padding: .35rem; border: 1px solid var(--color-border-light-2); border-radius: 4px; cursor: pointer; }
 .gac-presentation-card:has(input:checked) { outline: 2px solid var(--color-border-highlight); }
 .gac-presentation-card input { position: absolute; opacity: 0; }
 .gac-presentation-card img { width: 100%; height: 110px; object-fit: contain; background: #111; }

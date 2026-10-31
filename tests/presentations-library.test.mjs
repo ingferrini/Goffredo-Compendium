@@ -52,6 +52,43 @@ test('indexes supported images recursively and searches names and folders', asyn
   assert.deepEqual(searchPresentationLibrary(result.entries, 'archive'), [result.entries[0]]);
 });
 
+test('keeps subfolders for absolute percent-encoded Forge URLs', async () => {
+  const base = 'https://assets.forge-vtt.com/u1/assets/wildemount/presentations';
+  const browse = async (_source, path) => path.endsWith('presentations')
+    ? {dirs: [`${path}/Nogvurot`], files: [`${base}/Neris-Fal.webp`]}
+    : {dirs: [], files: [`${base}/Nogvurot/Korvanna%20Kalagiano.webp`]};
+  const result = await indexPresentationLibrary({source: 'forgevtt', root: 'assets/wildemount/presentations'}, {browse});
+  assert.deepEqual(result.entries.map(entry => entry.relativePath), ['Neris-Fal.webp', 'Nogvurot/Korvanna Kalagiano.webp']);
+  assert.equal(result.entries[1].filename, 'Korvanna Kalagiano.webp');
+  assert.deepEqual(folderPaths(result.entries), ['Nogvurot']);
+});
+
+test('keeps subfolders when the configured Forge root is percent-encoded', async () => {
+  const root = 'assets/My%20World/presentations';
+  const base = `https://assets.forge-vtt.com/u1/${root}`;
+  const browse = async (_source, path) => path === root
+    ? {dirs: [`${base}/Nogvurot`], files: []}
+    : {dirs: [], files: [`${base}/Nogvurot/Korvanna%20Kalagiano.webp`]};
+  const result = await indexPresentationLibrary({source: 'forgevtt', root}, {browse});
+  assert.deepEqual(result.entries.map(entry => entry.relativePath), ['Nogvurot/Korvanna Kalagiano.webp']);
+  assert.deepEqual(folderPaths(result.entries), ['Nogvurot']);
+});
+
+test('recurses through absolute Forge directory URLs using source-relative browse paths', async () => {
+  const root = 'assets/wildemount/presentations';
+  const base = `https://assets.forge-vtt.com/u1/${root}`;
+  const browsed = [];
+  const browse = async (_source, path) => {
+    browsed.push(path);
+    return path === root
+      ? {dirs: [`${base}/Nogvurot`], files: []}
+      : {dirs: [], files: [`${base}/Nogvurot/view.webp`]};
+  };
+  const result = await indexPresentationLibrary({source: 'forgevtt', root}, {browse});
+  assert.deepEqual(browsed, [root, `${root}/Nogvurot`]);
+  assert.deepEqual(result.entries.map(entry => entry.relativePath), ['Nogvurot/view.webp']);
+});
+
 test('keeps successful results when one subdirectory fails', async () => {
   const browse = async (_source, path) => {
     if (path.endsWith('/broken')) throw new Error('denied');

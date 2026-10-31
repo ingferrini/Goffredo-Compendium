@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.10.3 - 2026-10-31
+
+- Fixed the presentation browser losing subfolders and showing `%20` in names on Forge, including encoded roots and absolute directory URLs returned by the file picker.
+- Fixed the browser jumping when selecting an image far down the grid: scroll positions are now preserved across re-renders, thumbnail radios are anchored to their card, and the workspace fills the window height.
+- Fixed the filename search field losing focus after every typed character.
+
 ## 0.10.2 - 2026-10-30
 
 - Made the presentation browser resizable and added a large GM preview for the selected image.

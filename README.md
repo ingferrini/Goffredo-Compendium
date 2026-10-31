@@ -110,7 +110,7 @@ The module interface is in English. The compendia contain no full protected rule
 
 ## Image presentations
 
-The GM can open **Image presentations** from the scene controls and search a dedicated image library by filename or subfolder. The default root is `assets/<world-id>/presentations/`; Forge users can select their Asset Library source and folder once from the browser. Only the GM indexes that folder. Players receive only the selected image URL.
+The GM can open **Image presentations** from the scene controls and search a dedicated image library by filename or subfolder. The default root is `assets/<world-id>/presentations/`; Forge users can select their Asset Library source and folder once from the browser. Only the GM indexes that folder. Players receive only the selected image URL. Subfolders are derived from each file's path below the root (including Forge's absolute, percent-encoded URLs) and shown as an expandable tree; the grid keeps its scroll position when you select an image.
 
 **Show standard** opens a normal movable Foundry image window. **Show fullscreen** opens a synchronized black-backed overlay; a player may hide it locally only after confirmation, while the GM can close it for everyone. The GM may address all connected players or select individual connected non-GM users. Fullscreen presentations survive an addressed player's reload; standard windows do not.
 
