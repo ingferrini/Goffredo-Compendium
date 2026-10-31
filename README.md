@@ -10,6 +10,7 @@ Foundry VTT automations for D&D 5e 2014 games: clean-room, rules-text-free imple
 - Dynamic Active Effects `14.0.14` or newer compatible 14.x release
 - Coven's Automation Toolkit (CAT) `0.0.8` or newer compatible release
 - Levels `7.0.3` supported for elevation-aware movement
+- Sequencer recommended for the Environmental Effect Studio
 
 The module intentionally refuses to register partial automation when a required dependency is missing or older than the declared minimum.
 
@@ -113,6 +114,16 @@ The module interface is in English. The compendia contain no full protected rule
 The GM can open **Image presentations** from the scene controls and search a dedicated image library by filename or subfolder. The default root is `assets/<world-id>/presentations/`; Forge users can select their Asset Library source and folder once from the browser. Only the GM indexes that folder. Players receive only the selected image URL. Subfolders are derived from each file's path below the root (including Forge's absolute, percent-encoded URLs) and shown as an expandable tree; the grid keeps its scroll position when you select an image.
 
 **Show standard** opens a normal movable Foundry image window. **Show fullscreen** opens a synchronized black-backed overlay; a player may hide it locally only after confirmation, while the GM can close it for everyone. The GM may address all connected players or select individual connected non-GM users. Fullscreen presentations survive an addressed player's reload; standard windows do not.
+
+## Environmental Effect Studio
+
+The GM-only **Environmental Effect Studio** is available from the token scene controls when Sequencer is active. It creates reusable environmental presets as ordinary world macros, so presets can be organised in folders, exported, edited later, duplicated, or placed on the hotbar. The generated macro remains intentionally small and delegates execution to the module.
+
+Each preset stores its name, icon, Sequencer animation, optional sound, persistence, default audience, and placement mode. Placement can cover the whole scene or use a circle, cone, ray, or rectangle template; template distance and width are saved with the preset and can be adjusted before every use. The audience can be player characters, hostile tokens, friendly or neutral non-PC tokens, or everyone. Before resolution the GM can exclude individual tokens.
+
+At execution time the Studio asks for the damage formula and type, an optional standard Foundry condition and duration, and an optional saving throw ability and DC. With no saving throw, selected targets take the damage and condition. **Save halves** deals half damage and negates the condition on a success; **Save negates** negates both. Leaving the condition duration blank makes it permanent. **Visual only** skips all mechanics. The last-used mechanics are remembered in that preset.
+
+Damage and saving throws run through a hidden technical actor and a normal Midi-QOL workflow, preserving Epic Rolls and the table's Midi configuration. Conditions use Foundry's standard statuses. Visuals use Sequencer's public database; canvas previews never persist, while persistent executions can be removed with Sequencer's own Effect Manager from the Studio. The module does not copy or bundle Sequencer/JB2A artwork.
 
 ## Development
 

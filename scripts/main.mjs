@@ -28,6 +28,10 @@ import {registerReactionUsage} from './reactions/usage.mjs';
 import {registerTransientSweep} from './shared/transient.mjs';
 import {compatibilityIssues, registerAll} from './registry.mjs';
 import {registerPresentationControl, registerPresentations, registerPresentationSettings} from './presentations/controller.mjs';
+import {registerEnvironmentalControl, registerEnvironmentalModuleApi, sequencerAvailable} from './environmental-effects/index.mjs';
+import {createEnvironmentalRuntime} from './environmental-effects/runtime.mjs';
+
+let environmentalRuntime = null;
 
 const automations = [
   ['manifest-echo', manifestEcho],
@@ -56,6 +60,10 @@ Hooks.once('init', () => {
   registerProtocollo(Hooks, globalThis.CONFIG.queries);
   registerPresentationSettings(game.settings, game.world.id);
   registerPresentationControl(Hooks);
+  registerEnvironmentalControl(Hooks, {
+    open: () => environmentalRuntime?.open(),
+    isGM: () => game.user?.isGM === true && sequencerAvailable()
+  });
 });
 
 Hooks.once('catReady', () => {
@@ -81,6 +89,11 @@ Hooks.once('ready', () => {
   registerTransientSweep();
   registerEnlargeReduceCleanup();
   registerPresentations();
+  if (game.user?.isGM && sequencerAvailable()) {
+    environmentalRuntime = createEnvironmentalRuntime();
+    const module = game.modules.get(MODULE_ID);
+    if (module) registerEnvironmentalModuleApi(module, environmentalRuntime.controller);
+  }
   Hooks.on('updateActor', (actor, changes) => {
     if (game.user.isActiveGM) void destroyEchoAtZeroHp(actor, changes);
   });

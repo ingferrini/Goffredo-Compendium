@@ -8,7 +8,7 @@ test('module manifest declares the supported Foundry stack and public packs', as
   const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'));
 
   assert.equal(manifest.id, 'goffredo-compendium');
-  assert.equal(manifest.version, '0.10.3');
+  assert.equal(manifest.version, '0.11.0');
   assert.deepEqual(manifest.compatibility, {
     minimum: '14',
     verified: '14.367',
@@ -41,6 +41,8 @@ test('module manifest declares the supported Foundry stack and public packs', as
   assert.deepEqual(manifest.languages.map(language => language.lang), ['en']);
   assert.equal(manifest.socket, true);
   assert.ok(manifest.styles.includes('styles/presentations.css'));
+  assert.ok(manifest.styles.includes('styles/environmental-effects.css'));
+  assert.ok(manifest.relationships.recommends.some(module => module.id === 'sequencer'));
   assert.equal(manifest.url, 'https://github.com/ingferrini/Goffredo-Compendium');
   assert.equal(
     manifest.manifest,
@@ -48,6 +50,6 @@ test('module manifest declares the supported Foundry stack and public packs', as
   );
   assert.equal(
     manifest.download,
-    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.10.3/goffredo-compendium.zip'
+    'https://github.com/ingferrini/Goffredo-Compendium/releases/download/v0.11.0/goffredo-compendium.zip'
   );
 });

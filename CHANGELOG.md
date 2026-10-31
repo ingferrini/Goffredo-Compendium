@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 0.11.0 - 2026-10-31
+
+- Added the GM-only Environmental Effect Studio, with searchable Sequencer animations, canvas previews, optional sound and persistent visual effects.
+- Environmental presets are exportable world macros with editable template or whole-scene placement, audience filters, per-use target selection, and remembered mechanics.
+- Damage and saving throws resolve through Midi-QOL; presets support full or half damage, standard Foundry conditions with optional duration, and visual-only execution.
+- Added direct access to Sequencer's Effect Manager for persistent effects.
+
 ## 0.10.3 - 2026-10-31
 
 - Fixed the presentation browser losing subfolders and showing `%20` in names on Forge, including encoded roots and absolute directory URLs returned by the file picker.
