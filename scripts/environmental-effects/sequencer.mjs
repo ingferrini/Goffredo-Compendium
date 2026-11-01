@@ -18,7 +18,7 @@ export function assertAnimation(database, path) {
   return entry;
 }
 
-function addEffect(sequence, {file, location, name, persistent}) {
+function addEffect(sequence, {file, location, name, persistent, coverage = 100, outline = []}) {
   let effect = sequence.effect()
     .file(file)
     .atLocation(location)
@@ -26,23 +26,39 @@ function addEffect(sequence, {file, location, name, persistent}) {
   if (location?.width && location?.height) {
     effect = effect.size({width: location.width, height: location.height}, {gridUnits: false});
   }
+  effect = effect.spriteScale(coverage / 100);
+  for (const descriptor of outline) {
+    effect = effect.shape(descriptor.type, {
+      ...descriptor.options,
+      lineSize: 3,
+      lineColor: '#ff9f1c',
+      fillAlpha: 0,
+      alpha: 0.9,
+      anchor: {x: 0.5, y: 0.5}
+    });
+  }
   if (persistent) effect.persist(true);
 }
 
 function configureEffect(sequence, preset, location, {preview = false} = {}) {
   const lingering = preset.persistent ? preset.lingeringAnimation : '';
+  const outline = preset.persistent && preset.showOutline ? (location?.outline ?? []) : [];
   addEffect(sequence, {
     file: preset.animation,
     location,
     name: lingering ? `${effectName(preset.id)}.Activation` : effectName(preset.id),
-    persistent: preset.persistent && !lingering && !preview
+    persistent: preset.persistent && !lingering && !preview,
+    coverage: preset.activationCoverage ?? 100,
+    outline: lingering ? [] : outline
   });
   if (lingering) {
     addEffect(sequence, {
       file: lingering,
       location,
       name: effectName(preset.id),
-      persistent: !preview
+      persistent: !preview,
+      coverage: preset.lingeringCoverage ?? 100,
+      outline
     });
   }
   if (preset.sound) sequence.sound().file(preset.sound);
