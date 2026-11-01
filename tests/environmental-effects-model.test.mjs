@@ -34,6 +34,25 @@ test('retains an optional lingering animation path', () => {
   assert.equal(normalizePreset({lingeringAnimation: ' jb2a.fire.loop '}).lingeringAnimation, 'jb2a.fire.loop');
 });
 
+test('normalizes visual coverage and persistent outline settings', () => {
+  const defaults = normalizePreset({});
+  assert.deepEqual(
+    {
+      activationCoverage: defaults.activationCoverage,
+      lingeringCoverage: defaults.lingeringCoverage,
+      showOutline: defaults.showOutline
+    },
+    {activationCoverage: 100, lingeringCoverage: 100, showOutline: false}
+  );
+  const preset = normalizePreset({persistent: true, activationCoverage: '125', lingeringCoverage: 999, showOutline: true});
+  assert.equal(preset.activationCoverage, 125);
+  assert.equal(preset.lingeringCoverage, 250);
+  assert.equal(preset.showOutline, true);
+  assert.equal(normalizePreset({persistent: false, showOutline: true}).showOutline, false);
+  assert.equal(normalizePreset({activationCoverage: 0, lingeringCoverage: 'invalid'}).activationCoverage, 50);
+  assert.equal(normalizePreset({activationCoverage: 0, lingeringCoverage: 'invalid'}).lingeringCoverage, 100);
+});
+
 test('maps save results to damage and condition eligibility', () => {
   assert.deepEqual(saveOutcome({hasSave: false, succeeded: false}), {damage: 'full', condition: true});
   assert.deepEqual(saveOutcome({hasSave: true, succeeded: true, mode: 'half'}), {damage: 'half', condition: false});

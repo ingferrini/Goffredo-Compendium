@@ -17,6 +17,12 @@ function optionalNumber(value) {
   return value === '' || value === null || value === undefined ? null : Number(value);
 }
 
+function coverage(value) {
+  const number = Number(value);
+  if (value === '' || value === null || value === undefined || !Number.isFinite(number)) return 100;
+  return Math.min(250, Math.max(50, number));
+}
+
 export function normalizeMechanics(raw = {}) {
   return {
     damage: String(raw.damage ?? '').trim(),
@@ -36,6 +42,7 @@ export function normalizePreset(raw = {}) {
   const mode = PLACEMENT_MODES.has(raw.placement?.mode) ? raw.placement.mode : 'template';
   const rawShape = LEGACY_TEMPLATE_SHAPES[raw.placement?.shape] ?? raw.placement?.shape;
   const shape = TEMPLATE_SHAPES.has(rawShape) ? rawShape : 'circle';
+  const persistent = raw.persistent === true;
   return {
     id: String(raw.id ?? '').trim(),
     name: String(raw.name ?? '').trim(),
@@ -43,7 +50,10 @@ export function normalizePreset(raw = {}) {
     animation: String(raw.animation ?? '').trim(),
     lingeringAnimation: String(raw.lingeringAnimation ?? '').trim(),
     sound: String(raw.sound ?? '').trim(),
-    persistent: raw.persistent === true,
+    persistent,
+    activationCoverage: coverage(raw.activationCoverage),
+    lingeringCoverage: coverage(raw.lingeringCoverage),
+    showOutline: persistent && raw.showOutline === true,
     placement: {
       mode,
       shape,
