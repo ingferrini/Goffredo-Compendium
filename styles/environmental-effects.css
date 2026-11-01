@@ -99,6 +99,17 @@
   opacity: 0.35;
 }
 
+.gac-environment-coverage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.5rem;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+
+.gac-environment-coverage .hint {
+  grid-column: 1 / -1;
+}
+
 .gac-environment-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

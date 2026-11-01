@@ -39,6 +39,19 @@ test('parses empty and unchecked visual fields safely', () => {
   assert.equal(result.lingeringAnimation, 'jb2a.fire.loop');
 });
 
+test('parses and renders coverage with a persistent outline', () => {
+  const result = parsePresetForm({
+    id: 'fire', name: 'Fire', animation: 'jb2a.fire', persistent: 'on',
+    activationCoverage: '115', lingeringCoverage: '130', showOutline: 'on',
+    placementMode: 'template', templateShape: 'circle', templateDistance: '20', templateWidth: '5', audience: 'everyone'
+  });
+  assert.equal(result.activationCoverage, 115);
+  assert.equal(result.lingeringCoverage, 130);
+  assert.equal(result.showOutline, true);
+  const html = renderEffectStudio({presets: [{preset: result}], selected: result, query: '', animationPaths: []}, {localize});
+  for (const field of ['activationCoverage', 'lingeringCoverage', 'showOutline']) assert.match(html, new RegExp(`name="${field}"`));
+});
+
 test('mechanics dialog contains targets, damage, save, condition, and duration controls', () => {
   const html = renderMechanicsDialog({targets: [{id: 'a', name: 'Visible token'}], mechanics: preset.mechanics, conditions: [{id: 'prone', name: 'Prone'}], damageTypes: [{id: 'fire', name: 'Fire'}]}, {localize});
   for (const field of ['target.a', 'damage', 'damageType', 'condition', 'saveAbility', 'dc', 'saveMode', 'durationValue', 'durationUnit']) assert.match(html, new RegExp(`name="${field.replace('.', '\\.')}`));

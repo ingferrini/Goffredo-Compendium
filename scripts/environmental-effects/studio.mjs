@@ -19,6 +19,9 @@ export function parsePresetForm(values, mechanics = {}) {
     icon: values.icon || 'icons/svg/explosion.svg',
     animation: values.animation,
     lingeringAnimation: values.lingeringAnimation,
+    activationCoverage: values.activationCoverage,
+    lingeringCoverage: values.lingeringCoverage,
+    showOutline: values.showOutline === true || values.showOutline === 'on',
     sound: values.sound,
     persistent: values.persistent === true || values.persistent === 'on',
     placement: {mode: values.placementMode, shape: values.templateShape, distance: values.templateDistance, width: values.templateWidth},
@@ -67,7 +70,9 @@ export function renderEffectStudio(model, {localize}) {
         <label>${localize('GAC.EnvironmentalEffects.Name')}<input name="name" value="${escapeHtml(selected.name)}"></label>
         <label>${localize('GAC.EnvironmentalEffects.Icon')}<input name="icon" value="${escapeHtml(selected.icon)}"></label>
         <label>${localize('GAC.EnvironmentalEffects.ActivationAnimation')}<input name="animation" data-animation-field="animation" list="gac-animation-paths" value="${escapeHtml(selected.animation)}"></label>
+        <label class="gac-environment-coverage">${localize('GAC.EnvironmentalEffects.ActivationCoverage')}<input type="number" name="activationCoverage" min="50" max="250" step="5" value="${selected.activationCoverage}"><span class="hint">${localize('GAC.EnvironmentalEffects.CoverageHint')}</span></label>
         <label data-lingering-controls${selected.persistent ? '' : ' hidden'}>${localize('GAC.EnvironmentalEffects.LingeringAnimation')}<input name="lingeringAnimation" data-animation-field="lingeringAnimation" list="gac-animation-paths" value="${escapeHtml(selected.lingeringAnimation)}"></label>
+        <label class="gac-environment-coverage" data-lingering-controls${selected.persistent ? '' : ' hidden'}>${localize('GAC.EnvironmentalEffects.LingeringCoverage')}<input type="number" name="lingeringCoverage" min="50" max="250" step="5" value="${selected.lingeringCoverage}"><span class="hint">${localize('GAC.EnvironmentalEffects.CoverageHint')}</span></label>
         <datalist id="gac-animation-paths">${paths}</datalist>
         <label>${localize('GAC.EnvironmentalEffects.Sound')}<input name="sound" value="${escapeHtml(selected.sound)}"></label>
         <div class="gac-environment-preview-grid">
@@ -81,6 +86,7 @@ export function renderEffectStudio(model, {localize}) {
           <label data-template-width${selected.placement.shape === 'line' ? '' : ' hidden'}>${localize('GAC.EnvironmentalEffects.RayWidth')}<input type="number" name="templateWidth" min="1" value="${selected.placement.width}"></label>
           <label>${localize('GAC.EnvironmentalEffects.Audience')}<select name="audience">${options([{id: 'allies', name: 'Allies'}, {id: 'pcs', name: 'Player Characters'}, {id: 'enemies', name: 'Enemies'}, {id: 'everyone', name: 'Everyone'}], selected.audience)}</select></label>
           <label><input type="checkbox" name="persistent" data-field="persistent"${selected.persistent ? ' checked' : ''}> ${localize('GAC.EnvironmentalEffects.Persistent')}</label>
+          <label data-lingering-controls${selected.persistent ? '' : ' hidden'}><input type="checkbox" name="showOutline"${selected.showOutline ? ' checked' : ''}> ${localize('GAC.EnvironmentalEffects.ShowOutline')}</label>
         </div>
       </form>` : `<p>${localize('GAC.EnvironmentalEffects.Select')}</p>`}
     </main>
