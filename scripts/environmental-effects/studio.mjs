@@ -18,6 +18,7 @@ export function parsePresetForm(values, mechanics = {}) {
     name: values.name,
     icon: values.icon || 'icons/svg/explosion.svg',
     animation: values.animation,
+    lingeringAnimation: values.lingeringAnimation,
     sound: values.sound,
     persistent: values.persistent === true || values.persistent === 'on',
     placement: {mode: values.placementMode, shape: values.templateShape, distance: values.templateDistance, width: values.templateWidth},
@@ -27,8 +28,16 @@ export function parsePresetForm(values, mechanics = {}) {
 }
 
 export function parseMechanicsForm(values) {
+  const nestedTargets = values.target && typeof values.target === 'object'
+    ? Object.entries(values.target)
+    : [];
+  const flatTargets = Object.entries(values)
+    .filter(([key]) => key.startsWith('target.'))
+    .map(([key, value]) => [key.slice(7), value]);
   return {
-    targets: Object.entries(values).filter(([key, value]) => key.startsWith('target.') && (value === true || value === 'on')).map(([key]) => key.slice(7)),
+    targets: [...new Set([...nestedTargets, ...flatTargets]
+      .filter(([, value]) => value === true || value === 'on')
+      .map(([id]) => id))],
     visualOnly: values.visualOnly === true || values.visualOnly === 'on',
     mechanics: normalizeMechanics({
       damage: values.damage,
@@ -57,17 +66,21 @@ export function renderEffectStudio(model, {localize}) {
         <input type="hidden" name="id" value="${escapeHtml(selected.id)}">
         <label>${localize('GAC.EnvironmentalEffects.Name')}<input name="name" value="${escapeHtml(selected.name)}"></label>
         <label>${localize('GAC.EnvironmentalEffects.Icon')}<input name="icon" value="${escapeHtml(selected.icon)}"></label>
-        <label>${localize('GAC.EnvironmentalEffects.Animation')}<input name="animation" list="gac-animation-paths" value="${escapeHtml(selected.animation)}"></label>
+        <label>${localize('GAC.EnvironmentalEffects.ActivationAnimation')}<input name="animation" data-animation-field="animation" list="gac-animation-paths" value="${escapeHtml(selected.animation)}"></label>
+        <label data-lingering-controls${selected.persistent ? '' : ' hidden'}>${localize('GAC.EnvironmentalEffects.LingeringAnimation')}<input name="lingeringAnimation" data-animation-field="lingeringAnimation" list="gac-animation-paths" value="${escapeHtml(selected.lingeringAnimation)}"></label>
         <datalist id="gac-animation-paths">${paths}</datalist>
         <label>${localize('GAC.EnvironmentalEffects.Sound')}<input name="sound" value="${escapeHtml(selected.sound)}"></label>
-        <div class="gac-environment-preview">${model.previewSrc ? `<video src="${escapeHtml(model.previewSrc)}" autoplay loop muted></video>` : `<i class="fa-solid fa-film"></i>`}</div>
+        <div class="gac-environment-preview-grid">
+          <figure><figcaption>${localize('GAC.EnvironmentalEffects.Activation')}</figcaption><div class="gac-environment-preview" data-preview="activation">${model.activationPreviewSrc ? `<video src="${escapeHtml(model.activationPreviewSrc)}" autoplay loop muted></video>` : `<i class="fa-solid fa-film"></i>`}</div></figure>
+          <figure data-lingering-controls${selected.persistent ? '' : ' hidden'}><figcaption>${localize('GAC.EnvironmentalEffects.Lingering')}</figcaption><div class="gac-environment-preview" data-preview="lingering">${model.lingeringPreviewSrc ? `<video src="${escapeHtml(model.lingeringPreviewSrc)}" autoplay loop muted></video>` : `<i class="fa-solid fa-film"></i>`}</div></figure>
+        </div>
         <div class="gac-environment-fields">
           <label>${localize('GAC.EnvironmentalEffects.Placement')}<select name="placementMode"><option value="template"${selected.placement.mode === 'template' ? ' selected' : ''}>Template</option><option value="scene"${selected.placement.mode === 'scene' ? ' selected' : ''}>Whole scene</option></select></label>
-          <label>${localize('GAC.EnvironmentalEffects.Shape')}<select name="templateShape">${options([{id: 'circle', name: 'Circle'}, {id: 'cone', name: 'Cone'}, {id: 'ray', name: 'Ray'}, {id: 'rect', name: 'Rectangle'}], selected.placement.shape)}</select></label>
-          <label>${localize('GAC.EnvironmentalEffects.Distance')}<input type="number" name="templateDistance" min="1" value="${selected.placement.distance}"></label>
-          <label>${localize('GAC.EnvironmentalEffects.Width')}<input type="number" name="templateWidth" min="1" value="${selected.placement.width}"></label>
+          <label>${localize('GAC.EnvironmentalEffects.Shape')}<select name="templateShape">${options([{id: 'circle', name: 'Circle'}, {id: 'cone', name: 'Cone'}, {id: 'line', name: 'Line'}, {id: 'square', name: 'Square'}], selected.placement.shape)}</select></label>
+          <label>${localize('GAC.EnvironmentalEffects.TemplateSize')}<input type="number" name="templateDistance" min="1" value="${selected.placement.distance}"><span class="hint">${localize('GAC.EnvironmentalEffects.TemplateSizeHint')}</span></label>
+          <label data-template-width${selected.placement.shape === 'line' ? '' : ' hidden'}>${localize('GAC.EnvironmentalEffects.RayWidth')}<input type="number" name="templateWidth" min="1" value="${selected.placement.width}"></label>
           <label>${localize('GAC.EnvironmentalEffects.Audience')}<select name="audience">${options([{id: 'allies', name: 'Allies'}, {id: 'pcs', name: 'Player Characters'}, {id: 'enemies', name: 'Enemies'}, {id: 'everyone', name: 'Everyone'}], selected.audience)}</select></label>
-          <label><input type="checkbox" name="persistent"${selected.persistent ? ' checked' : ''}> ${localize('GAC.EnvironmentalEffects.Persistent')}</label>
+          <label><input type="checkbox" name="persistent" data-field="persistent"${selected.persistent ? ' checked' : ''}> ${localize('GAC.EnvironmentalEffects.Persistent')}</label>
         </div>
       </form>` : `<p>${localize('GAC.EnvironmentalEffects.Select')}</p>`}
     </main>
@@ -108,6 +121,30 @@ export function createEffectStudioClass(controller) {
     _onRender(context, options_) {
       super._onRender(context, options_);
       const root = this.element;
+      for (const input of root.querySelectorAll('[data-animation-field]')) input.addEventListener('input', () => {
+        const field = input.dataset.animationField;
+        const target = field === 'lingeringAnimation' ? 'lingering' : 'activation';
+        const src = controller.previewAnimation(root, field);
+        const preview = root.querySelector(`[data-preview="${target}"]`);
+        if (!preview) return;
+        preview.replaceChildren();
+        const media = globalThis.document.createElement(src ? 'video' : 'i');
+        if (src) {
+          media.src = src;
+          media.autoplay = true;
+          media.loop = true;
+          media.muted = true;
+        } else media.className = 'fa-solid fa-film';
+        preview.append(media);
+      });
+      root.querySelector('[data-field="persistent"]')?.addEventListener('change', event => {
+        for (const element of root.querySelectorAll('[data-lingering-controls]')) element.hidden = !event.target.checked;
+      });
+      const shape = root.querySelector('[name="templateShape"]');
+      shape?.addEventListener('change', () => {
+        const width = root.querySelector('[data-template-width]');
+        if (width) width.hidden = shape.value !== 'line';
+      });
       root.querySelector('[data-field="query"]')?.addEventListener('input', event => { controller.setQuery(event.target.value); void this.render(); });
       for (const button of root.querySelectorAll('[data-action]')) button.addEventListener('click', async () => {
         await controller.action(button.dataset.action, root, button.dataset);

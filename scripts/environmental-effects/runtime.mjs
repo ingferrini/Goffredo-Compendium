@@ -34,13 +34,20 @@ function showFormDialog({title, content, confirmLabel}) {
 
 async function configurePlacement(placement) {
   if (placement.mode === 'scene') return placement;
-  const content = `<form class="gac-environment-placement"><label>${game.i18n.localize('GAC.EnvironmentalEffects.Distance')}<input type="number" name="distance" min="1" value="${placement.distance}"></label><label>${game.i18n.localize('GAC.EnvironmentalEffects.Width')}<input type="number" name="width" min="1" value="${placement.width}"></label></form>`;
+  const widthField = placement.shape === 'line'
+    ? `<label>${game.i18n.localize('GAC.EnvironmentalEffects.RayWidth')}<input type="number" name="width" min="1" value="${placement.width}"></label>`
+    : `<input type="hidden" name="width" value="${placement.width}">`;
+  const content = `<form class="gac-environment-placement"><label>${game.i18n.localize('GAC.EnvironmentalEffects.TemplateSize')}<input type="number" name="distance" min="1" value="${placement.distance}"><span class="hint">${game.i18n.localize('GAC.EnvironmentalEffects.TemplateSizeHint')}</span></label>${widthField}</form>`;
   const values = await showFormDialog({title: game.i18n.localize('GAC.EnvironmentalEffects.Placement'), content, confirmLabel: game.i18n.localize('GAC.EnvironmentalEffects.Place')});
   if (!values) return null;
   const distance = Number(values.distance);
   const width = Number(values.width);
   if (!(distance > 0) || !(width > 0)) throw new Error('Template distance and width must be positive.');
   return {...placement, distance, width};
+}
+
+export function firstTemplateResult(value) {
+  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
 }
 
 async function placeTemplate(placement, actor) {
@@ -57,10 +64,12 @@ async function placeTemplate(placement, actor) {
   const item = new globalThis.CONFIG.Item.documentClass(itemData, {parent: actor});
   const activity = item.system.activities?.get?.(activityId) ?? item.system.activities?.[activityId];
   const AbilityTemplate = globalThis.game.dnd5e.canvas.AbilityTemplate;
-  const preview = await (AbilityTemplate.fromActivity
+  const previews = await (AbilityTemplate.fromActivity
     ? AbilityTemplate.fromActivity(activity)
     : AbilityTemplate.fromItem(item));
-  const template = await preview?.drawPreview?.();
+  const preview = firstTemplateResult(previews);
+  const placed = await preview?.drawPreview?.();
+  const template = firstTemplateResult(placed);
   if (!template) return null;
   const document = template.document ?? template;
   return {
@@ -89,13 +98,28 @@ async function chooseTargets(targets, mechanics) {
   return {...parsed, targets: targets.filter(token => selected.has(token.id))};
 }
 
-function previewSource(database, path) {
+function previewFile(entry, path) {
+  if (!entry) return '';
+  if (typeof entry === 'string') return entry;
+  if (Array.isArray(entry)) {
+    for (const value of entry) {
+      const file = previewFile(value, path);
+      if (file) return file;
+    }
+    return '';
+  }
+  const clone = entry.clone?.() ?? entry;
+  const preview = clone.getPreviewFile?.(path);
+  if (preview) return previewFile(preview, path);
+  if (entry.file) return previewFile(entry.file, path);
+  const files = entry.getAllFiles?.();
+  return previewFile(files, path);
+}
+
+export function previewSource(database, path) {
   if (!path) return '';
   const entry = database.getEntry(path, {softFail: true});
-  const file = entry?.file ?? entry;
-  if (typeof file === 'string') return file;
-  if (Array.isArray(file)) return file.find(value => typeof value === 'string') ?? '';
-  return '';
+  return previewFile(entry, path);
 }
 
 export function createEnvironmentalRuntime() {
@@ -143,9 +167,24 @@ export function createEnvironmentalRuntime() {
     model() {
       const selected = selectedPreset();
       const rows = list().filter(row => row.preset.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-      return {presets: rows, selected, query, animationPaths: searchAnimationPaths(allPaths(), query), previewSrc: selected && database ? previewSource(database, selected.animation) : ''};
+      return {
+        presets: rows,
+        selected,
+        query,
+        animationPaths: searchAnimationPaths(allPaths(), query),
+        activationPreviewSrc: selected && database ? previewSource(database, selected.animation) : '',
+        lingeringPreviewSrc: selected && database ? previewSource(database, selected.lingeringAnimation) : ''
+      };
     },
     setQuery(value) { query = value; },
+    previewAnimation(root, field = 'animation') {
+      const form = root.querySelector('[data-form="preset"]');
+      if (!form || !database) return '';
+      const values = new globalThis.foundry.applications.ux.FormDataExtended(form).object;
+      draft = parsePresetForm(values, selectedPreset()?.mechanics);
+      selectedId = draft.id;
+      return previewSource(database, field === 'lingeringAnimation' ? draft.lingeringAnimation : draft.animation);
+    },
     async run(id) {
       const row = list().find(entry => entry.preset.id === id);
       if (!row) throw new Error(`Environmental effect preset not found: ${id}`);

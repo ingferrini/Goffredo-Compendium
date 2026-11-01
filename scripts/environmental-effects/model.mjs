@@ -9,7 +9,8 @@ export const SAVE_MODE = Object.freeze({HALF: 'half', NEGATES: 'negates'});
 export const PRESET_FLAG = 'environmentalEffect';
 
 const PLACEMENT_MODES = new Set(['template', 'scene']);
-const TEMPLATE_SHAPES = new Set(['circle', 'cone', 'ray', 'rect']);
+const TEMPLATE_SHAPES = new Set(['circle', 'cone', 'line', 'square']);
+const LEGACY_TEMPLATE_SHAPES = Object.freeze({ray: 'line', rect: 'square'});
 const DURATION_UNITS = new Set(['turn', 'round', 'minute', 'hour']);
 
 function optionalNumber(value) {
@@ -33,12 +34,14 @@ export function normalizeMechanics(raw = {}) {
 
 export function normalizePreset(raw = {}) {
   const mode = PLACEMENT_MODES.has(raw.placement?.mode) ? raw.placement.mode : 'template';
-  const shape = TEMPLATE_SHAPES.has(raw.placement?.shape) ? raw.placement.shape : 'circle';
+  const rawShape = LEGACY_TEMPLATE_SHAPES[raw.placement?.shape] ?? raw.placement?.shape;
+  const shape = TEMPLATE_SHAPES.has(rawShape) ? rawShape : 'circle';
   return {
     id: String(raw.id ?? '').trim(),
     name: String(raw.name ?? '').trim(),
     icon: String(raw.icon ?? 'icons/svg/explosion.svg').trim(),
     animation: String(raw.animation ?? '').trim(),
+    lingeringAnimation: String(raw.lingeringAnimation ?? '').trim(),
     sound: String(raw.sound ?? '').trim(),
     persistent: raw.persistent === true,
     placement: {

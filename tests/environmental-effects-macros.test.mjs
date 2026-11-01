@@ -3,7 +3,7 @@ import test from 'node:test';
 import {createPresetMacro, deletePresetMacro, discoverPresets, duplicatePresetMacro, updatePresetMacro} from '../scripts/environmental-effects/macros.mjs';
 
 const preset = {
-  id: 'firestorm', name: 'Firestorm', icon: 'fire.webp', animation: 'jb2a.fireball', sound: '',
+  id: 'firestorm', name: 'Firestorm', icon: 'fire.webp', animation: 'jb2a.fireball', lingeringAnimation: '', sound: '',
   persistent: false, placement: {mode: 'template', shape: 'circle', distance: 10, width: 5}, audience: 'enemies',
   mechanics: {damage: '4d10', damageType: 'fire', condition: '', saveAbility: 'dex', dc: 15, saveMode: 'half', duration: {value: null, unit: 'round'}}
 };

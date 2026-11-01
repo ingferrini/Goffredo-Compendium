@@ -18,15 +18,33 @@ export function assertAnimation(database, path) {
   return entry;
 }
 
-function configureEffect(sequence, preset, location, {preview = false} = {}) {
+function addEffect(sequence, {file, location, name, persistent}) {
   let effect = sequence.effect()
-    .file(preset.animation)
+    .file(file)
     .atLocation(location)
-    .name(effectName(preset.id));
+    .name(name);
   if (location?.width && location?.height) {
     effect = effect.size({width: location.width, height: location.height}, {gridUnits: false});
   }
-  if (preset.persistent && !preview) effect.persist(true);
+  if (persistent) effect.persist(true);
+}
+
+function configureEffect(sequence, preset, location, {preview = false} = {}) {
+  const lingering = preset.persistent ? preset.lingeringAnimation : '';
+  addEffect(sequence, {
+    file: preset.animation,
+    location,
+    name: lingering ? `${effectName(preset.id)}.Activation` : effectName(preset.id),
+    persistent: preset.persistent && !lingering && !preview
+  });
+  if (lingering) {
+    addEffect(sequence, {
+      file: lingering,
+      location,
+      name: effectName(preset.id),
+      persistent: !preview
+    });
+  }
   if (preset.sound) sequence.sound().file(preset.sound);
   return sequence;
 }

@@ -1,5 +1,6 @@
 export async function previewEnvironmentalEffect(preset, location, deps) {
   await deps.assertAnimation(preset.animation);
+  if (preset.persistent && preset.lingeringAnimation) await deps.assertAnimation(preset.lingeringAnimation);
   await deps.previewEffect(preset, location);
 }
 
@@ -18,6 +19,7 @@ export async function executeEnvironmentalEffect(preset, deps) {
 
     const mechanics = deps.validateMechanics(selection.mechanics, {visualOnly: selection.visualOnly});
     await deps.assertAnimation(preset.animation);
+    if (preset.persistent && preset.lingeringAnimation) await deps.assertAnimation(preset.lingeringAnimation);
     await deps.playEffect(preset, area.location);
 
     if (selection.visualOnly || !selection.targets.length) return {status: 'visual-only'};

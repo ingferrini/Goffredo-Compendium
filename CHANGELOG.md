@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here.
 
+## 0.11.1 - 2026-11-01
+
+- Fixed D&D5e 5.3.3 measured-template placement by handling the template arrays returned by both creation and canvas placement.
+- Fixed per-use token selection from Foundry's nested form data, so Midi-QOL now receives the selected targets and resolves damage and saving throws.
+- Clarified template dimensions: size is radius for circles, length for cones and lines, and side length for squares; line width is shown only for line templates.
+- Existing presets using the old `ray` or `rect` values migrate automatically to `line` and `square`.
+- The inline media preview now updates immediately when a valid Sequencer animation is selected, without saving the preset first.
+- Added separate activation and optional lingering animations with compact side-by-side previews; activation plays once, while lingering is the persistent phase. Empty lingering paths preserve the previous persistent-activation behavior.
+
 ## 0.11.0 - 2026-10-31
 
 - Added the GM-only Environmental Effect Studio, with searchable Sequencer animations, canvas previews, optional sound and persistent visual effects.

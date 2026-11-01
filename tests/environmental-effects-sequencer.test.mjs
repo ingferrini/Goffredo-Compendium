@@ -28,6 +28,27 @@ test('preview never persists while playback can persist and carries a stable nam
   assert.ok(playLog.some(call => call[0] === 'name' && call[1] === effectName('fire')));
 });
 
+test('plays activation once and a separate lingering animation persistently', async () => {
+  const log = [];
+  await playEffect({...preset, lingeringAnimation: 'jb2a.fire.ground'}, {x: 10, y: 20}, {SequenceClass: fakeSequence(log)});
+  assert.deepEqual(log.filter(([method]) => method === 'file').map(([, file]) => file), [preset.animation, 'jb2a.fire.ground']);
+  assert.equal(log.filter(([method]) => method === 'persist').length, 1);
+});
+
+test('ignores the stored lingering animation when persistence is disabled', async () => {
+  const log = [];
+  await playEffect({...preset, persistent: false, lingeringAnimation: 'jb2a.fire.ground'}, {x: 10, y: 20}, {SequenceClass: fakeSequence(log)});
+  assert.deepEqual(log.filter(([method]) => method === 'file').map(([, file]) => file), [preset.animation]);
+  assert.equal(log.some(([method]) => method === 'persist'), false);
+});
+
+test('canvas preview plays both phases without persisting either one', async () => {
+  const log = [];
+  await previewEffect({...preset, lingeringAnimation: 'jb2a.fire.ground'}, {x: 10, y: 20}, {SequenceClass: fakeSequence(log)});
+  assert.deepEqual(log.filter(([method]) => method === 'file').map(([, file]) => file), [preset.animation, 'jb2a.fire.ground']);
+  assert.equal(log.some(([method]) => method === 'persist'), false);
+});
+
 test('opens Sequencer Effect Manager', () => {
   let opened = 0;
   openEffectManager({show: () => { opened += 1; }});

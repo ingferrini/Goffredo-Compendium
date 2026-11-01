@@ -60,3 +60,11 @@ test('preview is temporary and never invokes mechanics', async () => {
   await previewEnvironmentalEffect(preset, {x: 1, y: 2}, {assertAnimation: async () => calls.push('validate'), previewEffect: async () => calls.push('preview')});
   assert.deepEqual(calls, ['validate', 'preview']);
 });
+
+test('validates both activation and lingering animation before playback', async () => {
+  const paths = [];
+  const twoPhase = {...preset, persistent: true, lingeringAnimation: 'jb2a.fire.ground'};
+  const {deps} = dependencies({assertAnimation: async path => paths.push(path)});
+  await executeEnvironmentalEffect(twoPhase, deps);
+  assert.deepEqual(paths, [twoPhase.animation, twoPhase.lingeringAnimation]);
+});
