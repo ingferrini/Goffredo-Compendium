@@ -5,6 +5,8 @@ import {buildEnvironmentalItemData, ensureEnvironmentalActor, resolveEnvironment
 test('builds a numeric save activity with Midi damage-on-save semantics', () => {
   const data = buildEnvironmentalItemData({damage: '4d10', damageType: 'fire', saveAbility: 'dex', dc: 15, saveMode: 'half'});
   const activity = Object.values(data.system.activities)[0];
+  assert.match(activity._id, /^[A-Za-z0-9]{16}$/);
+  assert.ok(data.system.activities[activity._id]);
   assert.equal(activity.type, 'save');
   assert.equal(activity.save.dc.formula, '15');
   assert.equal(activity.damage.onSave, 'half');

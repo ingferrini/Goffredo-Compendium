@@ -13,10 +13,11 @@ function formValues(app) {
   return new globalThis.foundry.applications.ux.FormDataExtended(form).object;
 }
 
-function showFormDialog({title, content, confirmLabel}) {
+export function showFormDialog({title, content, confirmLabel}) {
   const {DialogV2} = globalThis.foundry.applications.api;
   return new Promise(resolve => {
     let settled = false;
+    let submittedValue = null;
     const finish = value => { if (!settled) { settled = true; resolve(value); } };
     const dialog = new DialogV2({
       window: {title},
@@ -25,9 +26,12 @@ function showFormDialog({title, content, confirmLabel}) {
         {action: 'confirm', label: confirmLabel, default: true, callback: (_event, _button, app) => formValues(app)},
         {action: 'cancel', label: game.i18n.localize('Cancel'), callback: () => null}
       ],
-      submit: finish
+      // DialogV2 invokes submit before it has finished closing. Resolving here
+      // lets callers open a canvas preview while the modal backdrop is still
+      // active, which makes measured-template placement appear to hang.
+      submit: value => { submittedValue = value; }
     });
-    dialog.addEventListener?.('close', () => finish(null));
+    dialog.addEventListener?.('close', () => finish(submittedValue));
     void dialog.render({force: true});
   });
 }

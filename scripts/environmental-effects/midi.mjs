@@ -16,7 +16,8 @@ function damagePart(mechanics) {
 
 export function buildEnvironmentalItemData(mechanics) {
   const hasSave = Boolean(mechanics.saveAbility && mechanics.dc !== null && mechanics.dc !== undefined);
-  const activityId = 'GACEnvironment001';
+  // D&D5e document IDs must be exactly 16 alphanumeric characters.
+  const activityId = 'GACEnvironment01';
   const activity = {
     _id: activityId,
     type: hasSave ? 'save' : 'damage',

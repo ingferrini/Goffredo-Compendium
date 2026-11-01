@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.11.2 - 2026-11-01
+
+- Fixed Environmental Effect Studio templates, damage, and saving throws failing because the generated D&D5e activity used an invalid 17-character document ID.
+- Template placement now starts only after the placement dialog has fully closed, preventing the canvas preview from being trapped behind the modal dialog.
+
 ## 0.11.1 - 2026-11-01
 
 - Fixed D&D5e 5.3.3 measured-template placement by handling the template arrays returned by both creation and canvas placement.
