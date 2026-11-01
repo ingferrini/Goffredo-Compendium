@@ -44,7 +44,8 @@ export function sceneArea(scene) {
       x: rectangle.x + rectangle.width / 2,
       y: rectangle.y + rectangle.height / 2,
       width: rectangle.width,
-      height: rectangle.height
+      height: rectangle.height,
+      outline: [{type: 'rectangle', options: {width: rectangle.width, height: rectangle.height}}]
     },
     width: rectangle.width,
     height: rectangle.height

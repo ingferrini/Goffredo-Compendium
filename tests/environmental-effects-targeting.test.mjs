@@ -30,5 +30,8 @@ test('whole-scene collection excludes hidden and actorless tokens', () => {
 
 test('whole-scene placement sizes the visual to the scene rectangle', () => {
   const area = sceneArea({dimensions: {sceneRect: {x: 100, y: 200, width: 1200, height: 800}}});
-  assert.deepEqual(area.location, {x: 700, y: 600, width: 1200, height: 800});
+  assert.deepEqual(area.location, {
+    x: 700, y: 600, width: 1200, height: 800,
+    outline: [{type: 'rectangle', options: {width: 1200, height: 800}}]
+  });
 });

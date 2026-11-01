@@ -18,6 +18,7 @@ test('places an ephemeral v14 region and returns its bounds for animations', asy
   const calls = [];
   const region = {
     bounds: {x: 100, y: 200, width: 300, height: 200},
+    shapes: [{type: 'circle', radius: 100}],
     testPoint: () => true
   };
   globalThis.canvas = {
@@ -31,7 +32,10 @@ test('places an ephemeral v14 region and returns its bounds for animations', asy
   assert.equal(calls.length, 1);
   assert.deepEqual(calls[0][1], {create: false});
   assert.equal(area.region, region);
-  assert.deepEqual(area.location, {x: 250, y: 300, width: 300, height: 200});
+  assert.deepEqual(area.location, {
+    x: 250, y: 300, width: 300, height: 200,
+    outline: [{type: 'circle', options: {radius: 100}}]
+  });
 });
 
 test('resolves an immediate preview file from Sequencer database entries', async () => {

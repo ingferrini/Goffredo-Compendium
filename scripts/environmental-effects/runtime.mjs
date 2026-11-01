@@ -1,6 +1,7 @@
 import {MODULE_ID} from '../constants.mjs';
 import {applyConditionToTokens} from './conditions.mjs';
 import {executeEnvironmentalEffect, previewEnvironmentalEffect} from './execution.mjs';
+import {regionOutline} from './geometry.mjs';
 import {createPresetMacro, deletePresetMacro, discoverPresets, duplicatePresetMacro, foundryMacroRepository, updatePresetMacro} from './macros.mjs';
 import {buildEnvironmentalItemData, ensureEnvironmentalActor, resolveEnvironmentalWorkflow} from './midi.mjs';
 import {normalizePreset, validateMechanics, validatePreset} from './model.mjs';
@@ -83,7 +84,8 @@ export async function placeTemplate(placement) {
       x: bounds.x + bounds.width / 2,
       y: bounds.y + bounds.height / 2,
       width: bounds.width,
-      height: bounds.height
+      height: bounds.height,
+      outline: regionOutline(region, bounds)
     }
   };
 }
