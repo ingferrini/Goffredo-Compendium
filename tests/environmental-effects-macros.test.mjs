@@ -4,7 +4,8 @@ import {createPresetMacro, deletePresetMacro, discoverPresets, duplicatePresetMa
 
 const preset = {
   id: 'firestorm', name: 'Firestorm', icon: 'fire.webp', animation: 'jb2a.fireball', lingeringAnimation: '', sound: '',
-  persistent: false, placement: {mode: 'template', shape: 'circle', distance: 10, width: 5}, audience: 'enemies',
+  persistent: false, activationCoverage: 100, lingeringCoverage: 100, showOutline: false,
+  placement: {mode: 'template', shape: 'circle', distance: 10, width: 5}, audience: 'enemies',
   mechanics: {damage: '4d10', damageType: 'fire', condition: '', saveAbility: 'dex', dc: 15, saveMode: 'half', duration: {value: null, unit: 'round'}}
 };
 
