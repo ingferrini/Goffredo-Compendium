@@ -14,10 +14,13 @@ test('filters allies, player characters, enemies, and everyone', () => {
   assert.equal(filterAudience(rows, 'everyone').length, 4);
 });
 
-test('collects valid actor tokens whose centres are inside a template shape', () => {
+test('collects valid actor tokens whose centres and elevation are inside a v14 region', () => {
   const rows = [token('in', 1), token('outside', -1), {...token('actorless', 0), actor: null}];
-  const template = {x: 0, y: 0, object: {shape: {contains: (x, y) => x < 50 && y < 50}}};
-  assert.deepEqual(collectTemplateTokens(rows, template).map(row => row.id), ['in']);
+  rows[0].elevation = 20;
+  const tested = [];
+  const region = {testPoint: point => { tested.push(point); return point.x < 50; }};
+  assert.deepEqual(collectTemplateTokens(rows, region).map(row => row.id), ['in']);
+  assert.deepEqual(tested[0], {x: 20, y: 10, elevation: 20});
 });
 
 test('whole-scene collection excludes hidden and actorless tokens', () => {

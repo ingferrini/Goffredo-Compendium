@@ -117,7 +117,7 @@ The GM can open **Image presentations** from the scene controls and search a ded
 
 ## Environmental Effect Studio
 
-The GM-only **Environmental Effect Studio** is available from the token scene controls when Sequencer is active. It creates reusable environmental presets as ordinary world macros, so presets can be organised in folders, exported, edited later, duplicated, or placed on the hotbar. The generated macro remains intentionally small and delegates execution to the module.
+The GM-only **Environmental Effect Studio** is available from the token scene controls when Sequencer is active. It creates reusable environmental presets as ordinary world macros, so presets can be organised in folders, exported, edited later, duplicated, or placed on the hotbar. The generated macro remains intentionally small and delegates execution to the module. Template areas use Foundry v14's native temporary Regions, so placement and targeting do not leave Region documents behind in the scene.
 
 Each preset stores its name, icon, Sequencer animation, optional sound, persistence, default audience, and placement mode. Placement can cover the whole scene or use a circle, cone, line, or square template. **Template size** means radius for circles, length for cones and lines, and side length for squares; **line width** appears only for lines. These dimensions are saved with the preset and can be adjusted before every use. The audience can be player characters, hostile tokens, friendly or neutral non-PC tokens, or everyone. Before resolution the GM can exclude individual tokens.
 

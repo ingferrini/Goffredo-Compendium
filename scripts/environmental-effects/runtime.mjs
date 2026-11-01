@@ -50,35 +50,41 @@ async function configurePlacement(placement) {
   return {...placement, distance, width};
 }
 
-export function firstTemplateResult(value) {
-  return Array.isArray(value) ? (value[0] ?? null) : (value ?? null);
+function regionShape(placement, distancePixels) {
+  const distance = placement.distance * distancePixels;
+  const width = placement.width * distancePixels;
+  if (placement.shape === 'cone') return {type: 'cone', x: 0, y: 0, radius: distance, angle: 53.13, rotation: 0, gridBased: true};
+  if (placement.shape === 'line') return {type: 'line', x: 0, y: 0, distance, width, rotation: 0, gridBased: true};
+  if (placement.shape === 'square') return {type: 'rectangle', x: 0, y: 0, width: distance, height: distance, rotation: 0, gridBased: true};
+  return {type: 'circle', x: 0, y: 0, radius: distance, gridBased: true};
 }
 
-async function placeTemplate(placement, actor) {
-  const itemData = buildEnvironmentalItemData({damage: '', damageType: '', saveAbility: '', dc: null, saveMode: 'half'});
-  const activityId = Object.keys(itemData.system.activities)[0];
-  itemData.name = 'Environmental Effect Area';
-  itemData.system.activities[activityId].name = 'Environmental Effect Area';
-  itemData.system.activities[activityId].target = {
-    template: {type: placement.shape, size: placement.distance, width: placement.width, units: 'ft'},
-    affects: {type: 'creature'},
-    prompt: true,
-    override: true
-  };
-  const item = new globalThis.CONFIG.Item.documentClass(itemData, {parent: actor});
-  const activity = item.system.activities?.get?.(activityId) ?? item.system.activities?.[activityId];
-  const AbilityTemplate = globalThis.game.dnd5e.canvas.AbilityTemplate;
-  const previews = await (AbilityTemplate.fromActivity
-    ? AbilityTemplate.fromActivity(activity)
-    : AbilityTemplate.fromItem(item));
-  const preview = firstTemplateResult(previews);
-  const placed = await preview?.drawPreview?.();
-  const template = firstTemplateResult(placed);
-  if (!template) return null;
-  const document = template.document ?? template;
+export function buildRegionPlacementData(placement, dimensions, user) {
   return {
-    template: document,
-    location: {x: document.x, y: document.y, width: placement.distance, height: placement.distance}
+    name: 'Environmental Effect Area',
+    shapes: [regionShape(placement, dimensions.distancePixels)],
+    color: user.color,
+    restriction: {enabled: false},
+    highlightMode: 'coverage',
+    displayMeasurements: true,
+    ownership: {[user.id]: 3}
+  };
+}
+
+export async function placeTemplate(placement) {
+  const regionData = buildRegionPlacementData(placement, globalThis.canvas.dimensions, globalThis.game.user);
+  const region = await globalThis.canvas.regions.placeRegion(regionData, {create: false});
+  if (!region) return null;
+  const bounds = region.bounds;
+  return {
+    type: 'region',
+    region,
+    location: {
+      x: bounds.x + bounds.width / 2,
+      y: bounds.y + bounds.height / 2,
+      width: bounds.width,
+      height: bounds.height
+    }
   };
 }
 
@@ -149,9 +155,9 @@ export function createEnvironmentalRuntime() {
     const sourceActor = await ensureEnvironmentalActor(game.actors);
     return executeEnvironmentalEffect(preset, {
       configurePlacement,
-      placeTemplate: placement => placeTemplate(placement, sourceActor),
+      placeTemplate,
       sceneArea: () => sceneArea(globalThis.canvas.scene),
-      collectTokens: area => area.type === 'scene' ? collectSceneTokens(globalThis.canvas.scene.tokens) : collectTemplateTokens(globalThis.canvas.scene.tokens, area.template),
+      collectTokens: area => area.type === 'scene' ? collectSceneTokens(globalThis.canvas.scene.tokens) : collectTemplateTokens(globalThis.canvas.scene.tokens, area.region),
       filterAudience,
       chooseTargets,
       validateMechanics,
@@ -228,10 +234,9 @@ export function createEnvironmentalRuntime() {
         }
       }
       if (action === 'previewCanvas') {
-        const sourceActor = await ensureEnvironmentalActor(game.actors);
         const placement = await configurePlacement(current.placement);
         if (!placement) return;
-        const area = placement.mode === 'scene' ? sceneArea(globalThis.canvas.scene) : await placeTemplate(placement, sourceActor);
+        const area = placement.mode === 'scene' ? sceneArea(globalThis.canvas.scene) : await placeTemplate(placement);
         if (!area) return;
         try { await previewEnvironmentalEffect(current, area.location, {assertAnimation: path => assertAnimation(database, path), previewEffect: (value, location) => previewEffect(value, location)}); }
         finally { await area.template?.delete?.(); }

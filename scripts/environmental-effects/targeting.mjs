@@ -18,12 +18,12 @@ export function filterAudience(tokens, audience) {
   return valid;
 }
 
-export function collectTemplateTokens(tokens, template) {
-  const shape = template?.object?.shape;
-  if (!shape?.contains) return [];
+export function collectTemplateTokens(tokens, region) {
+  if (!region?.testPoint) return [];
   return Array.from(tokens ?? []).filter(validToken).filter(token => {
     const center = tokenCenter(token);
-    return shape.contains(center.x - template.x, center.y - template.y);
+    const elevation = token.elevation ?? token.object?.elevation ?? 0;
+    return region.testPoint({...center, elevation});
   });
 }
 

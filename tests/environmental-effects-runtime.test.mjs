@@ -1,17 +1,37 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {showFormDialog} from '../scripts/environmental-effects/runtime.mjs';
+import {buildRegionPlacementData, placeTemplate, showFormDialog} from '../scripts/environmental-effects/runtime.mjs';
 
-test('unwraps the arrays returned by dnd5e template creation and placement', async () => {
-  const runtime = await import('../scripts/environmental-effects/runtime.mjs');
-  assert.equal(typeof runtime.firstTemplateResult, 'function');
-  const preview = {drawPreview() {}};
-  const document = {id: 'template'};
-  assert.equal(runtime.firstTemplateResult([preview]), preview);
-  assert.equal(runtime.firstTemplateResult([document]), document);
-  assert.equal(runtime.firstTemplateResult(preview), preview);
-  assert.equal(runtime.firstTemplateResult(null), null);
+test('builds a Foundry v14 measured region using scene distance pixels', () => {
+  const data = buildRegionPlacementData(
+    {shape: 'circle', distance: 20, width: 5},
+    {distancePixels: 10},
+    {id: 'gm', color: '#ff0000'}
+  );
+  assert.deepEqual(data.shapes, [{type: 'circle', x: 0, y: 0, radius: 200, gridBased: true}]);
+  assert.equal(data.displayMeasurements, true);
+  assert.equal(data.ownership.gm, 3);
+});
+
+test('places an ephemeral v14 region and returns its bounds for animations', async () => {
+  const calls = [];
+  const region = {
+    bounds: {x: 100, y: 200, width: 300, height: 200},
+    testPoint: () => true
+  };
+  globalThis.canvas = {
+    dimensions: {distancePixels: 10},
+    regions: {placeRegion: async (...args) => { calls.push(args); return region; }}
+  };
+  globalThis.game = {user: {id: 'gm', color: '#ff0000'}};
+
+  const area = await placeTemplate({shape: 'circle', distance: 20, width: 5});
+
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0][1], {create: false});
+  assert.equal(area.region, region);
+  assert.deepEqual(area.location, {x: 250, y: 300, width: 300, height: 200});
 });
 
 test('resolves an immediate preview file from Sequencer database entries', async () => {

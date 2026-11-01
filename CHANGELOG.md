@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 0.11.3 - 2026-11-01
+
+- Replaced the removed measured-template workflow with Foundry v14's native temporary Region placement.
+- Environmental Effect Studio targeting now tests token centres and elevation against the placed Region without creating persistent scene Regions.
+
 ## 0.11.2 - 2026-11-01
 
 - Fixed Environmental Effect Studio templates, damage, and saving throws failing because the generated D&D5e activity used an invalid 17-character document ID.
