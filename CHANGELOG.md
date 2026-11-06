@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 0.11.4 - 2026-11-06
+
+- Added independent activation and lingering coverage controls to compensate for transparent padding in Sequencer media.
+- Added an optional exact, player-visible outline for persistent environmental areas; the outline is removed together with its Sequencer effect.
+- Preserved exact template geometry for circles, rectangles, cones, lines, and whole-scene effects without leaving persistent Foundry Region documents.
+
 ## 0.11.3 - 2026-11-01
 
 - Replaced the removed measured-template workflow with Foundry v14's native temporary Region placement.
